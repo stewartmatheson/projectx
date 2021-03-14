@@ -4,9 +4,21 @@
 int main()
 {
 	int scale = 4;
-	int offset = 10;
+	int offset = 20;
+	int window_width = 800;
+	int window_height = 600;
 	int selected_tile_index = 0;
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML works!");
+
+	int tile_cols = 5;
+	int tile_rows = 7;
+	int tile_size = 16;
+
+    sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML works!");
+	sf::RenderTexture left_toolbar_render_texture;
+	int left_toolbar_width = offset * 2 + (scale * tile_size);
+	left_toolbar_render_texture.create(left_toolbar_width, window_height);
+	sf::RectangleShape left_toolbar_background_shape(sf::Vector2f(left_toolbar_width, window_height));
+	left_toolbar_background_shape.setFillColor(sf::Color(60,60,60, 255));
 
 	sf::Texture texture;
 	if (!texture.loadFromFile("../assets/tilemap.png")) {
@@ -14,16 +26,12 @@ int main()
 		return 0;
 	}
 
-
 	std::vector<sf::Sprite> tiles;
 
-	int cols = 5;
-	int rows = 7;
-	int size = 16;
-	for(int y = 0; y < cols; y++) {
-		for(int x = 0; x < rows; x++) {
+	for(int y = 0; y < tile_cols; y++) {
+		for(int x = 0; x < tile_rows; x++) {
 			sf::Sprite sprite = sf::Sprite();
-			sprite.setTextureRect(sf::IntRect(size * x, size * y, size, size));
+			sprite.setTextureRect(sf::IntRect(tile_size * x, tile_size * y, tile_size, tile_size));
 			sprite.setTexture(texture);
 			sprite.setScale(scale, scale);
 			tiles.push_back(sprite);
@@ -31,7 +39,7 @@ int main()
 	}
 
 	sf::RectangleShape rectangle;
-	rectangle.setSize(sf::Vector2f(size * scale, size * scale));
+	rectangle.setSize(sf::Vector2f(tile_size * scale, tile_size * scale));
 	rectangle.setOutlineColor(sf::Color::Blue);
 	rectangle.setOutlineThickness(2);
 	rectangle.setFillColor(sf::Color::Transparent);
@@ -40,16 +48,15 @@ int main()
     {
 
 		for(int i = 0; i < tiles.size(); i++) {
-			int current_x_pos = 
-				(i * scale * size) + 
-				(offset * i);
+			int current_y_pos = 
+				(i * scale * tile_size) + 
+				(offset * i) + offset;
 
-			tiles[i].setPosition(current_x_pos, 10);
+			tiles[i].setPosition(offset, current_y_pos);
 			if (selected_tile_index == i) {
-				rectangle.setPosition(current_x_pos, 10);
+				rectangle.setPosition(offset, current_y_pos);
 			}
 		}
-
 
         sf::Event event;
         while (window.pollEvent(event))
@@ -63,7 +70,6 @@ int main()
 					for(sf::Sprite t : tiles) {
 						if(t.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
 							selected_tile_index = current_event_tile_index;		
-							std::cout << "Changed Index" << std::endl;
 						}
 						current_event_tile_index++;
 					}
@@ -72,11 +78,18 @@ int main()
         }
 
         window.clear();
+		left_toolbar_render_texture.clear();
+		left_toolbar_render_texture.draw(left_toolbar_background_shape);
 
 		for(sf::Sprite t : tiles) {
-			window.draw(t);
+			left_toolbar_render_texture.draw(t);
 		}
-		window.draw(rectangle);
+		left_toolbar_render_texture.draw(rectangle);
+		left_toolbar_render_texture.display();
+
+		const sf::Texture& left_toolbar_texture = left_toolbar_render_texture.getTexture();
+		sf::Sprite left_toolbar_render_sprite(left_toolbar_texture);
+		window.draw(left_toolbar_render_sprite);
         window.display();
     }
 
