@@ -1,6 +1,24 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
+void draw_grid_to_render_target(sf::RenderTarget &target, int height, int width, int size, int scale) {
+	for(int row = 0; row < height / (size * scale); row++) {
+		sf::Vertex line[] = {
+			sf::Vertex(sf::Vector2f(0, row * (size * scale)), sf::Color::White),
+			sf::Vertex(sf::Vector2f(width, row * (size * scale)), sf::Color::White)
+		};
+		target.draw(line, 2, sf::Lines);
+	}
+
+	for(int col = 0; col < width / size; col++) {
+		sf::Vertex line[] = {
+			sf::Vertex(sf::Vector2f(col * (size * scale), 0), sf::Color::White),
+			sf::Vertex(sf::Vector2f(col * (size * scale), height), sf::Color::White)
+		};
+		target.draw(line, 2, sf::Lines);
+	}
+}
+
 int main()
 {
 	int scale = 4;
@@ -15,8 +33,11 @@ int main()
 
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML works!");
 	sf::RenderTexture left_toolbar_render_texture;
+	sf::RenderTexture grid_render_texture;
+
 	int left_toolbar_width = offset * 2 + (scale * tile_size);
 	left_toolbar_render_texture.create(left_toolbar_width, window_height);
+	grid_render_texture.create(window_width, window_height);
 	sf::RectangleShape left_toolbar_background_shape(sf::Vector2f(left_toolbar_width, window_height));
 	left_toolbar_background_shape.setFillColor(sf::Color(60,60,60, 255));
 
@@ -79,6 +100,10 @@ int main()
 
         window.clear();
 		left_toolbar_render_texture.clear();
+		grid_render_texture.clear();
+
+		draw_grid_to_render_target(grid_render_texture, window_height , window_width, tile_size, scale);
+
 		left_toolbar_render_texture.draw(left_toolbar_background_shape);
 
 		for(sf::Sprite t : tiles) {
@@ -87,9 +112,15 @@ int main()
 		left_toolbar_render_texture.draw(rectangle);
 		left_toolbar_render_texture.display();
 
+
+		const sf::Texture& grid_texture = grid_render_texture.getTexture();
+		sf::Sprite grid_render_sprite(grid_texture);
+		window.draw(grid_render_sprite);
+
 		const sf::Texture& left_toolbar_texture = left_toolbar_render_texture.getTexture();
 		sf::Sprite left_toolbar_render_sprite(left_toolbar_texture);
 		window.draw(left_toolbar_render_sprite);
+
         window.display();
     }
 
