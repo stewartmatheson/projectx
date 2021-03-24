@@ -6,9 +6,9 @@ link_directories(/usr/lib/debug/usr/lib)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_executable(
 	ProjectX 
-	headers/Tile.h
+    headers/TileMap.h
 	headers/Editor.h
-	src/Tile.cpp 
+    src/TileMap.cpp 
 	src/Editor.cpp 
 	src/main.cpp 
 	)
