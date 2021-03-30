@@ -8,21 +8,21 @@
  * An editor contains all data required to add, remove and edit tiles on a given map
  */
 typedef struct {
-	sf::RectangleShape* selection_rectangle;	
+    sf::RectangleShape* selection_rectangle;	
 
     // The background shape for the tile toolbar editor
-	sf::RectangleShape* background;	
+    sf::RectangleShape* background;	
 
     // A list of vector of spirte tiles for rendering in the sidebar of the editor
-	std::vector<sf::Sprite>* tiles;
+    std::vector<sf::Sprite>* tiles;
 
     // The offset defines gaps between the tiles on the left hand tile editor
-	int offset;
+    int offset;
 
-	TileMap* tile_map;
+    TileMap* tile_map;
 
     // The currently selected tile index. This is the index for the tiles vector
-	int selected_tile_index;
+    int selected_tile_index;
 
     // The view for the current tile palette that appears on the left side of the window
     sf::View* tile_palette_view;
