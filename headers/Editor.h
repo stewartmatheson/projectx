@@ -16,14 +16,20 @@ typedef struct {
     // A list of vector of spirte tiles for rendering in the sidebar of the editor
 	std::vector<sf::Sprite>* tiles;
 
+    // The offset defines gaps between the tiles on the left hand tile editor
 	int offset;
+
 	TileMap* tile_map;
 
     // The currently selected tile index. This is the index for the tiles vector
 	int selected_tile_index;
+
+    // The view for the current tile palette that appears on the left side of the window
+    sf::View* tile_palette_view;
+
 } Editor;
 
-Editor* CreateEditor(TileMap &tile_map, int height);
+Editor* CreateEditor(TileMap &tile_map, int window_height, int window_width);
 
 void DestructEditor(Editor& editor);
 

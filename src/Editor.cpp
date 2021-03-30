@@ -1,6 +1,6 @@
 #include "Editor.h"
 
-Editor* CreateEditor(TileMap &tile_map, int window_height) {
+Editor* CreateEditor(TileMap &tile_map, int window_height, int window_width) {
 	int offset = 20;
 	int left_toolbar_width = offset * 2 + (tile_map.scale * tile_map.size);
 
@@ -28,6 +28,7 @@ Editor* CreateEditor(TileMap &tile_map, int window_height) {
 
 	editor->offset = offset;
 	editor->selected_tile_index = 0;
+    editor->tile_palette_view = new sf::View(sf::FloatRect(0, 0, 500, 500));
 	return editor;
 }
 
@@ -35,6 +36,7 @@ void DestructEditor(Editor& editor) {
 	delete editor.selection_rectangle;
 	delete editor.background;
     delete editor.tiles;
+    delete editor.tile_palette_view;
 	free(&editor);
 }
 
@@ -71,11 +73,16 @@ void UpdateEditor(Editor& editor, Map& map, const sf::Event& event) {
                 );
 
                 new_sprite.setPosition(sf::Vector2f(grid_position) * (float)(editor.tile_map->size * editor.tile_map->scale));
-                std::cout << new_sprite.getPosition().x << ", " << new_sprite.getPosition().y << std::endl;
                 map.tiles->push_back(new_sprite);
             }
 		}
 	}
+
+    if (event.type == sf::Event::MouseWheelMoved) {
+        editor.tile_palette_view->move(sf::Vector2f(0, 10 * event.mouseWheel.delta));
+        editor.tile_palette_view->rotate(event.mouseWheel.delta * 10);
+        std::cout << event.mouseWheel.delta << std::endl;
+    }
 
 }
 

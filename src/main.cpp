@@ -6,8 +6,8 @@
 
 int main()
 {
-    int window_width = 800;
-    int window_height = 600;
+    int window_width = 1800;
+    int window_height = 1400;
     int tile_size = 16;
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML works!");
     TileMap* tile_map = CreateTileMap(
@@ -19,7 +19,8 @@ int main()
             );
 
     Map* map = CreateMap(tile_size, 100, 100);
-    Editor* editor = CreateEditor(*tile_map, window_height);
+    Editor* editor = CreateEditor(*tile_map, window_height, window_width);
+
 
     while (window.isOpen())
     {
@@ -40,6 +41,7 @@ int main()
             }
         }
 
+        window.setView(*editor->tile_palette_view);
         window.clear();
         DrawMap(window, *map);
         DrawEditor(window, *editor, *map);
