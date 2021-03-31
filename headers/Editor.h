@@ -27,6 +27,8 @@ typedef struct {
     // The view for the current tile palette that appears on the left side of the window
     sf::View* tile_palette_view;
 
+    sf::RenderTexture* tile_palette_render_texture;
+
 } Editor;
 
 Editor* CreateEditor(TileMap &tile_map, int window_height, int window_width);
@@ -35,8 +37,4 @@ void DestructEditor(Editor& editor);
 
 void DrawEditor(sf::RenderTarget& target, Editor& editor, const Map& map);
 
-void UpdateEditor(
-    Editor& editor, 
-    Map& map,
-    const sf::Event& event
-);
+void UpdateEditor(Editor& editor, Map& map, const sf::Event& event);

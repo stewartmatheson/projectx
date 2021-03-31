@@ -24,7 +24,6 @@ int main()
 
     while (window.isOpen())
     {
-
         sf::Event event;
         while (window.pollEvent(event))
         {
@@ -41,7 +40,6 @@ int main()
             }
         }
 
-        window.setView(*editor->tile_palette_view);
         window.clear();
         DrawMap(window, *map);
         DrawEditor(window, *editor, *map);
