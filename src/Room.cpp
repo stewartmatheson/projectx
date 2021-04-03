@@ -4,15 +4,16 @@
 Map* CreateMap(int tile_size, int map_height, int map_width) {
 	Map* map = (Map*)malloc(sizeof(*map));
     map->bounds = sf::IntRect(0, 0, tile_size * map_width, tile_size * map_height);
-    map->tiles = new std::vector<sf::Sprite>();
+    map->tiles = new std::vector<MapTile>();
     return map;
 }
 
 void DestructMap(Map& map) { }
 
 void DrawMap(sf::RenderTarget& target, Map& map) {
-	for(sf::Sprite map_tile : *map.tiles) {
-		target.draw(map_tile);
+	for(MapTile map_tile : *map.tiles) {
+        sf::Sprite() 
+		target.draw(map_tile_sprite);
 	}
 }
 
