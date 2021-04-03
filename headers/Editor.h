@@ -2,7 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "TileMap.h"
-#include "Map.h"
+#include "Room.h"
 
 /**
  * An editor contains all data required to add, remove and edit tiles on a given map
@@ -35,6 +35,12 @@ Editor* CreateEditor(TileMap &tile_map, int window_height, int window_width);
 
 void DestructEditor(Editor& editor);
 
-void DrawEditor(sf::RenderTarget& target, Editor& editor, const Map& map);
+void DrawEditor(sf::RenderTarget& target, Editor& editor, const Room& room);
 
-void UpdateEditor(Editor& editor, Map& map, const sf::Event& event);
+void UpdateEditor(Editor& editor, Room& room, const sf::Event& event);
+
+sf::Vector2i GetTilePositionAt(Room& room, int x, int y, int tile_map_size);
+
+void WriteRoomToFile(Room& room, std::string file_name);
+
+Room ReadRoomFromFile(std::string file_name);

@@ -5,15 +5,15 @@ project(ProjectX VERSION 1.0)
 link_directories(/usr/lib/debug/usr/lib)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_executable(
-	ProjectX 
-    headers/Map.h
+    ProjectX 
+    headers/Room.h
     headers/TileMap.h
-	headers/Editor.h
-    src/Map.cpp 
+    headers/Editor.h
+    src/Room.cpp 
     src/TileMap.cpp 
-	src/Editor.cpp 
-	src/main.cpp 
-	)
+    src/Editor.cpp 
+    src/main.cpp 
+    )
 target_link_libraries(ProjectX sfml-graphics sfml-window sfml-system)
 target_include_directories(ProjectX PRIVATE headers)
 

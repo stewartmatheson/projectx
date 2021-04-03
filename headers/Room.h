@@ -1,25 +1,25 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "TileMap.h"
 
 typedef struct {
     int x;
     int y;
     int rotation;
     int tile_map_index;
-} MapTile;
+} RoomTile;
 
 // A map holds all data for a given tile layout within the game.
 typedef struct {
     sf::IntRect bounds;
 	// std::vector<sf::Sprite>* tiles;
-	std::vector<MapTile>* tiles;
-} Map;
+	std::vector<RoomTile>* tiles;
+} Room;
 
-Map* CreateMap(int tile_size, int map_height, int map_width);
+Room* CreateRoom(int tile_size, int room_height, int room_width);
 
-void DestructMap(Map& map);
+void DestructRoom(Room& room);
 
-void DrawMap(sf::RenderTarget& target, Map& map);
+void DrawRoom(sf::RenderTarget& target, Room& room, TileMap& tile_map);
 
-sf::Vector2i GetTilePositionAt(Map& map, int x, int y, int tile_map_size);

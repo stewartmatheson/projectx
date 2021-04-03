@@ -2,7 +2,7 @@
 #include <iostream>
 #include "TileMap.h"
 #include "Editor.h"
-#include "Map.h"
+#include "Room.h"
 
 int main()
 {
@@ -18,7 +18,13 @@ int main()
             7
             );
 
-    Map* map = CreateMap(tile_size, 100, 100);
+    //Room* room = CreateRoom(tile_size, 100, 100);
+    
+    // TODO : Debug this
+    Room room_value = ReadRoomFromFile("./assets/maps/room.bin");
+    Room* room = &room_value;
+
+
     Editor* editor = CreateEditor(*tile_map, window_height, window_width);
 
 
@@ -27,7 +33,8 @@ int main()
         sf::Event event;
         while (window.pollEvent(event))
         {
-            UpdateEditor(*editor, *map, event);
+            // Question : I'm dereferencing here but these functions accept pointers. Is this the right thing to do?
+            UpdateEditor(*editor, *room, event);
 
             if (event.type == sf::Event::Closed)
                 window.close();
@@ -41,8 +48,8 @@ int main()
         }
 
         window.clear();
-        DrawMap(window, *map);
-        DrawEditor(window, *editor, *map);
+        DrawRoom(window, *room, *tile_map);
+        DrawEditor(window, *editor, *room);
         window.display();
     }
     return 0;
