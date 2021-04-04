@@ -34,6 +34,8 @@ Editor* CreateEditor(TileMap &tile_map, int window_height, int window_width) {
     editor->selected_tile_index = 0;
     editor->tile_palette_render_texture = new sf::RenderTexture();
     editor->tile_palette_render_texture->create(left_toolbar_width, window_height); 
+    editor->current_mouse_grid_position = new sf::Vector2i();
+    editor->current_rotation = 0;
 
     editor->tile_palette_view = new sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
     return editor;
@@ -44,6 +46,7 @@ void DestructEditor(Editor& editor) {
     delete editor.background;
     delete editor.tiles;
     delete editor.tile_palette_view;
+    delete editor.current_mouse_grid_position;
     free(&editor);
 }
 
@@ -55,6 +58,9 @@ void UpdateEditor(Editor& editor, Room& room, const sf::Event& event) {
             (editor.offset * i) + editor.offset;
         (*editor.tiles)[i].setPosition(editor.offset, current_y_pos);
     }
+
+    editor.current_mouse_grid_position->y = floor(event.mouseMove.y / (editor.tile_map->size * editor.tile_map->scale));
+    editor.current_mouse_grid_position->x = floor(event.mouseMove.x / (editor.tile_map->size * editor.tile_map->scale));
 
     if (event.type == sf::Event::MouseButtonPressed) {
         if (event.mouseButton.button == sf::Mouse::Left) {
@@ -74,16 +80,10 @@ void UpdateEditor(Editor& editor, Room& room, const sf::Event& event) {
 
             // Managed tile map window click
             if (room.bounds.contains(event.mouseButton.x, event.mouseButton.y)) {
-                sf::Vector2i grid_position = GetTilePositionAt(
-                        room, 
-                        event.mouseButton.x, 
-                        event.mouseButton.y, 
-                        editor.tile_map->size * editor.tile_map->scale
-                        );
                 RoomTile room_tile = { 
-                    grid_position.x, 
-                    grid_position.y, 
-                    0,  // Rotation will always be 0 for now
+                    (int)floor(event.mouseButton.x / (editor.tile_map->size * editor.tile_map->scale)),
+                    (int)floor(event.mouseButton.y / (editor.tile_map->size * editor.tile_map->scale)),
+                    (int)editor.current_rotation,
                     editor.selected_tile_index 
                 };
                 room.tiles->push_back(room_tile);
@@ -112,6 +112,11 @@ void UpdateEditor(Editor& editor, Room& room, const sf::Event& event) {
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::W) {
         WriteRoomToFile(room, "./assets/maps/room.bin");
     }
+
+    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Middle) {
+        editor.current_rotation += 90;
+    }
+
 }
 
 void draw_grid_to_render_target(sf::RenderTarget &target, int grid_height, int grid_width, int size) {
@@ -149,14 +154,17 @@ void DrawEditor(sf::RenderTarget& target, Editor& editor, const Room& room) {
     sf::Sprite tile_palette_render_sprite(editor.tile_palette_render_texture->getTexture());
 
     target.draw(tile_palette_render_sprite);
-}
 
-sf::Vector2i GetTilePositionAt(Room& room, int x, int y, int tile_map_size) {
-    if (room.bounds.contains(x,y)) {
-        return sf::Vector2i(floor(x / tile_map_size), floor(y / tile_map_size));
-    } else {
-        return sf::Vector2i();
-    }
+    sf::Sprite selected_tile_sprite((*editor.tile_map->tiles)[editor.selected_tile_index]);
+    selected_tile_sprite.setScale(sf::Vector2f(editor.tile_map->scale, editor.tile_map->scale));
+    selected_tile_sprite.setPosition(
+            editor.current_mouse_grid_position->x * editor.tile_map->size * editor.tile_map->scale,
+            editor.current_mouse_grid_position->y * editor.tile_map->size * editor.tile_map->scale
+    );
+    selected_tile_sprite.setColor(sf::Color(255, 255, 255, 170));
+    //selected_tile_sprite.setOrigin(editor.tile_map->size / 2, editor.tile_map->size / 2);
+    selected_tile_sprite.rotate(editor.current_rotation);
+    target.draw(selected_tile_sprite);
 }
 
 void WriteRoomToFile(Room& room, std::string file_name) {

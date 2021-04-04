@@ -8,7 +8,11 @@
  * An editor contains all data required to add, remove and edit tiles on a given map
  */
 typedef struct {
+    // The blue rect around the selected tile in the tile palette
     sf::RectangleShape* selection_rectangle;	
+
+    // The current mouse room grid pos
+    sf::Vector2i* current_mouse_grid_position;
 
     // The background shape for the tile toolbar editor
     sf::RectangleShape* background;	
@@ -28,6 +32,8 @@ typedef struct {
     sf::View* tile_palette_view;
 
     sf::RenderTexture* tile_palette_render_texture;
+
+    float current_rotation;
 
 } Editor;
 
