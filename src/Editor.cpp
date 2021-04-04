@@ -187,10 +187,10 @@ void WriteRoomToFile(Room& room, std::string file_name) {
         sizeof (room.bounds.height)
     );
 
-    int room_size = room.tiles->size();
-    wf.write(reinterpret_cast<const char *>(&room_size), sizeof (room_size));
+    int room_tile_count = room.tiles->size();
+    wf.write(reinterpret_cast<const char *>(&room_tile_count), sizeof (room_tile_count));
 
-    for(int i = 0; i < room_size; i++) {
+    for(int i = 0; i < room_tile_count; i++) {
         wf.write(
             reinterpret_cast<const char *>(&(*room.tiles)[i].rotation), 
             sizeof ((*room.tiles)[i].rotation)
@@ -213,7 +213,7 @@ void WriteRoomToFile(Room& room, std::string file_name) {
     }
 }
 
-Room ReadRoomFromFile(std::string file_name) {
+Room* ReadRoomFromFile(std::string file_name) {
     std::ifstream rf(file_name, std::ios::in | std::ios::binary);
 
     if (!rf) {
@@ -221,8 +221,6 @@ Room ReadRoomFromFile(std::string file_name) {
         exit(1);
     }
    
-    int room_size;
-    rf.read(reinterpret_cast<char *>(&room_size), sizeof(room_size));
 
     int bounds_left, bounds_top, bounds_width, bounds_height;
 
@@ -246,10 +244,19 @@ Room ReadRoomFromFile(std::string file_name) {
         sizeof (bounds_height)
     );
 
-    Room room;
-    room.bounds = sf::IntRect(bounds_left, bounds_top, bounds_width, bounds_height);
+    Room* room = (Room*)malloc(sizeof(*room));
+    room->tiles = new std::vector<RoomTile>();
+    room->bounds = sf::IntRect(bounds_left, bounds_top, bounds_width, bounds_height);
 
-    for(int i = 0; i < room_size; i++) {
+
+    int room_tile_count;
+    rf.read(
+        reinterpret_cast<char *>(&room_tile_count), 
+        sizeof(room_tile_count)
+    );
+
+
+    for(int i = 0; i < room_tile_count; i++) {
         RoomTile room_tile;
         rf.read(
             reinterpret_cast<char *>(&room_tile.rotation), 
@@ -271,7 +278,7 @@ Room ReadRoomFromFile(std::string file_name) {
             sizeof (room_tile.y)
         );
 
-        room.tiles->push_back(room_tile);
+        room->tiles->push_back(room_tile);
     }
 
     return room;

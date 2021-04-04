@@ -43,4 +43,4 @@ sf::Vector2i GetTilePositionAt(Room& room, int x, int y, int tile_map_size);
 
 void WriteRoomToFile(Room& room, std::string file_name);
 
-Room ReadRoomFromFile(std::string file_name);
+Room* ReadRoomFromFile(std::string file_name);

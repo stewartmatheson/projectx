@@ -4,7 +4,7 @@
 #include "Editor.h"
 #include "Room.h"
 
-int main()
+int main(int argc, char** argv)
 {
     int window_width = 1800;
     int window_height = 1400;
@@ -18,15 +18,16 @@ int main()
             7
             );
 
-    //Room* room = CreateRoom(tile_size, 100, 100);
     
-    // TODO : Debug this
-    Room room_value = ReadRoomFromFile("./assets/maps/room.bin");
-    Room* room = &room_value;
-
+    Room* room;
+    
+    if (argc == 2) {
+        room = ReadRoomFromFile(argv[1]);
+    } else {
+        room = CreateRoom(tile_size, 100, 100);
+    }
 
     Editor* editor = CreateEditor(*tile_map, window_height, window_width);
-
 
     while (window.isOpen())
     {
