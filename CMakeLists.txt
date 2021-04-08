@@ -29,3 +29,21 @@ target_link_libraries(ProjectX
   sfml-system
   sfml-window
 )
+
+if(DEFINED SFML_PREFIX)
+  target_include_directories(ProjectX
+    PRIVATE ${SFML_PREFIX}/include
+  )
+  target_link_directories(ProjectX
+    PRIVATE ${SFML_PREFIX}/lib
+  )
+endif()
+
+if(DEFINED ENV{SFML_PREFIX})
+  target_include_directories(ProjectX
+    PRIVATE $ENV{SFML_PREFIX}/include
+  )
+  target_link_directories(ProjectX
+    PRIVATE $ENV{SFML_PREFIX}/lib
+  )
+endif()
