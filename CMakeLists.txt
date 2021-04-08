@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.10)
 
 project(ProjectX VERSION 1.0)
 
-link_directories(/usr/lib/debug/usr/lib)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_executable(ProjectX
   headers/Editor.h
@@ -15,6 +14,9 @@ add_executable(ProjectX
 )
 target_include_directories(ProjectX
   PRIVATE headers
+)
+target_link_directories(ProjectX
+  PRIVATE /usr/lib/debug/usr/lib
 )
 target_link_libraries(ProjectX
   sfml-graphics
