@@ -6,7 +6,7 @@
 /**
  * An editor contains all data required to add, remove and edit tiles on a given map
  */
-typedef struct {
+struct Editor {
     // The blue rect around the selected tile in the tile palette
     sf::RectangleShape* selection_rectangle;	
 
@@ -34,7 +34,7 @@ typedef struct {
 
     float current_rotation;
 
-} Editor;
+};
 
 
 Editor* CreateEditor(TileMap &tile_map, int window_height, int window_width);
