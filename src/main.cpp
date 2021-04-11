@@ -10,7 +10,7 @@ int main(int argc, char** argv)
     int tile_size = 16;
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML works!");
     TileMap* tile_map = CreateTileMap(
-            "../assets/tilemap.png", 
+            "./assets/tilemap.png", 
             4, // Tile scale factor
             tile_size, // Pixel size of tile in tilemap texture
             5,
