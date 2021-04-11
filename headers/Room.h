@@ -2,24 +2,26 @@
 
 #include <SFML/Graphics.hpp>
 #include "TileMap.h"
-
-typedef struct {
-    int x;
-    int y;
-    int rotation;
-    int tile_map_index;
-} RoomTile;
+#include "Editor.h"
 
 // A map holds all data for a given tile layout within the game.
 typedef struct {
     sf::IntRect bounds;
 	// std::vector<sf::Sprite>* tiles;
-	std::vector<RoomTile>* tiles;
+	std::vector<Tile>* tiles;
 } Room;
 
 Room* CreateRoom(int tile_size, int room_height, int room_width);
 
 void DestructRoom(Room& room);
 
+void UpdateRoom(Room& room, const sf::Event& event, Editor& editor);
+
 void DrawRoom(sf::RenderTarget& target, Room& room, TileMap& tile_map);
+
+void DrawRoom(sf::RenderTarget& target, Room& room, TileMap& tile_map, Editor& editor);
+
+void WriteRoomToFile(Room& room, std::string file_name);
+
+Room* ReadRoomFromFile(std::string file_name);
 

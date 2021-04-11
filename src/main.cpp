@@ -1,7 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "TileMap.h"
-#include "Editor.h"
 #include "Room.h"
 
 int main(int argc, char** argv)
@@ -18,6 +17,8 @@ int main(int argc, char** argv)
             7
             );
 
+
+    Editor* editor = CreateEditor(*tile_map, window_height, window_width);
     
     Room* room;
     
@@ -27,7 +28,6 @@ int main(int argc, char** argv)
         room = CreateRoom(tile_size, 100, 100);
     }
 
-    Editor* editor = CreateEditor(*tile_map, window_height, window_width);
 
     while (window.isOpen())
     {
@@ -35,11 +35,10 @@ int main(int argc, char** argv)
         while (window.pollEvent(event))
         {
             // Question : I'm dereferencing here but these functions accept pointers. Is this the right thing to do?
-            UpdateEditor(*editor, *room, event);
+            UpdateRoom(*room, event, *editor);
 
             if (event.type == sf::Event::Closed)
                 window.close();
-
 
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Escape) {
@@ -49,8 +48,7 @@ int main(int argc, char** argv)
         }
 
         window.clear();
-        DrawRoom(window, *room, *tile_map);
-        DrawEditor(window, *editor, *room);
+        DrawRoom(window, *room, *tile_map, *editor);
         window.display();
     }
     return 0;
