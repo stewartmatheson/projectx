@@ -37,11 +37,11 @@ typedef struct {
 } Editor;
 
 
-Editor* CreateEditor(TileMap &tile_map, int window_height, int window_width);
+Editor *CreateEditor(TileMap &, int, int);
 
-void DestructEditor(Editor& editor);
+void DestructEditor(Editor &);
 
-void DrawEditor(sf::RenderTarget& target, Editor& editor, const int room_height, const int room_width);
+void DrawEditor(sf::RenderTarget &, Editor &, const int, const int);
 
 typedef struct {
     enum Type { Save, PlaceTile, None };
@@ -51,5 +51,5 @@ typedef struct {
     };
 } EditorUpdateResult;
 
-EditorUpdateResult UpdateEditor(Editor& editor, const sf::Event& event);
+EditorUpdateResult UpdateEditor(Editor &, const sf::Event &);
 

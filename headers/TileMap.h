@@ -17,6 +17,6 @@ typedef struct {
     int tile_map_index;
 } Tile;
 
-TileMap* CreateTileMap(std::string texture_path, int scale, int size, int cols, int rows);
-void DestructTileMap(TileMap& tile_map);
-sf::Sprite CreateTileSprite(int x, int y, int scale, int size, sf::Texture& texture, int map_index);
+TileMap *CreateTileMap(std::string, int, int, int, int);
+void DestructTileMap(TileMap &);
+sf::Sprite CreateTileSprite(int, int, int, int, sf::Texture &, int);
