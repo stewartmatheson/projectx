@@ -25,7 +25,7 @@ int main(int argc, char** argv)
     if (argc == 2) {
         room = ReadRoomFromFile(argv[1]);
     } else {
-        room = CreateRoom(tile_size, 100, 100);
+        room = CreateRoom(10, 10, window_height, window_width);
     }
 
 

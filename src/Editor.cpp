@@ -60,8 +60,12 @@ EditorUpdateResult UpdateEditor(Editor& editor, const sf::Event& event) {
     if (event.type == sf::Event::MouseMoved) {
         editor.current_mouse_grid_position->y = floor(event.mouseMove.y / (editor.tile_map->size * editor.tile_map->scale));
         editor.current_mouse_grid_position->x = floor(event.mouseMove.x / (editor.tile_map->size * editor.tile_map->scale));
+        editor.mouse_delta = sf::Vector2i(
+            event.mouseMove.x - editor.current_mouse_position.x, 
+            event.mouseMove.y - editor.current_mouse_position.y
+        );
+        editor.current_mouse_position = sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
     }
-
 
     if (event.type == sf::Event::MouseButtonPressed) {
         if (event.mouseButton.button == sf::Mouse::Left) {
@@ -116,6 +120,12 @@ EditorUpdateResult UpdateEditor(Editor& editor, const sf::Event& event) {
         editor.current_rotation += 90;
     }
 
+    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
+        EditorUpdateResult result = { EditorUpdateResult::Type::Panning };
+        result.mouse_delta = editor.mouse_delta;
+        return result;
+    }
+
     return EditorUpdateResult { EditorUpdateResult::Type::None };
 }
 
@@ -143,18 +153,6 @@ void draw_grid_to_render_target(sf::RenderTarget &target, int grid_height, int g
 void DrawEditor(sf::RenderTarget& target, Editor& editor, const int room_height, const int room_width) {
     draw_grid_to_render_target(target, room_height, room_width, editor.tile_map->size * editor.tile_map->scale);
 
-    editor.tile_palette_render_texture->setView(*editor.tile_palette_view);
-    editor.tile_palette_render_texture->clear();
-    editor.tile_palette_render_texture->draw(*editor.background);
-    for(sf::Sprite tile_sprite : *editor.tiles) {
-        editor.tile_palette_render_texture->draw(tile_sprite);
-    }
-    editor.tile_palette_render_texture->draw(*editor.selection_rectangle);
-    editor.tile_palette_render_texture->display();
-    sf::Sprite tile_palette_render_sprite(editor.tile_palette_render_texture->getTexture());
-
-    target.draw(tile_palette_render_sprite);
-
     sf::Sprite selected_tile_sprite((*editor.tile_map->tiles)[editor.selected_tile_index]);
     selected_tile_sprite.setScale(sf::Vector2f(editor.tile_map->scale, editor.tile_map->scale));
     int half_tile_size = editor.tile_map->size * editor.tile_map->scale / 2;
@@ -169,3 +167,16 @@ void DrawEditor(sf::RenderTarget& target, Editor& editor, const int room_height,
     target.draw(selected_tile_sprite);
 }
 
+void DrawEditorTilePalette(sf::RenderTarget& target, Editor& editor) {
+    editor.tile_palette_render_texture->setView(*editor.tile_palette_view);
+    editor.tile_palette_render_texture->clear();
+    editor.tile_palette_render_texture->draw(*editor.background);
+    for(sf::Sprite tile_sprite : *editor.tiles) {
+        editor.tile_palette_render_texture->draw(tile_sprite);
+    }
+    editor.tile_palette_render_texture->draw(*editor.selection_rectangle);
+    editor.tile_palette_render_texture->display();
+    sf::Sprite tile_palette_render_sprite(editor.tile_palette_render_texture->getTexture());
+
+    target.draw(tile_palette_render_sprite);
+}

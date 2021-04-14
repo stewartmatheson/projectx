@@ -34,6 +34,10 @@ struct Editor {
 
     float current_rotation;
 
+    sf::Vector2i current_mouse_position;
+
+    // For panning
+    sf::Vector2i mouse_delta;
 };
 
 
@@ -43,13 +47,16 @@ void DestructEditor(Editor &);
 
 void DrawEditor(sf::RenderTarget &, Editor &, const int, const int);
 
-typedef struct {
-    enum Type { Save, PlaceTile, None };
+void DrawEditorTilePalette(sf::RenderTarget&, Editor&);
+
+struct EditorUpdateResult {
+    enum Type { Save, PlaceTile, None, Panning };
     Type type;
     union {
         Tile tile;
+        sf::Vector2i mouse_delta;
     };
-} EditorUpdateResult;
+};
 
 EditorUpdateResult UpdateEditor(Editor &, const sf::Event &);
 

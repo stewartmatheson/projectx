@@ -1,15 +1,20 @@
 #include <fstream>
 #include "Room.h"
 
-Room* CreateRoom(int tile_size, int map_height, int map_width) {
+Room* CreateRoom(int map_height, int map_width, int window_width, int window_height) {
     Room* room = (Room*)malloc(sizeof(*room));
-    room->bounds = sf::IntRect(0, 0, tile_size * map_width, tile_size * map_height);
+    room->bounds = sf::IntRect(0, 0, map_width, map_height);
     room->tiles = new std::vector<Tile>();
+    room->view = new sf::View(sf::FloatRect(0, 0, window_width, window_height));
+
+    room->render_texture = new sf::RenderTexture();
+    room->render_texture->create(window_width, window_height); 
     return room;
 }
 
-
 void DestructRoom(Room& room) {
+    delete room.render_texture;
+    delete room.view;
     delete room.tiles;
     free(&room);
 }
@@ -22,10 +27,17 @@ void UpdateRoom(Room& room, const sf::Event& event, Editor& editor) {
         WriteRoomToFile(room, "./assets/maps/room.bin");
     } else if (result.type == EditorUpdateResult::Type::PlaceTile) {
         room.tiles->push_back(result.tile);
+    } else if (result.type == EditorUpdateResult::Panning) {
+        std::cout << result.mouse_delta.x << ", " << result.mouse_delta.y << std::endl;
+        room.view->move(sf::Vector2f(result.mouse_delta.x * -1, result.mouse_delta.y * -1));
     }
+
 } 
 
-void DrawRoom(sf::RenderTarget& target, Room& room, TileMap& tile_map) {
+void DrawRoom(sf::RenderTarget& target, Room& room, TileMap& tile_map, Editor& editor) {
+    room.render_texture->setView(*room.view);
+    room.render_texture->clear();
+
     for(Tile tile : *room.tiles) {
         sf::Sprite sprite_to_draw((*tile_map.tiles)[tile.tile_map_index]);
         sprite_to_draw.setRotation(tile.rotation);
@@ -35,13 +47,15 @@ void DrawRoom(sf::RenderTarget& target, Room& room, TileMap& tile_map) {
             (tile.y * tile_map.size * tile_map.scale) + half_tile_size
         );
         sprite_to_draw.setOrigin(tile_map.size / 2, tile_map.size / 2);
-        target.draw(sprite_to_draw);
+        room.render_texture->draw(sprite_to_draw);
     }
-}
 
-void DrawRoom(sf::RenderTarget& target, Room& room, TileMap& tile_map, Editor& editor) {
-    DrawRoom(target, room, tile_map);
-    DrawEditor(target, editor, room.bounds.height, room.bounds.width);
+    DrawEditor(*room.render_texture, editor, room.bounds.height, room.bounds.width);
+
+    room.render_texture->display();
+    sf::Sprite render_texture_sprite(room.render_texture->getTexture());
+    target.draw(render_texture_sprite);
+    DrawEditorTilePalette(target, editor);
 }
 
 void WriteRoomToFile(Room& room, std::string file_name) {

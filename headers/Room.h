@@ -9,15 +9,28 @@ struct Room {
     sf::IntRect bounds;
 	// std::vector<sf::Sprite>* tiles;
 	std::vector<Tile>* tiles;
+
+    sf::RenderTexture* render_texture;
+
+    sf::View* view;
+
 };
 
-Room *CreateRoom(int, int, int);
+/**
+ * @brief 
+ *
+ * @param int window_height
+ * @param int window_width
+ * @param int map_height
+ * @param int map_width
+ *
+ * @return The created room
+ */
+Room *CreateRoom(int, int, int, int);
 
 void DestructRoom(Room &);
 
 void UpdateRoom(Room &, const sf::Event &, Editor &);
-
-void DrawRoom(sf::RenderTarget &, Room &, TileMap &);
 
 void DrawRoom(sf::RenderTarget &, Room &, TileMap &, Editor &);
 
