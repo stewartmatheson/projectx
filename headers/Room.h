@@ -5,11 +5,11 @@
 #include "Editor.h"
 
 // A map holds all data for a given tile layout within the game.
-typedef struct {
+struct Room {
     sf::IntRect bounds;
 	// std::vector<sf::Sprite>* tiles;
 	std::vector<Tile>* tiles;
-} Room;
+};
 
 Room* CreateRoom(int tile_size, int room_height, int room_width);
 
