@@ -11,17 +11,17 @@ struct Room {
 	std::vector<Tile>* tiles;
 };
 
-Room* CreateRoom(int tile_size, int room_height, int room_width);
+Room *CreateRoom(int, int, int);
 
-void DestructRoom(Room& room);
+void DestructRoom(Room &);
 
-void UpdateRoom(Room& room, const sf::Event& event, Editor& editor);
+void UpdateRoom(Room &, const sf::Event &, Editor &);
 
-void DrawRoom(sf::RenderTarget& target, Room& room, TileMap& tile_map);
+void DrawRoom(sf::RenderTarget &, Room &, TileMap &);
 
-void DrawRoom(sf::RenderTarget& target, Room& room, TileMap& tile_map, Editor& editor);
+void DrawRoom(sf::RenderTarget &, Room &, TileMap &, Editor &);
 
-void WriteRoomToFile(Room& room, std::string file_name);
+void WriteRoomToFile(Room &, std::string);
 
-Room* ReadRoomFromFile(std::string file_name);
+Room *ReadRoomFromFile(std::string);
 
