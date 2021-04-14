@@ -18,7 +18,7 @@ sf::Sprite CreateTileSprite(int tile_map_x, int tile_map_y, int scale, int size,
 
 TileMap* CreateTileMap (std::string texture_path, int scale, int size, int cols, int rows) {
 	sf::Texture* texture = new sf::Texture();
-	if (!texture->loadFromFile("./assets/tilemap.png")) {
+	if (!texture->loadFromFile(texture_path)) {
 		std::cout << "Can't laod file" << std::endl;
 		exit(1);
 	}
