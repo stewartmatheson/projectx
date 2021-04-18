@@ -1,11 +1,12 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "TileMap.h"
-#include "Room.h"
+#include "Editor.h"
 
 int main(int argc, char** argv)
 {
-    int window_width = 1800;
+    const bool ENABLE_EDITOR = true;
+    int window_width = 1400;
     int window_height = 1400;
     int tile_size = 16;
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML works!");
@@ -16,17 +17,16 @@ int main(int argc, char** argv)
             5,
             7
             );
-
-
-    Editor* editor = CreateEditor(*tile_map, window_height, window_width);
     
     Room* room;
     
     if (argc == 2) {
         room = ReadRoomFromFile(argv[1]);
     } else {
-        room = CreateRoom(10, 10, window_height, window_width);
+        room = CreateRoom(30, 30, window_height, window_width);
     }
+
+    Editor* editor = CreateEditor(*tile_map, window_height, window_width);
 
 
     while (window.isOpen())
@@ -34,9 +34,10 @@ int main(int argc, char** argv)
         sf::Event event;
         while (window.pollEvent(event))
         {
-            // Question : I'm dereferencing here but these functions accept pointers. Is this the right thing to do?
-            UpdateRoom(*room, event, *editor);
-
+            if (ENABLE_EDITOR) {
+                UpdateEditor(*editor, event, *room, sf::Mouse::getPosition(window));
+            } 
+         
             if (event.type == sf::Event::Closed)
                 window.close();
 
@@ -48,7 +49,12 @@ int main(int argc, char** argv)
         }
 
         window.clear();
-        DrawRoom(window, *room, *tile_map, *editor);
+
+        if (ENABLE_EDITOR) {
+            DrawEditor(window, *editor, *room);
+        } else {
+            DrawRoom(window, *room, *tile_map);
+        }
         window.display();
     }
     return 0;

@@ -1,5 +1,6 @@
-#include "Editor.h"
 #include <math.h>
+#include <fstream>
+#include "Editor.h"
 
 Editor* CreateEditor(TileMap &tile_map, int window_height, int window_width) {
     int offset = 20;
@@ -30,12 +31,20 @@ Editor* CreateEditor(TileMap &tile_map, int window_height, int window_width) {
 
     editor->offset = offset;
     editor->selected_tile_index = 0;
+
     editor->tile_palette_render_texture = new sf::RenderTexture();
     editor->tile_palette_render_texture->create(left_toolbar_width, window_height); 
+    editor->tile_palette_view = new sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
+
+    editor->room_render_texture = new sf::RenderTexture();
+    editor->room_render_texture->create(window_width, window_height); 
+    editor->room_view = new sf::View(sf::FloatRect(0, 0, window_height, window_height));
+
     editor->current_mouse_grid_position = new sf::Vector2i();
+    editor->panning = false;
+    editor->last_mouse_position = sf::Vector2i();
     editor->current_rotation = 0;
 
-    editor->tile_palette_view = new sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
     return editor;
 }
 
@@ -45,10 +54,13 @@ void DestructEditor(Editor& editor) {
     delete editor.tiles;
     delete editor.tile_palette_view;
     delete editor.current_mouse_grid_position;
+    delete editor.room_render_texture;
+    delete editor.room_view;
+
     free(&editor);
 }
 
-EditorUpdateResult UpdateEditor(Editor& editor, const sf::Event& event) {
+void UpdateEditor(Editor& editor, const sf::Event& event, Room& room, const sf::Vector2i current_mouse_position) {
     editor.selection_rectangle->setPosition((*editor.tiles)[editor.selected_tile_index].getPosition());
     for(int i = 0; i < editor.tiles->size(); i ++) {
         int current_y_pos = 
@@ -56,42 +68,48 @@ EditorUpdateResult UpdateEditor(Editor& editor, const sf::Event& event) {
             (editor.offset * i) + editor.offset;
         (*editor.tiles)[i].setPosition(editor.offset, current_y_pos);
     }
-    
-    if (event.type == sf::Event::MouseMoved) {
-        editor.current_mouse_grid_position->y = floor(event.mouseMove.y / (editor.tile_map->size * editor.tile_map->scale));
-        editor.current_mouse_grid_position->x = floor(event.mouseMove.x / (editor.tile_map->size * editor.tile_map->scale));
-        editor.mouse_delta = sf::Vector2i(
-            event.mouseMove.x - editor.current_mouse_position.x, 
-            event.mouseMove.y - editor.current_mouse_position.y
-        );
-        editor.current_mouse_position = sf::Vector2i(event.mouseMove.x, event.mouseMove.y);
-    }
 
-    if (event.type == sf::Event::MouseButtonPressed) {
-        if (event.mouseButton.button == sf::Mouse::Left) {
+    sf::Vector2f current_target_coords = editor.room_render_texture->mapPixelToCoords(
+            sf::Vector2i(current_mouse_position.x, current_mouse_position.y)
+    );
 
-            // Manage Selection Changed
-            int current_event_tile_index = 0;
-            for(sf::Sprite t : *editor.tiles) {
-                bool in_current_bound = t.getGlobalBounds().contains(
-                    editor.tile_palette_render_texture->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y))
-                );
+    editor.current_mouse_grid_position->x = floor(current_target_coords.x / (editor.tile_map->size * editor.tile_map->scale));
+    editor.current_mouse_grid_position->y = floor(current_target_coords.y / (editor.tile_map->size * editor.tile_map->scale));
+     
+    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+        // Manage Selection Changed
+        int current_event_tile_index = 0;
+        for(sf::Sprite t : *editor.tiles) {
+            bool in_current_bound = t.getGlobalBounds().contains(
+                editor.tile_palette_render_texture->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y))
+            );
 
-                if(in_current_bound) {
-                    editor.selected_tile_index = current_event_tile_index;		
-                }
-                current_event_tile_index++;
+            if(in_current_bound) {
+                editor.selected_tile_index = current_event_tile_index;		
             }
+            current_event_tile_index++;
+        }
+        
+        sf::Vector2f event_target_coords = editor.room_render_texture->mapPixelToCoords(
+            sf::Vector2i(event.mouseButton.x, event.mouseButton.y)
+        );
+        
+        sf::IntRect pixel_bounds = sf::IntRect(
+            0, 
+            0, 
+            room.bounds.width * editor.tile_map->size * editor.tile_map->scale,
+            room.bounds.height * editor.tile_map->size * editor.tile_map->scale
+        );
 
-            return EditorUpdateResult { 
-                EditorUpdateResult::Type::PlaceTile, 
+        if (pixel_bounds.contains(sf::Vector2i(event_target_coords.x, event_target_coords.y))) {
+            room.tiles->push_back(
                 Tile { 
-                    (int)floor(event.mouseButton.x / (editor.tile_map->size * editor.tile_map->scale)),
-                    (int)floor(event.mouseButton.y / (editor.tile_map->size * editor.tile_map->scale)),
+                    (int)floor(event_target_coords.x / (editor.tile_map->size * editor.tile_map->scale)),
+                    (int)floor(event_target_coords.y / (editor.tile_map->size * editor.tile_map->scale)),
                     (int)editor.current_rotation,
                     editor.selected_tile_index 
                 }
-            };
+            );
         }
     }
 
@@ -113,23 +131,35 @@ EditorUpdateResult UpdateEditor(Editor& editor, const sf::Event& event) {
     }
 
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::W) {
-        return EditorUpdateResult { EditorUpdateResult::Type::Save };
+        WriteRoomToFile(room, "./assets/maps/room.bin");
+    }
+
+    if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space) {
+        editor.panning = false;
+    }
+
+    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
+        editor.panning = true;
     }
 
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Middle) {
         editor.current_rotation += 90;
     }
 
-    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
-        EditorUpdateResult result = { EditorUpdateResult::Type::Panning };
-        result.mouse_delta = editor.mouse_delta;
-        return result;
+    sf::Vector2i mouse_delta = sf::Vector2i(
+        current_mouse_position.x - editor.last_mouse_position.x, 
+        current_mouse_position.y - editor.last_mouse_position.y
+    );
+
+    editor.last_mouse_position = current_mouse_position;
+
+    if (editor.panning) {
+        editor.room_view->move(sf::Vector2f(mouse_delta.x * -1, mouse_delta.y * -1));
     }
 
-    return EditorUpdateResult { EditorUpdateResult::Type::None };
 }
 
-void draw_grid_to_render_target(sf::RenderTarget &target, int grid_height, int grid_width, int size) {
+void DrawGrid(sf::RenderTarget &target, int grid_height, int grid_width, int size) {
     int total_grid_height = grid_height * size;
     int total_grid_width = grid_width * size;
 
@@ -150,9 +180,14 @@ void draw_grid_to_render_target(sf::RenderTarget &target, int grid_height, int g
     }
 }
 
-void DrawEditor(sf::RenderTarget& target, Editor& editor, const int room_height, const int room_width) {
-    draw_grid_to_render_target(target, room_height, room_width, editor.tile_map->size * editor.tile_map->scale);
+void DrawEditor(sf::RenderTarget& target, Editor& editor, Room& room) {
+    // Draw Room and Grid
+    editor.room_render_texture->setView(*editor.room_view);
+    editor.room_render_texture->clear();
+    DrawRoom(*editor.room_render_texture, room, *editor.tile_map);
+    DrawGrid(*editor.room_render_texture, room.bounds.height, room.bounds.width, editor.tile_map->size * editor.tile_map->scale);
 
+    // Draw Selected Tile
     sf::Sprite selected_tile_sprite((*editor.tile_map->tiles)[editor.selected_tile_index]);
     selected_tile_sprite.setScale(sf::Vector2f(editor.tile_map->scale, editor.tile_map->scale));
     int half_tile_size = editor.tile_map->size * editor.tile_map->scale / 2;
@@ -160,14 +195,16 @@ void DrawEditor(sf::RenderTarget& target, Editor& editor, const int room_height,
         (editor.current_mouse_grid_position->x * editor.tile_map->size * editor.tile_map->scale) + half_tile_size,
         (editor.current_mouse_grid_position->y * editor.tile_map->size * editor.tile_map->scale) + half_tile_size
     );
-
     selected_tile_sprite.setColor(sf::Color(255, 255, 255, 170));
     selected_tile_sprite.setOrigin(editor.tile_map->size / 2, editor.tile_map->size / 2);
     selected_tile_sprite.rotate(editor.current_rotation);
-    target.draw(selected_tile_sprite);
-}
+    editor.room_render_texture->draw(selected_tile_sprite);
 
-void DrawEditorTilePalette(sf::RenderTarget& target, Editor& editor) {
+    editor.room_render_texture->display();
+    sf::Sprite room_render_sprite(editor.room_render_texture->getTexture());
+    target.draw(room_render_sprite);
+
+    //Draw Tile Palette
     editor.tile_palette_render_texture->setView(*editor.tile_palette_view);
     editor.tile_palette_render_texture->clear();
     editor.tile_palette_render_texture->draw(*editor.background);
@@ -177,6 +214,131 @@ void DrawEditorTilePalette(sf::RenderTarget& target, Editor& editor) {
     editor.tile_palette_render_texture->draw(*editor.selection_rectangle);
     editor.tile_palette_render_texture->display();
     sf::Sprite tile_palette_render_sprite(editor.tile_palette_render_texture->getTexture());
-
     target.draw(tile_palette_render_sprite);
+
+}
+
+void WriteRoomToFile(Room& room, std::string file_name) {
+    std::ofstream wf(file_name, std::ios::out | std::ios::binary);
+
+    if(!wf) {
+        std::cout << "Can't open file!" << std::endl;
+        exit(1);
+    }
+
+    wf.write(
+        reinterpret_cast<const char *>(&room.bounds.left), 
+        sizeof (room.bounds.left)
+    );
+
+    wf.write(
+        reinterpret_cast<const char *>(&room.bounds.top), 
+        sizeof (room.bounds.top)
+    );
+
+    wf.write(
+        reinterpret_cast<const char *>(&room.bounds.width), 
+        sizeof (room.bounds.width)
+    );
+
+    wf.write(
+        reinterpret_cast<const char *>(&room.bounds.height), 
+        sizeof (room.bounds.height)
+    );
+
+    int room_tile_count = room.tiles->size();
+    wf.write(reinterpret_cast<const char *>(&room_tile_count), sizeof (room_tile_count));
+
+    for(int i = 0; i < room_tile_count; i++) {
+        wf.write(
+            reinterpret_cast<const char *>(&(*room.tiles)[i].rotation), 
+            sizeof ((*room.tiles)[i].rotation)
+        );
+
+        wf.write(
+            reinterpret_cast<const char *>(&(*room.tiles)[i].tile_map_index), 
+            sizeof ((*room.tiles)[i].tile_map_index)
+        );
+
+        wf.write(
+            reinterpret_cast<const char *>(&(*room.tiles)[i].x), 
+            sizeof ((*room.tiles)[i].x)
+        );
+
+        wf.write(
+            reinterpret_cast<const char *>(&(*room.tiles)[i].y), 
+            sizeof ((*room.tiles)[i].y)
+        );
+    }
+}
+
+Room* ReadRoomFromFile(std::string file_name) {
+    std::ifstream rf(file_name, std::ios::in | std::ios::binary);
+
+    if (!rf) {
+        std::cout << "Can't read file!" << std::endl;
+        exit(1);
+    }
+   
+
+    int bounds_left, bounds_top, bounds_width, bounds_height;
+
+    rf.read(
+        reinterpret_cast<char *>(&bounds_left), 
+        sizeof (bounds_left)
+    );
+
+    rf.read(
+        reinterpret_cast<char *>(&bounds_top), 
+        sizeof (bounds_top)
+    );
+
+    rf.read(
+        reinterpret_cast<char *>(&bounds_width), 
+        sizeof (bounds_width)
+    );
+
+    rf.read(
+        reinterpret_cast<char *>(&bounds_height), 
+        sizeof (bounds_height)
+    );
+
+    Room* room = (Room*)malloc(sizeof(*room));
+    room->tiles = new std::vector<Tile>();
+    room->bounds = sf::IntRect(bounds_left, bounds_top, bounds_width, bounds_height);
+
+
+    int room_tile_count;
+    rf.read(
+        reinterpret_cast<char *>(&room_tile_count), 
+        sizeof(room_tile_count)
+    );
+
+
+    for(int i = 0; i < room_tile_count; i++) {
+        Tile tile;
+        rf.read(
+            reinterpret_cast<char *>(&tile.rotation), 
+            sizeof (tile.rotation)
+        );
+
+        rf.read(
+            reinterpret_cast<char *>(&tile.tile_map_index), 
+            sizeof (tile.tile_map_index)
+        );
+
+        rf.read(
+            reinterpret_cast<char *>(&tile.x), 
+            sizeof (tile.x)
+        );
+
+        rf.read(
+            reinterpret_cast<char *>(&tile.y), 
+            sizeof (tile.y)
+        );
+
+        room->tiles->push_back(tile);
+    }
+
+    return room;
 }

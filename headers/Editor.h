@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include "TileMap.h"
+#include "Room.h"
 
 /**
  * An editor contains all data required to add, remove and edit tiles on a given map
@@ -34,29 +35,23 @@ struct Editor {
 
     float current_rotation;
 
-    sf::Vector2i current_mouse_position;
+    sf::Vector2i last_mouse_position;
 
-    // For panning
-    sf::Vector2i mouse_delta;
+    bool panning;
+
+    sf::View* room_view;
+
+    sf::RenderTexture* room_render_texture;
 };
-
 
 Editor *CreateEditor(TileMap &, int, int);
 
 void DestructEditor(Editor &);
 
-void DrawEditor(sf::RenderTarget &, Editor &, const int, const int);
+void DrawEditor(sf::RenderTarget &, Editor &, Room &);
 
-void DrawEditorTilePalette(sf::RenderTarget&, Editor&);
+void UpdateEditor(Editor &, const sf::Event &, Room&, const sf::Vector2i);
 
-struct EditorUpdateResult {
-    enum Type { Save, PlaceTile, None, Panning };
-    Type type;
-    union {
-        Tile tile;
-        sf::Vector2i mouse_delta;
-    };
-};
+void WriteRoomToFile(Room &, std::string);
 
-EditorUpdateResult UpdateEditor(Editor &, const sf::Event &);
-
+Room *ReadRoomFromFile(std::string);
