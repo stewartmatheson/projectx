@@ -10,7 +10,7 @@ int main(int argc, char** argv)
     int window_height = 1400;
     int tile_size = 16;
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML works!");
-    TileMap* tile_map = new TileMap(
+    TileMap tile_map(
             "./assets/tilemap.png", 
             4, // Tile scale factor
             tile_size, // Pixel size of tile in tilemap texture
@@ -26,7 +26,7 @@ int main(int argc, char** argv)
         room = new Room(30, 30, window_height, window_width);
     }
 
-    Editor* editor = new Editor(*tile_map, window_height, window_width);
+    Editor editor(tile_map, window_height, window_width);
 
 
     while (window.isOpen())
@@ -35,7 +35,7 @@ int main(int argc, char** argv)
         while (window.pollEvent(event))
         {
             if (ENABLE_EDITOR) {
-                UpdateEditor(*editor, event, *room, sf::Mouse::getPosition(window));
+                UpdateEditor(editor, event, *room, sf::Mouse::getPosition(window));
             } 
          
             if (event.type == sf::Event::Closed)
@@ -51,9 +51,9 @@ int main(int argc, char** argv)
         window.clear();
 
         if (ENABLE_EDITOR) {
-            DrawEditor(window, *editor, *room);
+            DrawEditor(window, editor, *room);
         } else {
-            DrawRoom(window, *room, *tile_map);
+            DrawRoom(window, *room, tile_map);
         }
         window.display();
     }
