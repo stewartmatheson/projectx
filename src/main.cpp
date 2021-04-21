@@ -10,7 +10,7 @@ int main(int argc, char** argv)
     int window_height = 1400;
     int tile_size = 16;
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML works!");
-    TileMap* tile_map = CreateTileMap(
+    TileMap* tile_map = new TileMap(
             "./assets/tilemap.png", 
             4, // Tile scale factor
             tile_size, // Pixel size of tile in tilemap texture
@@ -23,10 +23,10 @@ int main(int argc, char** argv)
     if (argc == 2) {
         room = ReadRoomFromFile(argv[1]);
     } else {
-        room = CreateRoom(30, 30, window_height, window_width);
+        room = new Room(30, 30, window_height, window_width);
     }
 
-    Editor* editor = CreateEditor(*tile_map, window_height, window_width);
+    Editor* editor = new Editor(*tile_map, window_height, window_width);
 
 
     while (window.isOpen())

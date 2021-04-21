@@ -1,15 +1,12 @@
 #include "Room.h"
 
-Room* CreateRoom(int map_height, int map_width, int window_width, int window_height) {
-    Room* room = (Room*)malloc(sizeof(*room));
-    room->bounds = sf::IntRect(0, 0, map_width, map_height);
-    room->tiles = new std::vector<Tile>();
-    return room;
+Room::Room(int map_height, int map_width, int window_width, int window_height) {
+    this->bounds = sf::IntRect(0, 0, map_width, map_height);
+    this->tiles = new std::vector<Tile>();
 }
 
-void DestructRoom(Room& room) {
-    delete room.tiles;
-    free(&room);
+Room::~Room() {
+    delete tiles;
 }
 
 void DrawRoom(sf::RenderTarget& target, Room& room, TileMap& tile_map) {

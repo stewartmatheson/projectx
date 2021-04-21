@@ -8,6 +8,9 @@ struct TileMap {
 	int scale;
 	sf::Texture* texture;
 	std::vector<sf::Sprite>* tiles;
+
+	TileMap(std::string, int, int, int, int);
+	~TileMap();
 };
 
 struct Tile {
@@ -17,6 +20,4 @@ struct Tile {
     int tile_map_index;
 };
 
-TileMap *CreateTileMap(std::string, int, int, int, int);
-void DestructTileMap(TileMap &);
 sf::Sprite CreateTileSprite(int, int, int, int, sf::Texture &, int);

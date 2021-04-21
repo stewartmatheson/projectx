@@ -42,11 +42,10 @@ struct Editor {
     sf::View* room_view;
 
     sf::RenderTexture* room_render_texture;
+
+    Editor(TileMap &, int, int);
+    ~Editor();
 };
-
-Editor *CreateEditor(TileMap &, int, int);
-
-void DestructEditor(Editor &);
 
 void DrawEditor(sf::RenderTarget &, Editor &, Room &);
 
