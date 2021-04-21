@@ -2,7 +2,7 @@
 #include <fstream>
 #include "Editor.h"
 
-Editor* CreateEditor(TileMap &tile_map, int window_height, int window_width) {
+Editor::Editor(TileMap &tile_map, int window_height, int window_width) {
     int offset = 20;
     int left_toolbar_width = offset * 2 + (tile_map.scale * tile_map.size);
 
@@ -18,46 +18,41 @@ Editor* CreateEditor(TileMap &tile_map, int window_height, int window_width) {
     selection->setFillColor(sf::Color::Transparent);
 
 
-    Editor* editor = (Editor*)malloc(sizeof(*editor));
-    editor->selection_rectangle = selection;
-    editor->tiles = new std::vector<sf::Sprite>(*tile_map.tiles);
-    int total_height = (editor->tiles->size() * (tile_map.scale * tile_map.size + offset)) + offset;
+    this->selection_rectangle = selection;
+    this->tiles = new std::vector<sf::Sprite>(*tile_map.tiles);
+    int total_height = (this->tiles->size() * (tile_map.scale * tile_map.size + offset)) + offset;
     sf::RectangleShape* background = new sf::RectangleShape(sf::Vector2f(left_toolbar_width, total_height));
     background->setFillColor(sf::Color(60,60,60, 255));
-    editor->background = background;
+    this->background = background;
 
     // TODO : We might need to copy here. Not sure 
-    editor->tile_map = &tile_map;
+    this->tile_map = &tile_map;
 
-    editor->offset = offset;
-    editor->selected_tile_index = 0;
+    this->offset = offset;
+    this->selected_tile_index = 0;
 
-    editor->tile_palette_render_texture = new sf::RenderTexture();
-    editor->tile_palette_render_texture->create(left_toolbar_width, window_height); 
-    editor->tile_palette_view = new sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
+    this->tile_palette_render_texture = new sf::RenderTexture();
+    this->tile_palette_render_texture->create(left_toolbar_width, window_height); 
+    this->tile_palette_view = new sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
 
-    editor->room_render_texture = new sf::RenderTexture();
-    editor->room_render_texture->create(window_width, window_height); 
-    editor->room_view = new sf::View(sf::FloatRect(0, 0, window_height, window_height));
+    this->room_render_texture = new sf::RenderTexture();
+    this->room_render_texture->create(window_width, window_height); 
+    this->room_view = new sf::View(sf::FloatRect(0, 0, window_height, window_height));
 
-    editor->current_mouse_grid_position = new sf::Vector2i();
-    editor->panning = false;
-    editor->last_mouse_position = sf::Vector2i();
-    editor->current_rotation = 0;
-
-    return editor;
+    this->current_mouse_grid_position = new sf::Vector2i();
+    this->panning = false;
+    this->last_mouse_position = sf::Vector2i();
+    this->current_rotation = 0;
 }
 
-void DestructEditor(Editor& editor) {
-    delete editor.selection_rectangle;
-    delete editor.background;
-    delete editor.tiles;
-    delete editor.tile_palette_view;
-    delete editor.current_mouse_grid_position;
-    delete editor.room_render_texture;
-    delete editor.room_view;
-
-    free(&editor);
+Editor::~Editor() {
+    delete selection_rectangle;
+    delete background;
+    delete tiles;
+    delete tile_palette_view;
+    delete current_mouse_grid_position;
+    delete room_render_texture;
+    delete room_view;
 }
 
 void UpdateEditor(Editor& editor, const sf::Event& event, Room& room, const sf::Vector2i current_mouse_position) {
@@ -270,75 +265,4 @@ void WriteRoomToFile(Room& room, std::string file_name) {
             sizeof ((*room.tiles)[i].y)
         );
     }
-}
-
-Room* ReadRoomFromFile(std::string file_name) {
-    std::ifstream rf(file_name, std::ios::in | std::ios::binary);
-
-    if (!rf) {
-        std::cout << "Can't read file!" << std::endl;
-        exit(1);
-    }
-   
-
-    int bounds_left, bounds_top, bounds_width, bounds_height;
-
-    rf.read(
-        reinterpret_cast<char *>(&bounds_left), 
-        sizeof (bounds_left)
-    );
-
-    rf.read(
-        reinterpret_cast<char *>(&bounds_top), 
-        sizeof (bounds_top)
-    );
-
-    rf.read(
-        reinterpret_cast<char *>(&bounds_width), 
-        sizeof (bounds_width)
-    );
-
-    rf.read(
-        reinterpret_cast<char *>(&bounds_height), 
-        sizeof (bounds_height)
-    );
-
-    Room* room = (Room*)malloc(sizeof(*room));
-    room->tiles = new std::vector<Tile>();
-    room->bounds = sf::IntRect(bounds_left, bounds_top, bounds_width, bounds_height);
-
-
-    int room_tile_count;
-    rf.read(
-        reinterpret_cast<char *>(&room_tile_count), 
-        sizeof(room_tile_count)
-    );
-
-
-    for(int i = 0; i < room_tile_count; i++) {
-        Tile tile;
-        rf.read(
-            reinterpret_cast<char *>(&tile.rotation), 
-            sizeof (tile.rotation)
-        );
-
-        rf.read(
-            reinterpret_cast<char *>(&tile.tile_map_index), 
-            sizeof (tile.tile_map_index)
-        );
-
-        rf.read(
-            reinterpret_cast<char *>(&tile.x), 
-            sizeof (tile.x)
-        );
-
-        rf.read(
-            reinterpret_cast<char *>(&tile.y), 
-            sizeof (tile.y)
-        );
-
-        room->tiles->push_back(tile);
-    }
-
-    return room;
 }

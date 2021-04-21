@@ -16,7 +16,7 @@ sf::Sprite CreateTileSprite(int tile_map_x, int tile_map_y, int scale, int size,
 	return sprite;
 }
 
-TileMap* CreateTileMap (std::string texture_path, int scale, int size, int cols, int rows) {
+TileMap::TileMap (std::string texture_path, int scale, int size, int cols, int rows) {
 	sf::Texture* texture = new sf::Texture();
 	if (!texture->loadFromFile(texture_path)) {
 		std::cout << "Can't laod file" << std::endl;
@@ -30,15 +30,12 @@ TileMap* CreateTileMap (std::string texture_path, int scale, int size, int cols,
 		}
 	}
 
-	TileMap* tile_map = (TileMap*)malloc(sizeof(*tile_map));
-	tile_map->size = size;
-	tile_map->scale = scale;
-	tile_map->texture = texture;
-	tile_map->tiles = tile_sprites;
-	return tile_map;
+	this->size = size;
+	this->scale = scale;
+	this->texture = texture;
+	this->tiles = tile_sprites;
 };
 
-void DestructTileMap(TileMap &tile_map) {
-	delete tile_map.texture;
-	free(&tile_map);
+TileMap::~TileMap() {
+	delete texture;
 }
