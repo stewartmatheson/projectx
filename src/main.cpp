@@ -18,13 +18,7 @@ int main(int argc, char** argv)
             7
             );
     
-    Room* room;
-    
-    if (argc == 2) {
-        room = new Room(argv[1]);
-    } else {
-        room = new Room(30, 30, window_height, window_width);
-    }
+    Room room = argc == 2 ? Room(argv[1]) : Room(30, 30, window_height, window_width);
 
     Editor editor(tile_map, window_height, window_width);
 
@@ -35,7 +29,7 @@ int main(int argc, char** argv)
         while (window.pollEvent(event))
         {
             if (ENABLE_EDITOR) {
-                UpdateEditor(editor, event, *room, sf::Mouse::getPosition(window));
+                UpdateEditor(editor, event, room, sf::Mouse::getPosition(window));
             } 
          
             if (event.type == sf::Event::Closed)
@@ -51,9 +45,9 @@ int main(int argc, char** argv)
         window.clear();
 
         if (ENABLE_EDITOR) {
-            DrawEditor(window, editor, *room);
+            DrawEditor(window, editor, room);
         } else {
-            DrawRoom(window, *room, tile_map);
+            DrawRoom(window, room, tile_map);
         }
         window.display();
     }
