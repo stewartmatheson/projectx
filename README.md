@@ -6,8 +6,8 @@
  * Check the bounds of the room so we only add tiles that are within bounds [Done]
  * Map screen pixels to view pixels so that sprites always appear under the current mouse pos [Done]
 
- * Draw last to lines of map grid
- * Stop tiles behind the tile palette from drawing
- * Handle window resize
- * Get view drawing all the way to the end of the screen regardless of window size
+ * Draw last to lines of map grid [Done]
+ * Stop tiles behind the tile palette from drawing [Done]
+ * Replace existing tiles with new ones don't keep adding [Done]
+ * Handle window resize [Done]
 

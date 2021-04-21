@@ -96,7 +96,28 @@ void UpdateEditor(Editor& editor, const sf::Event& event, Room& room, const sf::
             room.bounds.height * editor.tile_map->size * editor.tile_map->scale
         );
 
-        if (pixel_bounds.contains(sf::Vector2i(event_target_coords.x, event_target_coords.y))) {
+
+        if (pixel_bounds.contains(sf::Vector2i(event_target_coords.x, event_target_coords.y)) && 
+            !editor.background->getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))
+        ) {
+
+
+            for (auto it = room.tiles->begin(); it != room.tiles->end(); ) {
+                sf::FloatRect current_tile_bounds = sf::FloatRect(
+                    it->x * (editor.tile_map->size * editor.tile_map->scale),
+                    it->y * (editor.tile_map->size * editor.tile_map->scale),
+                    editor.tile_map->size * editor.tile_map->scale,
+                    editor.tile_map->size * editor.tile_map->scale
+                );
+                
+                if (current_tile_bounds.contains(event_target_coords)) {
+                    room.tiles->erase(it);
+                    break;
+                } else {
+                    ++it;
+                }
+            }
+
             room.tiles->push_back(
                 Tile { 
                     (int)floor(event_target_coords.x / (editor.tile_map->size * editor.tile_map->scale)),
@@ -152,13 +173,20 @@ void UpdateEditor(Editor& editor, const sf::Event& event, Room& room, const sf::
         editor.room_view->move(sf::Vector2f(mouse_delta.x * -1, mouse_delta.y * -1));
     }
 
+    if (event.type == sf::Event::Resized) {
+        std::cout << event.size.width << std::endl;
+        editor.room_view->setSize(event.size.width, event.size.height);
+        editor.room_render_texture = new sf::RenderTexture();
+        editor.room_render_texture->create(event.size.width, event.size.height); 
+    }
+ 
 }
 
 void DrawGrid(sf::RenderTarget &target, int grid_height, int grid_width, int size) {
     int total_grid_height = grid_height * size;
     int total_grid_width = grid_width * size;
 
-    for(int row = 1; row < grid_height * size; row = row + size) {
+    for(int row = 1; row < (grid_height +1) * size; row = row + size) {
         sf::Vertex line[] = {
             sf::Vertex(sf::Vector2f(0, row), sf::Color::White),
             sf::Vertex(sf::Vector2f(total_grid_width, row), sf::Color::White)
@@ -166,7 +194,7 @@ void DrawGrid(sf::RenderTarget &target, int grid_height, int grid_width, int siz
         target.draw(line, 2, sf::Lines);
     }
 
-    for(int col = 1; col < grid_width * size; col = col + size) {
+    for(int col = 1; col < (grid_width + 1) * size; col = col + size) {
         sf::Vertex line[] = {
             sf::Vertex(sf::Vector2f(col, 0), sf::Color::White),
             sf::Vertex(sf::Vector2f(col, total_grid_height), sf::Color::White)
@@ -180,7 +208,12 @@ void DrawEditor(sf::RenderTarget& target, Editor& editor, Room& room) {
     editor.room_render_texture->setView(*editor.room_view);
     editor.room_render_texture->clear();
     DrawRoom(*editor.room_render_texture, room, *editor.tile_map);
-    DrawGrid(*editor.room_render_texture, room.bounds.height, room.bounds.width, editor.tile_map->size * editor.tile_map->scale);
+    DrawGrid(
+        *editor.room_render_texture, 
+        room.bounds.height, 
+        room.bounds.width, 
+        editor.tile_map->size * editor.tile_map->scale
+    );
 
     // Draw Selected Tile
     sf::Sprite selected_tile_sprite((*editor.tile_map->tiles)[editor.selected_tile_index]);
@@ -196,7 +229,10 @@ void DrawEditor(sf::RenderTarget& target, Editor& editor, Room& room) {
     editor.room_render_texture->draw(selected_tile_sprite);
 
     editor.room_render_texture->display();
+
     sf::Sprite room_render_sprite(editor.room_render_texture->getTexture());
+
+    sf::View current_window_view = target.getView();
     target.draw(room_render_sprite);
 
     //Draw Tile Palette

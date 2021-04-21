@@ -18,7 +18,7 @@ int main(int argc, char** argv)
             7
             );
     
-    Room room = argc == 2 ? Room(argv[1]) : Room(30, 30, window_height, window_width);
+    Room room = argc == 2 ? Room(argv[1]) : Room(20, 20, window_height, window_width);
 
     Editor editor(tile_map, window_height, window_width);
 
@@ -28,6 +28,12 @@ int main(int argc, char** argv)
         sf::Event event;
         while (window.pollEvent(event))
         {
+            if(event.type == sf::Event::Resized) {
+                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+                std::cout << event.size.width << std::endl;
+                window.setView(sf::View(visibleArea));
+            }
+
             if (ENABLE_EDITOR) {
                 UpdateEditor(editor, event, room, sf::Mouse::getPosition(window));
             } 
@@ -40,6 +46,7 @@ int main(int argc, char** argv)
                     window.close();
                 }
             }
+
         }
 
         window.clear();
