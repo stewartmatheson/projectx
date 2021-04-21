@@ -52,5 +52,3 @@ void DrawEditor(sf::RenderTarget &, Editor &, Room &);
 void UpdateEditor(Editor &, const sf::Event &, Room&, const sf::Vector2i);
 
 void WriteRoomToFile(Room &, std::string);
-
-Room *ReadRoomFromFile(std::string);

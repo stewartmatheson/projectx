@@ -19,6 +19,7 @@ struct Room {
 	 *
 	 * @return The created room
 	 */
+	Room(std::string);
 	Room(int, int, int, int);
 	~Room();
 };
