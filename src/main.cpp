@@ -35,7 +35,7 @@ int main(int argc, char** argv)
             }
 
             if (ENABLE_EDITOR) {
-                UpdateEditor(editor, event, room, sf::Mouse::getPosition(window));
+                editor.UpdateEditor(event, room, sf::Mouse::getPosition(window));
             } 
          
             if (event.type == sf::Event::Closed)
@@ -52,7 +52,7 @@ int main(int argc, char** argv)
         window.clear();
 
         if (ENABLE_EDITOR) {
-            DrawEditor(window, editor, room);
+            editor.DrawEditor(window, room);
         } else {
             DrawRoom(window, room, tile_map);
         }

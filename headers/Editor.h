@@ -45,10 +45,10 @@ struct Editor {
 
     Editor(TileMap &, int, int);
     ~Editor();
+
+    void DrawEditor(sf::RenderTarget &, Room &);
+
+    void UpdateEditor(const sf::Event &, Room&, const sf::Vector2i);
 };
-
-void DrawEditor(sf::RenderTarget &, Editor &, Room &);
-
-void UpdateEditor(Editor &, const sf::Event &, Room&, const sf::Vector2i);
 
 void WriteRoomToFile(Room &, std::string);
