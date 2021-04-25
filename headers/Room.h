@@ -22,8 +22,10 @@ struct Room {
 	Room(std::string);
 	Room(int, int, int, int);
 	~Room();
-};
 
-void DrawRoom(sf::RenderTarget &, Room &, TileMap &);
+	void DrawRoom(sf::RenderTarget &, TileMap &);
+
+	void WriteRoomToFile(std::string);
+};
 
 
