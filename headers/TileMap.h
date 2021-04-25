@@ -3,10 +3,12 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-struct TileMap {
+class TileMap {
+	sf::Texture* texture;
+
+public:
 	int size;
 	int scale;
-	sf::Texture* texture;
 	std::vector<sf::Sprite>* tiles;
 
 	TileMap(std::string, int, int, int, int);
