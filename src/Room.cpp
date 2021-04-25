@@ -82,10 +82,10 @@ void DrawRoom(sf::RenderTarget& target, Room& room, TileMap& tile_map) {
     for(Tile tile : *room.tiles) {
         sf::Sprite sprite_to_draw((*tile_map.tiles)[tile.tile_map_index]);
         sprite_to_draw.setRotation(tile.rotation);
-        int half_tile_size = tile_map.size * tile_map.scale / 2;
+        int half_tile_size = tile_map.tileSize() / 2;
         sprite_to_draw.setPosition(
-            (tile.x * tile_map.size * tile_map.scale) + half_tile_size,
-            (tile.y * tile_map.size * tile_map.scale) + half_tile_size
+            (tile.x * tile_map.tileSize()) + half_tile_size,
+            (tile.y * tile_map.tileSize()) + half_tile_size
         );
         sprite_to_draw.setOrigin(tile_map.size / 2, tile_map.size / 2);
         target.draw(sprite_to_draw);

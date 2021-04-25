@@ -4,15 +4,10 @@
 
 Editor::Editor(TileMap &tile_map, int window_height, int window_width) {
     int offset = 20;
-    int left_toolbar_width = offset * 2 + (tile_map.scale * tile_map.size);
+    int left_toolbar_width = offset * 2 + tile_map.tileSize();
 
     sf::RectangleShape* selection = new sf::RectangleShape();
-    selection->setSize(
-            sf::Vector2f(
-                tile_map.size * tile_map.scale, 
-                tile_map.size * tile_map.scale
-                )
-            );
+    selection->setSize(sf::Vector2f(tile_map.tileSize(), tile_map.tileSize()));
     selection->setOutlineColor(sf::Color::Blue);
     selection->setOutlineThickness(2);
     selection->setFillColor(sf::Color::Transparent);
@@ -20,7 +15,7 @@ Editor::Editor(TileMap &tile_map, int window_height, int window_width) {
 
     this->selection_rectangle = selection;
     this->tiles = new std::vector<sf::Sprite>(*tile_map.tiles);
-    int total_height = (this->tiles->size() * (tile_map.scale * tile_map.size + offset)) + offset;
+    int total_height = (this->tiles->size() * (tile_map.tileSize() + offset)) + offset;
     sf::RectangleShape* background = new sf::RectangleShape(sf::Vector2f(left_toolbar_width, total_height));
     background->setFillColor(sf::Color(60,60,60, 255));
     this->background = background;

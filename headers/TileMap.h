@@ -11,6 +11,8 @@ struct TileMap {
 
 	TileMap(std::string, int, int, int, int);
 	~TileMap();
+
+	int tileSize();
 };
 
 struct Tile {
