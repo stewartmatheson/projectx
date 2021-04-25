@@ -2,7 +2,7 @@
 #include <fstream>
 #include "RoomScene.h"
 
-RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width) {
+RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width, Room* room) {
     int offset = 20;
     int left_toolbar_width = offset * 2 + tile_map.tileSize();
 
@@ -38,6 +38,7 @@ RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width) {
     this->panning = false;
     this->last_mouse_position = sf::Vector2i();
     this->current_rotation = 0;
+    this->room = room;
 }
 
 RoomScene::~RoomScene() {
@@ -50,7 +51,7 @@ RoomScene::~RoomScene() {
     delete room_view;
 }
 
-void RoomScene::UpdateEditor(const sf::Event& event, Room& room, const sf::Vector2i current_mouse_position) {
+void RoomScene::UpdateEditor(const sf::Event& event, const sf::Vector2i current_mouse_position) {
     selection_rectangle->setPosition((*tiles)[selected_tile_index].getPosition());
     for(int i = 0; i < tiles->size(); i ++) {
         int current_y_pos = 
@@ -87,8 +88,8 @@ void RoomScene::UpdateEditor(const sf::Event& event, Room& room, const sf::Vecto
         sf::IntRect pixel_bounds = sf::IntRect(
             0, 
             0, 
-            room.bounds.width * tile_map->size * tile_map->scale,
-            room.bounds.height * tile_map->size * tile_map->scale
+            this->room->bounds.width * tile_map->size * tile_map->scale,
+            this->room->bounds.height * tile_map->size * tile_map->scale
         );
 
 
@@ -97,7 +98,7 @@ void RoomScene::UpdateEditor(const sf::Event& event, Room& room, const sf::Vecto
         ) {
 
 
-            for (auto it = room.tiles->begin(); it != room.tiles->end(); ) {
+            for (auto it = this->room->tiles->begin(); it != this->room->tiles->end(); ) {
                 sf::FloatRect current_tile_bounds = sf::FloatRect(
                     it->x * (tile_map->size * tile_map->scale),
                     it->y * (tile_map->size * tile_map->scale),
@@ -106,14 +107,14 @@ void RoomScene::UpdateEditor(const sf::Event& event, Room& room, const sf::Vecto
                 );
                 
                 if (current_tile_bounds.contains(event_target_coords)) {
-                    room.tiles->erase(it);
+                    this->room->tiles->erase(it);
                     break;
                 } else {
                     ++it;
                 }
             }
 
-            room.tiles->push_back(
+            this->room->tiles->push_back(
                 Tile { 
                     (int)floor(event_target_coords.x / (tile_map->size * tile_map->scale)),
                     (int)floor(event_target_coords.y / (tile_map->size * tile_map->scale)),
@@ -142,7 +143,7 @@ void RoomScene::UpdateEditor(const sf::Event& event, Room& room, const sf::Vecto
     }
 
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::W) {
-        room.WriteRoomToFile("./assets/maps/room.bin");
+        this->room->WriteRoomToFile("./assets/maps/room.bin");
     }
 
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space) {
@@ -198,15 +199,15 @@ void DrawGrid(sf::RenderTarget &target, int grid_height, int grid_width, int siz
     }
 }
 
-void RoomScene::DrawEditor(sf::RenderTarget& target, Room& room) {
+void RoomScene::DrawEditor(sf::RenderTarget& target) {
     // Draw Room and Grid
     room_render_texture->setView(*room_view);
     room_render_texture->clear();
-    room.DrawRoom(*room_render_texture, *tile_map);
+    this->room->DrawRoom(*room_render_texture, *tile_map);
     DrawGrid(
         *room_render_texture, 
-        room.bounds.height, 
-        room.bounds.width, 
+        this->room->bounds.height, 
+        this->room->bounds.width, 
         tile_map->size * tile_map->scale
     );
 

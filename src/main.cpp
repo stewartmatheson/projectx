@@ -5,7 +5,6 @@
 
 int main(int argc, char** argv)
 {
-    const bool ENABLE_EDITOR = true;
     int window_width = 1400;
     int window_height = 1400;
     int tile_size = 16;
@@ -20,7 +19,7 @@ int main(int argc, char** argv)
     
     Room room = argc == 2 ? Room(argv[1]) : Room(20, 20, window_height, window_width);
 
-    RoomScene room_scene(tile_map, window_height, window_width);
+    RoomScene room_scene(tile_map, window_height, window_width, &room);
 
 
     while (window.isOpen())
@@ -34,9 +33,7 @@ int main(int argc, char** argv)
                 window.setView(sf::View(visibleArea));
             }
 
-            if (ENABLE_EDITOR) {
-                room_scene.UpdateEditor(event, room, sf::Mouse::getPosition(window));
-            } 
+            room_scene.UpdateEditor(event, sf::Mouse::getPosition(window));
          
             if (event.type == sf::Event::Closed)
                 window.close();
@@ -50,12 +47,8 @@ int main(int argc, char** argv)
         }
 
         window.clear();
+        room_scene.DrawEditor(window);
 
-        if (ENABLE_EDITOR) {
-            room_scene.DrawEditor(window, room);
-        } else {
-            room.DrawRoom(window, tile_map);
-        }
         window.display();
     }
     return 0;

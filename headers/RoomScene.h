@@ -43,11 +43,10 @@ class RoomScene {
 
     sf::RenderTexture* room_render_texture;
 
+    Room *room;
 public:
-    RoomScene(TileMap &, int, int);
+    RoomScene(TileMap &, int, int, Room* room);
     ~RoomScene();
-
-    void DrawEditor(sf::RenderTarget &, Room &);
-
-    void UpdateEditor(const sf::Event &, Room&, const sf::Vector2i);
+    void DrawEditor(sf::RenderTarget &);
+    void UpdateEditor(const sf::Event &, const sf::Vector2i);
 };
