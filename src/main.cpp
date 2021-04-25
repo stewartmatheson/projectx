@@ -33,7 +33,7 @@ int main(int argc, char** argv)
                 window.setView(sf::View(visibleArea));
             }
 
-            room_scene.UpdateEditor(event, sf::Mouse::getPosition(window));
+            room_scene.Update(event, sf::Mouse::getPosition(window));
          
             if (event.type == sf::Event::Closed)
                 window.close();
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
         }
 
         window.clear();
-        room_scene.DrawEditor(window);
+        room_scene.Draw(window);
 
         window.display();
     }

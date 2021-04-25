@@ -47,6 +47,6 @@ class RoomScene {
 public:
     RoomScene(TileMap &, int, int, Room* room);
     ~RoomScene();
-    void DrawEditor(sf::RenderTarget &);
-    void UpdateEditor(const sf::Event &, const sf::Vector2i);
+    void Draw(sf::RenderTarget &);
+    void Update(const sf::Event &, const sf::Vector2i);
 };

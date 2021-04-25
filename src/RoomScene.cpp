@@ -51,7 +51,7 @@ RoomScene::~RoomScene() {
     delete room_view;
 }
 
-void RoomScene::UpdateEditor(const sf::Event& event, const sf::Vector2i current_mouse_position) {
+void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_position) {
     selection_rectangle->setPosition((*tiles)[selected_tile_index].getPosition());
     for(int i = 0; i < tiles->size(); i ++) {
         int current_y_pos = 
@@ -199,7 +199,7 @@ void DrawGrid(sf::RenderTarget &target, int grid_height, int grid_width, int siz
     }
 }
 
-void RoomScene::DrawEditor(sf::RenderTarget& target) {
+void RoomScene::Draw(sf::RenderTarget& target) {
     // Draw Room and Grid
     room_render_texture->setView(*room_view);
     room_render_texture->clear();
