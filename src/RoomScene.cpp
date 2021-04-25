@@ -1,8 +1,8 @@
 #include <math.h>
 #include <fstream>
-#include "Editor.h"
+#include "RoomScene.h"
 
-Editor::Editor(TileMap &tile_map, int window_height, int window_width) {
+RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width) {
     int offset = 20;
     int left_toolbar_width = offset * 2 + tile_map.tileSize();
 
@@ -40,7 +40,7 @@ Editor::Editor(TileMap &tile_map, int window_height, int window_width) {
     this->current_rotation = 0;
 }
 
-Editor::~Editor() {
+RoomScene::~RoomScene() {
     delete selection_rectangle;
     delete background;
     delete tiles;
@@ -50,7 +50,7 @@ Editor::~Editor() {
     delete room_view;
 }
 
-void Editor::UpdateEditor(const sf::Event& event, Room& room, const sf::Vector2i current_mouse_position) {
+void RoomScene::UpdateEditor(const sf::Event& event, Room& room, const sf::Vector2i current_mouse_position) {
     selection_rectangle->setPosition((*tiles)[selected_tile_index].getPosition());
     for(int i = 0; i < tiles->size(); i ++) {
         int current_y_pos = 
@@ -198,7 +198,7 @@ void DrawGrid(sf::RenderTarget &target, int grid_height, int grid_width, int siz
     }
 }
 
-void Editor::DrawEditor(sf::RenderTarget& target, Room& room) {
+void RoomScene::DrawEditor(sf::RenderTarget& target, Room& room) {
     // Draw Room and Grid
     room_render_texture->setView(*room_view);
     room_render_texture->clear();

@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "TileMap.h"
-#include "Editor.h"
+#include "RoomScene.h"
 
 int main(int argc, char** argv)
 {
@@ -20,7 +20,7 @@ int main(int argc, char** argv)
     
     Room room = argc == 2 ? Room(argv[1]) : Room(20, 20, window_height, window_width);
 
-    Editor editor(tile_map, window_height, window_width);
+    RoomScene room_scene(tile_map, window_height, window_width);
 
 
     while (window.isOpen())
@@ -35,7 +35,7 @@ int main(int argc, char** argv)
             }
 
             if (ENABLE_EDITOR) {
-                editor.UpdateEditor(event, room, sf::Mouse::getPosition(window));
+                room_scene.UpdateEditor(event, room, sf::Mouse::getPosition(window));
             } 
          
             if (event.type == sf::Event::Closed)
@@ -52,7 +52,7 @@ int main(int argc, char** argv)
         window.clear();
 
         if (ENABLE_EDITOR) {
-            editor.DrawEditor(window, room);
+            room_scene.DrawEditor(window, room);
         } else {
             room.DrawRoom(window, tile_map);
         }

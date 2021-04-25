@@ -7,7 +7,7 @@
 /**
  * An editor contains all data required to add, remove and edit tiles on a given map
  */
-class Editor {
+class RoomScene {
     // The blue rect around the selected tile in the tile palette
     sf::RectangleShape* selection_rectangle;	
 
@@ -44,8 +44,8 @@ class Editor {
     sf::RenderTexture* room_render_texture;
 
 public:
-    Editor(TileMap &, int, int);
-    ~Editor();
+    RoomScene(TileMap &, int, int);
+    ~RoomScene();
 
     void DrawEditor(sf::RenderTarget &, Room &);
 

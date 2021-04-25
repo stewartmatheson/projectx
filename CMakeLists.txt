@@ -10,10 +10,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(ProjectX
-  headers/Editor.h
+  headers/RoomScene.h
   headers/Room.h
   headers/TileMap.h
-  src/Editor.cpp
+  src/RoomScene.cpp
   src/Room.cpp
   src/TileMap.cpp
   src/main.cpp
