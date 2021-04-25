@@ -44,6 +44,8 @@ class RoomScene {
     sf::RenderTexture* room_render_texture;
 
     Room *room;
+
+    bool editor_enabled;
 public:
     RoomScene(TileMap &, int, int, Room* room);
     ~RoomScene();

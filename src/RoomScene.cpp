@@ -2,7 +2,8 @@
 #include <fstream>
 #include "RoomScene.h"
 
-RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width, Room* room) {
+RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width, Room* room) 
+    : editor_enabled(true) {
     int offset = 20;
     int left_toolbar_width = offset * 2 + tile_map.tileSize();
 
@@ -52,6 +53,13 @@ RoomScene::~RoomScene() {
 }
 
 void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_position) {
+    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::E) {
+        editor_enabled = !editor_enabled;
+    }
+
+    if (!editor_enabled) {
+        return;
+    }
     selection_rectangle->setPosition((*tiles)[selected_tile_index].getPosition());
     for(int i = 0; i < tiles->size(); i ++) {
         int current_y_pos = 
@@ -154,6 +162,7 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
         panning = true;
     }
 
+
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Middle) {
         current_rotation += 90;
     }
@@ -204,43 +213,49 @@ void RoomScene::Draw(sf::RenderTarget& target) {
     room_render_texture->setView(*room_view);
     room_render_texture->clear();
     this->room->DrawRoom(*room_render_texture, *tile_map);
-    DrawGrid(
-        *room_render_texture, 
-        this->room->bounds.height, 
-        this->room->bounds.width, 
-        tile_map->size * tile_map->scale
-    );
 
-    // Draw Selected Tile
-    sf::Sprite selected_tile_sprite((*tile_map->tiles)[selected_tile_index]);
-    selected_tile_sprite.setScale(sf::Vector2f(tile_map->scale, tile_map->scale));
-    int half_tile_size = tile_map->size * tile_map->scale / 2;
-    selected_tile_sprite.setPosition(
-        (current_mouse_grid_position->x * tile_map->size * tile_map->scale) + half_tile_size,
-        (current_mouse_grid_position->y * tile_map->size * tile_map->scale) + half_tile_size
-    );
-    selected_tile_sprite.setColor(sf::Color(255, 255, 255, 170));
-    selected_tile_sprite.setOrigin(tile_map->size / 2, tile_map->size / 2);
-    selected_tile_sprite.rotate(current_rotation);
-    room_render_texture->draw(selected_tile_sprite);
 
-    room_render_texture->display();
+    if (editor_enabled) {
+        DrawGrid(
+            *room_render_texture, 
+            this->room->bounds.height, 
+            this->room->bounds.width, 
+            tile_map->size * tile_map->scale
+        );
+
+        // Draw Selected Tile
+        sf::Sprite selected_tile_sprite((*tile_map->tiles)[selected_tile_index]);
+        selected_tile_sprite.setScale(sf::Vector2f(tile_map->scale, tile_map->scale));
+        int half_tile_size = tile_map->size * tile_map->scale / 2;
+        selected_tile_sprite.setPosition(
+            (current_mouse_grid_position->x * tile_map->size * tile_map->scale) + half_tile_size,
+            (current_mouse_grid_position->y * tile_map->size * tile_map->scale) + half_tile_size
+        );
+        selected_tile_sprite.setColor(sf::Color(255, 255, 255, 170));
+        selected_tile_sprite.setOrigin(tile_map->size / 2, tile_map->size / 2);
+        selected_tile_sprite.rotate(current_rotation);
+
+        room_render_texture->draw(selected_tile_sprite);
+        room_render_texture->display();
+    }
+
 
     sf::Sprite room_render_sprite(room_render_texture->getTexture());
-
     sf::View current_window_view = target.getView();
     target.draw(room_render_sprite);
 
-    //Draw Tile Palette
-    tile_palette_render_texture->setView(*tile_palette_view);
-    tile_palette_render_texture->clear();
-    tile_palette_render_texture->draw(*background);
-    for(sf::Sprite tile_sprite : *tiles) {
-        tile_palette_render_texture->draw(tile_sprite);
+    if (editor_enabled) {
+        //Draw Tile Palette
+        tile_palette_render_texture->setView(*tile_palette_view);
+        tile_palette_render_texture->clear();
+        tile_palette_render_texture->draw(*background);
+        for(sf::Sprite tile_sprite : *tiles) {
+            tile_palette_render_texture->draw(tile_sprite);
+        }
+        tile_palette_render_texture->draw(*selection_rectangle);
+        tile_palette_render_texture->display();
+        sf::Sprite tile_palette_render_sprite(tile_palette_render_texture->getTexture());
+        target.draw(tile_palette_render_sprite);
     }
-    tile_palette_render_texture->draw(*selection_rectangle);
-    tile_palette_render_texture->display();
-    sf::Sprite tile_palette_render_sprite(tile_palette_render_texture->getTexture());
-    target.draw(tile_palette_render_sprite);
 
 }
