@@ -54,7 +54,7 @@ int main(int argc, char** argv)
         if (ENABLE_EDITOR) {
             editor.DrawEditor(window, room);
         } else {
-            DrawRoom(window, room, tile_map);
+            room.DrawRoom(window, tile_map);
         }
         window.display();
     }

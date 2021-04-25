@@ -147,7 +147,7 @@ void Editor::UpdateEditor(const sf::Event& event, Room& room, const sf::Vector2i
     }
 
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::W) {
-        WriteRoomToFile(room, "./assets/maps/room.bin");
+        room.WriteRoomToFile("./assets/maps/room.bin");
     }
 
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space) {
@@ -207,7 +207,7 @@ void Editor::DrawEditor(sf::RenderTarget& target, Room& room) {
     // Draw Room and Grid
     room_render_texture->setView(*room_view);
     room_render_texture->clear();
-    DrawRoom(*room_render_texture, room, *tile_map);
+    room.DrawRoom(*room_render_texture, *tile_map);
     DrawGrid(
         *room_render_texture, 
         room.bounds.height, 
@@ -247,58 +247,4 @@ void Editor::DrawEditor(sf::RenderTarget& target, Room& room) {
     sf::Sprite tile_palette_render_sprite(tile_palette_render_texture->getTexture());
     target.draw(tile_palette_render_sprite);
 
-}
-
-void WriteRoomToFile(Room& room, std::string file_name) {
-    std::ofstream wf(file_name, std::ios::out | std::ios::binary);
-
-    if(!wf) {
-        std::cout << "Can't open file!" << std::endl;
-        exit(1);
-    }
-
-    wf.write(
-        reinterpret_cast<const char *>(&room.bounds.left), 
-        sizeof (room.bounds.left)
-    );
-
-    wf.write(
-        reinterpret_cast<const char *>(&room.bounds.top), 
-        sizeof (room.bounds.top)
-    );
-
-    wf.write(
-        reinterpret_cast<const char *>(&room.bounds.width), 
-        sizeof (room.bounds.width)
-    );
-
-    wf.write(
-        reinterpret_cast<const char *>(&room.bounds.height), 
-        sizeof (room.bounds.height)
-    );
-
-    int room_tile_count = room.tiles->size();
-    wf.write(reinterpret_cast<const char *>(&room_tile_count), sizeof (room_tile_count));
-
-    for(int i = 0; i < room_tile_count; i++) {
-        wf.write(
-            reinterpret_cast<const char *>(&(*room.tiles)[i].rotation), 
-            sizeof ((*room.tiles)[i].rotation)
-        );
-
-        wf.write(
-            reinterpret_cast<const char *>(&(*room.tiles)[i].tile_map_index), 
-            sizeof ((*room.tiles)[i].tile_map_index)
-        );
-
-        wf.write(
-            reinterpret_cast<const char *>(&(*room.tiles)[i].x), 
-            sizeof ((*room.tiles)[i].x)
-        );
-
-        wf.write(
-            reinterpret_cast<const char *>(&(*room.tiles)[i].y), 
-            sizeof ((*room.tiles)[i].y)
-        );
-    }
 }

@@ -50,5 +50,3 @@ struct Editor {
 
     void UpdateEditor(const sf::Event &, Room&, const sf::Vector2i);
 };
-
-void WriteRoomToFile(Room &, std::string);

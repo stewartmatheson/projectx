@@ -78,8 +78,8 @@ Room::~Room() {
     delete tiles;
 }
 
-void DrawRoom(sf::RenderTarget& target, Room& room, TileMap& tile_map) {
-    for(Tile tile : *room.tiles) {
+void Room::DrawRoom(sf::RenderTarget& target, TileMap& tile_map) {
+    for(Tile tile : *tiles) {
         sf::Sprite sprite_to_draw((*tile_map.tiles)[tile.tile_map_index]);
         sprite_to_draw.setRotation(tile.rotation);
         int half_tile_size = tile_map.size * tile_map.scale / 2;
@@ -92,3 +92,56 @@ void DrawRoom(sf::RenderTarget& target, Room& room, TileMap& tile_map) {
     }
 }
 
+void Room::WriteRoomToFile(std::string file_name) {
+    std::ofstream wf(file_name, std::ios::out | std::ios::binary);
+
+    if(!wf) {
+        std::cout << "Can't open file!" << std::endl;
+        exit(1);
+    }
+
+    wf.write(
+        reinterpret_cast<const char *>(&bounds.left), 
+        sizeof (bounds.left)
+    );
+
+    wf.write(
+        reinterpret_cast<const char *>(&bounds.top), 
+        sizeof (bounds.top)
+    );
+
+    wf.write(
+        reinterpret_cast<const char *>(&bounds.width), 
+        sizeof (bounds.width)
+    );
+
+    wf.write(
+        reinterpret_cast<const char *>(&bounds.height), 
+        sizeof (bounds.height)
+    );
+
+    int room_tile_count = tiles->size();
+    wf.write(reinterpret_cast<const char *>(&room_tile_count), sizeof (room_tile_count));
+
+    for(int i = 0; i < room_tile_count; i++) {
+        wf.write(
+            reinterpret_cast<const char *>(&(*tiles)[i].rotation), 
+            sizeof ((*tiles)[i].rotation)
+        );
+
+        wf.write(
+            reinterpret_cast<const char *>(&(*tiles)[i].tile_map_index), 
+            sizeof ((*tiles)[i].tile_map_index)
+        );
+
+        wf.write(
+            reinterpret_cast<const char *>(&(*tiles)[i].x), 
+            sizeof ((*tiles)[i].x)
+        );
+
+        wf.write(
+            reinterpret_cast<const char *>(&(*tiles)[i].y), 
+            sizeof ((*tiles)[i].y)
+        );
+    }
+}
