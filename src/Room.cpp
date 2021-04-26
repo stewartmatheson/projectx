@@ -32,8 +32,8 @@ Room::Room(std::string file_name) {
         sizeof (bounds_height)
     );
 
-    this->tiles = new std::vector<Tile>();
-    this->bounds = sf::IntRect(bounds_left, bounds_top, bounds_width, bounds_height);
+    tiles = new std::vector<Tile>();
+    bounds = sf::IntRect(bounds_left, bounds_top, bounds_width, bounds_height);
 
 
     int room_tile_count;
@@ -65,13 +65,13 @@ Room::Room(std::string file_name) {
             sizeof (tile.y)
         );
 
-        this->tiles->push_back(tile);
+        tiles->push_back(tile);
     }
 }
 
 Room::Room(int map_height, int map_width, int window_width, int window_height) {
-    this->bounds = sf::IntRect(0, 0, map_width, map_height);
-    this->tiles = new std::vector<Tile>();
+    bounds = sf::IntRect(0, 0, map_width, map_height);
+    tiles = new std::vector<Tile>();
 }
 
 Room::~Room() {
