@@ -23,7 +23,7 @@ class RoomScene {
     // The offset defines gaps between the tiles on the left hand tile editor
     int offset;
 
-    TileMap* tile_map;
+    TileMap &tile_map;
 
     // The currently selected tile index. This is the index for the tiles vector
     int selected_tile_index;
@@ -43,11 +43,11 @@ class RoomScene {
 
     sf::RenderTexture* room_render_texture;
 
-    Room *room;
+    Room &room;
 
     bool editor_enabled;
 public:
-    RoomScene(TileMap &, int, int, Room* room);
+    RoomScene(TileMap &, int, int, Room &);
     ~RoomScene();
     void Draw(sf::RenderTarget &);
     void Update(const sf::Event &, const sf::Vector2i);

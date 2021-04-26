@@ -2,8 +2,8 @@
 #include <fstream>
 #include "RoomScene.h"
 
-RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width, Room* room) 
-    : editor_enabled(true) {
+RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width, Room &room) 
+    : editor_enabled(true), room(room), tile_map(tile_map) {
     int offset = 20;
     int left_toolbar_width = offset * 2 + tile_map.tileSize();
 
@@ -21,9 +21,6 @@ RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width, Roo
     background->setFillColor(sf::Color(60,60,60, 255));
     this->background = background;
 
-    // TODO : We might need to copy here. Not sure 
-    this->tile_map = &tile_map;
-
     this->offset = offset;
     this->selected_tile_index = 0;
 
@@ -39,7 +36,6 @@ RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width, Roo
     this->panning = false;
     this->last_mouse_position = sf::Vector2i();
     this->current_rotation = 0;
-    this->room = room;
 }
 
 RoomScene::~RoomScene() {
@@ -63,7 +59,7 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
     selection_rectangle->setPosition((*tiles)[selected_tile_index].getPosition());
     for(int i = 0; i < tiles->size(); i ++) {
         int current_y_pos = 
-            (i * tile_map->scale * tile_map->size) + 
+            (i * tile_map.scale * tile_map.size) + 
             (offset * i) + offset;
         (*tiles)[i].setPosition(offset, current_y_pos);
     }
@@ -72,8 +68,8 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
             sf::Vector2i(current_mouse_position.x, current_mouse_position.y)
     );
 
-    current_mouse_grid_position->x = floor(current_target_coords.x / (tile_map->size * tile_map->scale));
-    current_mouse_grid_position->y = floor(current_target_coords.y / (tile_map->size * tile_map->scale));
+    current_mouse_grid_position->x = floor(current_target_coords.x / (tile_map.size * tile_map.scale));
+    current_mouse_grid_position->y = floor(current_target_coords.y / (tile_map.size * tile_map.scale));
      
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
         // Manage Selection Changed
@@ -96,8 +92,8 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
         sf::IntRect pixel_bounds = sf::IntRect(
             0, 
             0, 
-            this->room->bounds.width * tile_map->size * tile_map->scale,
-            this->room->bounds.height * tile_map->size * tile_map->scale
+            this->room.bounds.width * tile_map.size * tile_map.scale,
+            this->room.bounds.height * tile_map.size * tile_map.scale
         );
 
 
@@ -106,26 +102,26 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
         ) {
 
 
-            for (auto it = this->room->tiles->begin(); it != this->room->tiles->end(); ) {
+            for (auto it = this->room.tiles->begin(); it != this->room.tiles->end(); ) {
                 sf::FloatRect current_tile_bounds = sf::FloatRect(
-                    it->x * (tile_map->size * tile_map->scale),
-                    it->y * (tile_map->size * tile_map->scale),
-                    tile_map->size * tile_map->scale,
-                    tile_map->size * tile_map->scale
+                    it->x * (tile_map.size * tile_map.scale),
+                    it->y * (tile_map.size * tile_map.scale),
+                    tile_map.size * tile_map.scale,
+                    tile_map.size * tile_map.scale
                 );
                 
                 if (current_tile_bounds.contains(event_target_coords)) {
-                    this->room->tiles->erase(it);
+                    this->room.tiles->erase(it);
                     break;
                 } else {
                     ++it;
                 }
             }
 
-            this->room->tiles->push_back(
+            this->room.tiles->push_back(
                 Tile { 
-                    (int)floor(event_target_coords.x / (tile_map->size * tile_map->scale)),
-                    (int)floor(event_target_coords.y / (tile_map->size * tile_map->scale)),
+                    (int)floor(event_target_coords.x / (tile_map.size * tile_map.scale)),
+                    (int)floor(event_target_coords.y / (tile_map.size * tile_map.scale)),
                     (int)current_rotation,
                     selected_tile_index 
                 }
@@ -151,7 +147,7 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
     }
 
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::W) {
-        this->room->WriteRoomToFile("./assets/maps/room.bin");
+        this->room.WriteRoomToFile("./assets/maps/room.bin");
     }
 
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space) {
@@ -212,27 +208,27 @@ void RoomScene::Draw(sf::RenderTarget& target) {
     // Draw Room and Grid
     room_render_texture->setView(*room_view);
     room_render_texture->clear();
-    this->room->DrawRoom(*room_render_texture, *tile_map);
+    this->room.DrawRoom(*room_render_texture, tile_map);
 
 
     if (editor_enabled) {
         DrawGrid(
             *room_render_texture, 
-            this->room->bounds.height, 
-            this->room->bounds.width, 
-            tile_map->size * tile_map->scale
+            this->room.bounds.height, 
+            this->room.bounds.width, 
+            tile_map.size * tile_map.scale
         );
 
         // Draw Selected Tile
-        sf::Sprite selected_tile_sprite((*tile_map->tiles)[selected_tile_index]);
-        selected_tile_sprite.setScale(sf::Vector2f(tile_map->scale, tile_map->scale));
-        int half_tile_size = tile_map->size * tile_map->scale / 2;
+        sf::Sprite selected_tile_sprite((*tile_map.tiles)[selected_tile_index]);
+        selected_tile_sprite.setScale(sf::Vector2f(tile_map.scale, tile_map.scale));
+        int half_tile_size = tile_map.size * tile_map.scale / 2;
         selected_tile_sprite.setPosition(
-            (current_mouse_grid_position->x * tile_map->size * tile_map->scale) + half_tile_size,
-            (current_mouse_grid_position->y * tile_map->size * tile_map->scale) + half_tile_size
+            (current_mouse_grid_position->x * tile_map.size * tile_map.scale) + half_tile_size,
+            (current_mouse_grid_position->y * tile_map.size * tile_map.scale) + half_tile_size
         );
         selected_tile_sprite.setColor(sf::Color(255, 255, 255, 170));
-        selected_tile_sprite.setOrigin(tile_map->size / 2, tile_map->size / 2);
+        selected_tile_sprite.setOrigin(tile_map.size / 2, tile_map.size / 2);
         selected_tile_sprite.rotate(current_rotation);
 
         room_render_texture->draw(selected_tile_sprite);
