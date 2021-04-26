@@ -19,7 +19,7 @@ int main(int argc, char** argv)
     
     Room room = argc == 2 ? Room(argv[1]) : Room(20, 20, window_height, window_width);
 
-    RoomScene room_scene(tile_map, window_height, window_width, &room);
+    RoomScene room_scene(tile_map, window_height, window_width, room);
 
 
     while (window.isOpen())
