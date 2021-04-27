@@ -4,38 +4,34 @@
 
 RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width, Room &room) 
     : editor_enabled(true), room(room), tile_map(tile_map) {
-    int offset = 20;
+    offset = 20;
     int left_toolbar_width = offset * 2 + tile_map.tileSize();
 
-    sf::RectangleShape* selection = new sf::RectangleShape();
-    selection->setSize(sf::Vector2f(tile_map.tileSize(), tile_map.tileSize()));
-    selection->setOutlineColor(sf::Color::Blue);
-    selection->setOutlineThickness(2);
-    selection->setFillColor(sf::Color::Transparent);
+    selection_rectangle = new sf::RectangleShape();
+    selection_rectangle->setSize(sf::Vector2f(tile_map.tileSize(), tile_map.tileSize()));
+    selection_rectangle->setOutlineColor(sf::Color::Blue);
+    selection_rectangle->setOutlineThickness(2);
+    selection_rectangle->setFillColor(sf::Color::Transparent);
 
-
-    this->selection_rectangle = selection;
-    this->tiles = new std::vector<sf::Sprite>(*tile_map.tiles);
-    int total_height = (this->tiles->size() * (tile_map.tileSize() + offset)) + offset;
-    sf::RectangleShape* background = new sf::RectangleShape(sf::Vector2f(left_toolbar_width, total_height));
+    tiles = new std::vector<sf::Sprite>(*tile_map.tiles);
+    int total_height = (tiles->size() * (tile_map.tileSize() + offset)) + offset;
+    background = new sf::RectangleShape(sf::Vector2f(left_toolbar_width, total_height));
     background->setFillColor(sf::Color(60,60,60, 255));
-    this->background = background;
 
-    this->offset = offset;
-    this->selected_tile_index = 0;
+    selected_tile_index = 0;
 
-    this->tile_palette_render_texture = new sf::RenderTexture();
-    this->tile_palette_render_texture->create(left_toolbar_width, window_height); 
-    this->tile_palette_view = new sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
+    tile_palette_render_texture = new sf::RenderTexture();
+    tile_palette_render_texture->create(left_toolbar_width, window_height); 
+    tile_palette_view = new sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
 
-    this->room_render_texture = new sf::RenderTexture();
-    this->room_render_texture->create(window_width, window_height); 
-    this->room_view = new sf::View(sf::FloatRect(0, 0, window_height, window_height));
+    room_render_texture = new sf::RenderTexture();
+    room_render_texture->create(window_width, window_height); 
+    room_view = new sf::View(sf::FloatRect(0, 0, window_height, window_height));
 
-    this->current_mouse_grid_position = new sf::Vector2i();
-    this->panning = false;
-    this->last_mouse_position = sf::Vector2i();
-    this->current_rotation = 0;
+    current_mouse_grid_position = new sf::Vector2i();
+    panning = false;
+    last_mouse_position = sf::Vector2i();
+    current_rotation = 0;
 }
 
 RoomScene::~RoomScene() {
@@ -89,11 +85,11 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
             sf::Vector2i(event.mouseButton.x, event.mouseButton.y)
         );
         
-        sf::IntRect pixel_bounds = sf::IntRect(
+        sf::IntRect pixel_bounds(
             0, 
-            0, 
-            this->room.bounds.width * tile_map.tileSize(),
-            this->room.bounds.height * tile_map.tileSize()
+            0,
+            room.bounds.width * tile_map.tileSize(),
+            room.bounds.height * tile_map.tileSize()
         );
 
 
@@ -101,9 +97,8 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
             !background->getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))
         ) {
 
-
-            for (auto it = this->room.tiles->begin(); it != this->room.tiles->end(); ) {
-                sf::FloatRect current_tile_bounds = sf::FloatRect(
+            for (auto it = room.tiles->begin(); it != room.tiles->end(); ) {
+                sf::FloatRect current_tile_bounds(
                     it->x * tile_map.tileSize(),
                     it->y * tile_map.tileSize(),
                     tile_map.tileSize(),
@@ -111,14 +106,14 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
                 );
                 
                 if (current_tile_bounds.contains(event_target_coords)) {
-                    this->room.tiles->erase(it);
+                    room.tiles->erase(it);
                     break;
                 } else {
                     ++it;
                 }
             }
 
-            this->room.tiles->push_back(
+            room.tiles->push_back(
                 Tile { 
                     (int)floor(event_target_coords.x / tile_map.tileSize()),
                     (int)floor(event_target_coords.y / tile_map.tileSize()),
@@ -147,7 +142,7 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
     }
 
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::W) {
-        this->room.WriteRoomToFile("./assets/maps/room.bin");
+        room.WriteRoomToFile("./assets/maps/room.bin");
     }
 
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space) {
@@ -163,7 +158,7 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
         current_rotation += 90;
     }
 
-    sf::Vector2i mouse_delta = sf::Vector2i(
+    sf::Vector2i mouse_delta(
         current_mouse_position.x - last_mouse_position.x, 
         current_mouse_position.y - last_mouse_position.y
     );
@@ -208,14 +203,14 @@ void RoomScene::Draw(sf::RenderTarget& target) {
     // Draw Room and Grid
     room_render_texture->setView(*room_view);
     room_render_texture->clear();
-    this->room.DrawRoom(*room_render_texture, tile_map);
+    room.DrawRoom(*room_render_texture, tile_map);
 
 
     if (editor_enabled) {
         DrawGrid(
-            *room_render_texture, 
-            this->room.bounds.height, 
-            this->room.bounds.width, 
+            *room_render_texture,
+            room.bounds.height, 
+            room.bounds.width, 
             tile_map.tileSize()
         );
 

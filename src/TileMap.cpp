@@ -1,7 +1,7 @@
 #include "TileMap.h"
 
 sf::Sprite CreateTileSprite(int tile_map_x, int tile_map_y, int scale, int size, sf::Texture& texture) {
-	sf::Sprite sprite = sf::Sprite();
+	sf::Sprite sprite;
 	sprite.setTextureRect(
 		sf::IntRect(
 			size * tile_map_x, 
