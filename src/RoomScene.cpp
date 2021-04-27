@@ -85,7 +85,7 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
             sf::Vector2i(event.mouseButton.x, event.mouseButton.y)
         );
         
-        sf::IntRect pixel_bounds = sf::IntRect(
+        sf::IntRect pixel_bounds(
             0, 
             0, 
             room.bounds.width * tile_map.size * tile_map.scale,
@@ -99,7 +99,7 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
 
 
             for (auto it = room.tiles->begin(); it != room.tiles->end(); ) {
-                sf::FloatRect current_tile_bounds = sf::FloatRect(
+                sf::FloatRect current_tile_bounds(
                     it->x * (tile_map.size * tile_map.scale),
                     it->y * (tile_map.size * tile_map.scale),
                     tile_map.size * tile_map.scale,
@@ -159,7 +159,7 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
         current_rotation += 90;
     }
 
-    sf::Vector2i mouse_delta = sf::Vector2i(
+    sf::Vector2i mouse_delta(
         current_mouse_position.x - last_mouse_position.x, 
         current_mouse_position.y - last_mouse_position.y
     );
