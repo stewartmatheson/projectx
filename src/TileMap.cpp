@@ -37,6 +37,7 @@ TileMap::TileMap (std::string texture_path, int scale, int size, int cols, int r
 
 TileMap::~TileMap() {
 	delete texture;
+	delete tiles;
 }
 
 int TileMap::tileSize() {

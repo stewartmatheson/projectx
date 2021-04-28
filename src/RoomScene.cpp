@@ -28,16 +28,18 @@ RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width, Roo
 
     current_mouse_grid_position = new sf::Vector2i();
     last_mouse_position = sf::Vector2i();
+
 }
 
 RoomScene::~RoomScene() {
-    delete selection_rectangle;
     delete background;
-    delete tiles;
-    delete tile_palette_view;
     delete current_mouse_grid_position;
     delete room_render_texture;
     delete room_view;
+    delete selection_rectangle;
+    delete tile_palette_render_texture;
+    delete tile_palette_view;
+    delete tiles;
 }
 
 void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_position) {
@@ -168,6 +170,7 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
     if (event.type == sf::Event::Resized) {
         std::cout << event.size.width << std::endl;
         room_view->setSize(event.size.width, event.size.height);
+        delete room_render_texture;
         room_render_texture = new sf::RenderTexture();
         room_render_texture->create(event.size.width, event.size.height); 
     }
