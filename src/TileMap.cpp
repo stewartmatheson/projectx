@@ -16,7 +16,8 @@ sf::Sprite CreateTileSprite(int tile_map_x, int tile_map_y, int scale, int size,
 	return sprite;
 }
 
-TileMap::TileMap (std::string texture_path, int scale, int size, int cols, int rows) {
+TileMap::TileMap (std::string texture_path, int scale, int size, int cols, int rows)
+	: scale(scale), size(size) {
 	sf::Texture* texture = new sf::Texture();
 	if (!texture->loadFromFile(texture_path)) {
 		std::cout << "Can't laod file" << std::endl;
@@ -30,8 +31,6 @@ TileMap::TileMap (std::string texture_path, int scale, int size, int cols, int r
 		}
 	}
 
-	this->size = size;
-	this->scale = scale;
 	this->texture = texture;
 	this->tiles = tile_sprites;
 };

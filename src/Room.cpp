@@ -69,8 +69,8 @@ Room::Room(std::string file_name) {
     }
 }
 
-Room::Room(int map_height, int map_width, int window_width, int window_height) {
-    bounds = sf::IntRect(0, 0, map_width, map_height);
+Room::Room(int map_height, int map_width, int window_width, int window_height)
+    : bounds(0, 0, map_width, map_height) {
     tiles = new std::vector<Tile>();
 }
 

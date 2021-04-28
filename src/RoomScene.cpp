@@ -3,8 +3,8 @@
 #include "RoomScene.h"
 
 RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width, Room &room) 
-    : editor_enabled(true), room(room), tile_map(tile_map) {
-    offset = 20;
+    : current_rotation(0), editor_enabled(true), offset(20), panning(false),
+    room(room), selected_tile_index(0), tile_map(tile_map) {
     int left_toolbar_width = offset * 2 + tile_map.tileSize();
 
     selection_rectangle = new sf::RectangleShape();
@@ -18,8 +18,6 @@ RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width, Roo
     background = new sf::RectangleShape(sf::Vector2f(left_toolbar_width, total_height));
     background->setFillColor(sf::Color(60,60,60, 255));
 
-    selected_tile_index = 0;
-
     tile_palette_render_texture = new sf::RenderTexture();
     tile_palette_render_texture->create(left_toolbar_width, window_height); 
     tile_palette_view = new sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
@@ -29,9 +27,7 @@ RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width, Roo
     room_view = new sf::View(sf::FloatRect(0, 0, window_height, window_height));
 
     current_mouse_grid_position = new sf::Vector2i();
-    panning = false;
     last_mouse_position = sf::Vector2i();
-    current_rotation = 0;
 }
 
 RoomScene::~RoomScene() {
