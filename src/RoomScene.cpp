@@ -173,6 +173,7 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
     if (event.type == sf::Event::Resized) {
         std::cout << event.size.width << std::endl;
         room_view->setSize(event.size.width, event.size.height);
+        delete room_render_texture;
         room_render_texture = new sf::RenderTexture();
         room_render_texture->create(event.size.width, event.size.height); 
     }
