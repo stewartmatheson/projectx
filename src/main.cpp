@@ -18,7 +18,7 @@ int main(int argc, char** argv)
             );
     
     Room room = argc == 2 ? Room(argv[1]) : Room(20, 20, window_height, window_width);
-    Entity player = Entity(1.f);
+    Entity player = Entity(15.f, .01f);
 
     RoomScene room_scene(tile_map, window_height, window_width, room, player);
 
