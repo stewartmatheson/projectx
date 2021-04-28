@@ -30,7 +30,6 @@ RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width, Roo
 
     current_mouse_grid_position = new sf::Vector2i();
     panning = false;
-    last_mouse_position = sf::Vector2i();
     current_rotation = 0;
 }
 
