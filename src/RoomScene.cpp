@@ -1,10 +1,11 @@
 #include <math.h>
 #include <fstream>
 #include "RoomScene.h"
+#include "Entity.h"
 
-RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width, Room &room) 
+RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width, Room &room, Entity &player) 
     : current_rotation(0), editor_enabled(true), offset(20), panning(false),
-    room(room), selected_tile_index(0), tile_map(tile_map) {
+    room(room), selected_tile_index(0), tile_map(tile_map), player(player) {
     int left_toolbar_width = offset * 2 + tile_map.tileSize();
 
     selection_rectangle = new sf::RectangleShape();
@@ -48,8 +49,10 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
     }
 
     if (!editor_enabled) {
+        player.Update(event);
         return;
     }
+
     selection_rectangle->setPosition((*tiles)[selected_tile_index].getPosition());
     for(int i = 0; i < tiles->size(); i ++) {
         int current_y_pos = 
@@ -199,11 +202,14 @@ void DrawGrid(sf::RenderTarget &target, int grid_height, int grid_width, int siz
 }
 
 void RoomScene::Draw(sf::RenderTarget& target) {
+    room_view->setCenter(player.getTransform());
+
     // Draw Room and Grid
     room_render_texture->setView(*room_view);
     room_render_texture->clear();
     room.DrawRoom(*room_render_texture, tile_map);
 
+    player.Draw(*room_render_texture);
 
     if (editor_enabled) {
         DrawGrid(

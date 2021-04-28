@@ -13,9 +13,11 @@ add_executable(ProjectX
   headers/RoomScene.h
   headers/Room.h
   headers/TileMap.h
+  headers/Entity.h
   src/RoomScene.cpp
   src/Room.cpp
   src/TileMap.cpp
+  src/Entity.cpp
   src/main.cpp
 )
 target_include_directories(ProjectX

@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "TileMap.h"
 #include "Room.h"
+#include "Entity.h"
 
 /**
  * An editor contains all data required to add, remove and edit tiles on a given map
@@ -44,10 +45,13 @@ class RoomScene {
     sf::RenderTexture* room_render_texture;
 
     Room &room;
+    
+    Entity &player;
 
     bool editor_enabled;
+
 public:
-    RoomScene(TileMap &, int, int, Room &);
+    RoomScene(TileMap &, int, int, Room &, Entity &);
     ~RoomScene();
     void Draw(sf::RenderTarget &);
     void Update(const sf::Event &, const sf::Vector2i);
