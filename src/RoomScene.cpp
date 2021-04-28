@@ -35,13 +35,14 @@ RoomScene::RoomScene(TileMap &tile_map, int window_height, int window_width, Roo
 }
 
 RoomScene::~RoomScene() {
-    delete selection_rectangle;
     delete background;
-    delete tiles;
-    delete tile_palette_view;
     delete current_mouse_grid_position;
     delete room_render_texture;
     delete room_view;
+    delete selection_rectangle;
+    delete tile_palette_render_texture;
+    delete tile_palette_view;
+    delete tiles;
 }
 
 void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_position) {
