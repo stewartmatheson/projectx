@@ -23,8 +23,8 @@ SpriteSheet::~SpriteSheet() {
 }
 
 sf::Sprite SpriteSheet::CreateTileSprite(int tile_map_x, int tile_map_y, int scale, int size) {
-	sf::Sprite sprite;
-	sprite.setTextureRect(
+	sf::Sprite sprite(
+		texture,
 		sf::IntRect(
 			size * tile_map_x, 
 			size * tile_map_y, 
@@ -33,7 +33,6 @@ sf::Sprite SpriteSheet::CreateTileSprite(int tile_map_x, int tile_map_y, int sca
 		)
 	);
 
-	sprite.setTexture(texture);
 	sprite.setScale(scale, scale);
 	return sprite;
 }
