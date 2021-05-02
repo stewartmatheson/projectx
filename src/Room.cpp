@@ -9,31 +9,15 @@ Room::Room(std::string file_name) {
         exit(1);
     }
    
+    rf.read(reinterpret_cast<char *>(&bounds.left), sizeof (bounds.left));
 
-    int bounds_left, bounds_top, bounds_width, bounds_height;
+    rf.read(reinterpret_cast<char *>(&bounds.top), sizeof (bounds.top));
 
-    rf.read(
-        reinterpret_cast<char *>(&bounds_left), 
-        sizeof (bounds_left)
-    );
+    rf.read(reinterpret_cast<char *>(&bounds.width), sizeof (bounds.width));
 
-    rf.read(
-        reinterpret_cast<char *>(&bounds_top), 
-        sizeof (bounds_top)
-    );
-
-    rf.read(
-        reinterpret_cast<char *>(&bounds_width), 
-        sizeof (bounds_width)
-    );
-
-    rf.read(
-        reinterpret_cast<char *>(&bounds_height), 
-        sizeof (bounds_height)
-    );
+    rf.read(reinterpret_cast<char *>(&bounds.height), sizeof (bounds.height));
 
     tiles = new std::vector<Tile>();
-    bounds = sf::IntRect(bounds_left, bounds_top, bounds_width, bounds_height);
 
 
     int room_tile_count;
