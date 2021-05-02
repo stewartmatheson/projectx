@@ -1,27 +1,43 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "TileMap.h"
+#include <vector>
+#include <unordered_map>
+#include "SpriteSheet.h"
 #include "RoomScene.h"
 
 int main(int argc, char** argv)
 {
     int window_width = 1400;
     int window_height = 1400;
-    int tile_size = 16;
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML works!");
-    TileMap tile_map(
-            "./assets/tilemap.png", 
-            4, // Tile scale factor
-            tile_size, // Pixel size of tile in tilemap texture
-            5,
-            7
-            );
+
+    SpriteSheet tile_map(
+        "./assets/tilemap.png", 
+        4, // Tile scale factor
+        16, // Pixel size of tile in tilemap texture
+        5,
+        7
+    );
+
+    SpriteSheet player_sprite_sheet(
+        "./assets/NightThief.png", 
+        4, // Tile scale factor
+        320, // Pixel size of tile in tilemap texture
+        1,
+        1
+    );
+
+    std::vector<AnimationFrame> idle_frames;
+    for (int col = 0; col < 10; col++) {
+        idle_frames.push_back(AnimationFrame{col, 0});
+    }
+    std::unordered_map<std::string, Animation> player_animations = {
+        {"idle", Animation(player_sprite_sheet, idle_frames, 32, 32, 160) }
+    };
+    Entity player = Entity(15.f, .01f, player_animations);
     
     Room room = argc == 2 ? Room(argv[1]) : Room(20, 20, window_height, window_width);
-    Entity player = Entity(15.f, .01f);
-
     RoomScene room_scene(tile_map, window_height, window_width, room, player);
-
 
     while (window.isOpen())
     {

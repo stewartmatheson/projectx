@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "TileMap.h"
+#include "SpriteSheet.h"
 #include "Room.h"
 #include "Entity.h"
 
@@ -24,7 +24,7 @@ class RoomScene {
     // The offset defines gaps between the tiles on the left hand tile editor
     int offset;
 
-    TileMap &tile_map;
+    SpriteSheet &tile_map;
 
     // The currently selected tile index. This is the index for the tiles vector
     int selected_tile_index;
@@ -51,8 +51,10 @@ class RoomScene {
     bool editor_enabled;
 
 public:
-    RoomScene(TileMap &, int, int, Room &, Entity &);
+    RoomScene(SpriteSheet &, int, int, Room &, Entity &);
     ~RoomScene();
     void Draw(sf::RenderTarget &);
     void Update(const sf::Event &, const sf::Vector2i);
 };
+
+

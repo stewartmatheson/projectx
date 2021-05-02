@@ -59,3 +59,6 @@ The loot system will determine the players final score in a given game.
 ## Why
 I don't know. Because. To learn C++. To make a fun game. Stop asking me so many questions.
 
+# Resources
+
+ * https://gamefromscratch.com/sfml-c-tutorial-spritesheets-and-animation/

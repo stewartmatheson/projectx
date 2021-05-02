@@ -1,7 +1,8 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "TileMap.h"
+#include "Tile.h"
+#include "SpriteSheet.h"
 
 // A map holds all data for a given tile layout within the game.
 struct Room {
@@ -23,9 +24,8 @@ struct Room {
 	Room(int, int, int, int);
 	~Room();
 
-	void DrawRoom(sf::RenderTarget &, TileMap &);
+	void DrawRoom(sf::RenderTarget &, SpriteSheet &);
 
 	void WriteRoomToFile(std::string);
 };
-
 

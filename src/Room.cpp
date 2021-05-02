@@ -78,14 +78,14 @@ Room::~Room() {
     delete tiles;
 }
 
-void Room::DrawRoom(sf::RenderTarget& target, TileMap& tile_map) {
+void Room::DrawRoom(sf::RenderTarget& target, SpriteSheet& tile_map) {
     for(Tile tile : *tiles) {
         sf::Sprite sprite_to_draw((*tile_map.tiles)[tile.tile_map_index]);
         sprite_to_draw.setRotation(tile.rotation);
-        int half_tile_size = tile_map.tileSize() / 2;
+        int half_tile_size = tile_map.SpriteSize() / 2;
         sprite_to_draw.setPosition(
-            (tile.x * tile_map.tileSize()) + half_tile_size,
-            (tile.y * tile_map.tileSize()) + half_tile_size
+            (tile.x * tile_map.SpriteSize()) + half_tile_size,
+            (tile.y * tile_map.SpriteSize()) + half_tile_size
         );
         sprite_to_draw.setOrigin(tile_map.size / 2, tile_map.size / 2);
         target.draw(sprite_to_draw);

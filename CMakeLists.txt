@@ -10,13 +10,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(ProjectX
+  headers/Animation.h
+  headers/Tile.h
   headers/RoomScene.h
   headers/Room.h
-  headers/TileMap.h
+  headers/SpriteSheet.h
   headers/Entity.h
+  src/Animation.cpp
   src/RoomScene.cpp
   src/Room.cpp
-  src/TileMap.cpp
+  src/SpriteSheet.cpp
   src/Entity.cpp
   src/main.cpp
 )
