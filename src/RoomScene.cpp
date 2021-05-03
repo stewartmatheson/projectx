@@ -8,8 +8,10 @@ RoomScene::RoomScene(SpriteSheet &tile_map, int window_height, int window_width,
     room(room), selected_tile_index(0), tile_map(tile_map), player(player) {
     int left_toolbar_width = offset * 2 + tile_map.SpriteSize();
 
-    selection_rectangle = new sf::RectangleShape();
-    selection_rectangle->setSize(sf::Vector2f(tile_map.SpriteSize(), tile_map.SpriteSize()));
+    selection_rectangle = new sf::RectangleShape(sf::Vector2f(
+        tile_map.SpriteSize(),
+        tile_map.SpriteSize()
+    ));
     selection_rectangle->setOutlineColor(sf::Color::Blue);
     selection_rectangle->setOutlineThickness(2);
     selection_rectangle->setFillColor(sf::Color::Transparent);
