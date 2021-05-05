@@ -1,9 +1,15 @@
 #include "Animation.h"
 
 Animation::Animation(SpriteSheet & sprite_sheet, std::vector<AnimationFrame> animation_frames, int frame_width, int frame_height, int speed) 
-    : sprite_sheet(sprite_sheet), animation_frames(animation_frames), frame_width(frame_width), frame_height(frame_height), speed(speed) {
+    :   sprite_sheet(sprite_sheet), 
+        animation_frames(animation_frames), 
+        frame_width(frame_width), 
+        frame_height(frame_height), 
+        speed(speed),
+        current_frame_counter(0) {
     sprite.setTexture(sprite_sheet.texture);
     sprite.setScale(sprite_sheet.scale, sprite_sheet.scale);
+    sprite.setOrigin(frame_width / 2, frame_height / 2);
 }
 
 void Animation::Update ()  {
@@ -15,7 +21,7 @@ void Animation::Update ()  {
     );
 
     sprite.setTextureRect(current_frame_rect);
-    if (current_frame_counter == (animation_frames.size() * speed) - speed) {
+    if (current_frame_counter == (animation_frames.size() * speed) - (speed * 2)) {
         current_frame_counter = 0;
     } else {
         current_frame_counter++;

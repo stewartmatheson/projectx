@@ -3,7 +3,8 @@
 Entity::Entity(float speed, float acceleration) : 
     speed(speed), 
     acceleration(acceleration), 
-    animations() {}
+    animations(),
+    facing_left(true) {}
 
 Entity::Entity(
     float speed, 
@@ -39,7 +40,34 @@ void Entity::Draw(sf::RenderTarget &target) {
     direction.y = ((controller.y * speed) - direction.y) * acceleration;
     transform = transform + direction;
 
-    auto current_animation = animations.find("idle");
+    std::string current_animation_key = "idle";
+
+    if (controller.x != 0 || controller.y != 0) {
+        current_animation_key = "walk";
+    } 
+
+    auto current_animation = animations.find(current_animation_key);
+
+    if (facing_left && controller.x > 0) {
+        facing_left = false;
+    }
+
+    if (!facing_left && controller.x < 0) {
+        facing_left = true;
+    }
+
+    if (facing_left) {
+        current_animation->second.sprite.setScale(
+            -4,
+            current_animation->second.sprite.getScale().y
+        );
+    } else {
+        current_animation->second.sprite.setScale(
+            4,
+            current_animation->second.sprite.getScale().y
+        );
+    } 
+
     if(current_animation != animations.end()) {
         current_animation->second.Update();
         current_animation->second.sprite.setPosition(transform);
@@ -50,7 +78,9 @@ void Entity::Draw(sf::RenderTarget &target) {
         no_sprite.setPosition(transform);
         target.draw(no_sprite);
     }
+
 }
+
 
 sf::Vector2f Entity::getTransform() {
     return transform;

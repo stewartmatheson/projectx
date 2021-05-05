@@ -12,6 +12,7 @@ class Entity {
     sf::Vector2f controller;
     float speed;
     float acceleration;
+    bool facing_left;
     std::unordered_map<std::string, Animation> animations;
 
 public:

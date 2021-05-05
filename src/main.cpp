@@ -10,6 +10,7 @@ int main(int argc, char** argv)
     int window_width = 1400;
     int window_height = 1400;
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML works!");
+    window.setFramerateLimit(60);
 
     SpriteSheet tile_map(
         "./assets/tilemap.png", 
@@ -31,10 +32,17 @@ int main(int argc, char** argv)
     for (int col = 0; col < 10; col++) {
         idle_frames.push_back(AnimationFrame{col, 0});
     }
+
+    std::vector<AnimationFrame> walk_frames;
+    for (int col = 0; col < 10; col++) {
+        walk_frames.push_back(AnimationFrame{col, 2});
+    }
+
     std::unordered_map<std::string, Animation> player_animations = {
-        {"idle", Animation(player_sprite_sheet, idle_frames, 32, 32, 160) }
+        {"idle", Animation(player_sprite_sheet, idle_frames, 32, 32, 8) },
+        {"walk", Animation(player_sprite_sheet, walk_frames, 32, 32, 8) }
     };
-    Entity player = Entity(15.f, .01f, player_animations);
+    Entity player = Entity(500.f, .01f, player_animations);
     
     Room room = argc == 2 ? Room(argv[1]) : Room(20, 20, window_height, window_width);
     RoomScene room_scene(tile_map, window_height, window_width, room, player);
@@ -46,7 +54,6 @@ int main(int argc, char** argv)
         {
             if(event.type == sf::Event::Resized) {
                 sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
-                std::cout << event.size.width << std::endl;
                 window.setView(sf::View(visibleArea));
             }
 
