@@ -48,6 +48,7 @@ RoomScene::~RoomScene() {
 void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_position) {
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::E) {
         editor_enabled = !editor_enabled;
+        player.Reset();
     }
 
     if (!editor_enabled) {

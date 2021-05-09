@@ -21,6 +21,7 @@ public:
     sf::Vector2f getTransform();
     void Update(const sf::Event &);
     void Draw(sf::RenderTarget &);
+    void Reset();
 };
 
 

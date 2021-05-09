@@ -85,3 +85,8 @@ void Entity::Draw(sf::RenderTarget &target) {
 sf::Vector2f Entity::getTransform() {
     return transform;
 }
+
+void Entity::Reset() {
+    controller.x = 0;
+    controller.y = 0;
+}
