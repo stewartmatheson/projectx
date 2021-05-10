@@ -1,11 +1,11 @@
 #include <math.h>
 #include <fstream>
-#include "RoomScene.h"
+#include "HouseScene.h"
 #include "Entity.h"
 
-RoomScene::RoomScene(SpriteSheet &tile_map, int window_height, int window_width, Room &room, Entity &player) 
+HouseScene::HouseScene(SpriteSheet &tile_map, int window_height, int window_width, House &house, Entity &player) 
     : current_rotation(0), editor_enabled(true), offset(20), panning(false),
-    room(room), selected_tile_index(0), tile_map(tile_map), player(player) {
+    house(house), selected_tile_index(0), tile_map(tile_map), player(player) {
     int left_toolbar_width = offset * 2 + tile_map.SpriteSize();
 
     selection_rectangle = new sf::RectangleShape(sf::Vector2f(
@@ -25,27 +25,27 @@ RoomScene::RoomScene(SpriteSheet &tile_map, int window_height, int window_width,
     tile_palette_render_texture->create(left_toolbar_width, window_height); 
     tile_palette_view = new sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
 
-    room_render_texture = new sf::RenderTexture();
-    room_render_texture->create(window_width, window_height); 
-    room_view = new sf::View(sf::FloatRect(0, 0, window_height, window_height));
+    house_render_texture = new sf::RenderTexture();
+    house_render_texture->create(window_width, window_height); 
+    house_view = new sf::View(sf::FloatRect(0, 0, window_height, window_height));
 
     current_mouse_grid_position = new sf::Vector2i();
     last_mouse_position = sf::Vector2i();
 
 }
 
-RoomScene::~RoomScene() {
+HouseScene::~HouseScene() {
     delete background;
     delete current_mouse_grid_position;
-    delete room_render_texture;
-    delete room_view;
+    delete house_render_texture;
+    delete house_view;
     delete selection_rectangle;
     delete tile_palette_render_texture;
     delete tile_palette_view;
     delete tiles;
 }
 
-void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_position) {
+void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_position) {
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::E) {
         editor_enabled = !editor_enabled;
         player.Reset();
@@ -64,7 +64,7 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
         (*tiles)[i].setPosition(offset, current_y_pos);
     }
 
-    sf::Vector2f current_target_coords = room_render_texture->mapPixelToCoords(
+    sf::Vector2f current_target_coords = house_render_texture->mapPixelToCoords(
             sf::Vector2i(current_mouse_position.x, current_mouse_position.y)
     );
 
@@ -85,15 +85,15 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
             current_event_tile_index++;
         }
         
-        sf::Vector2f event_target_coords = room_render_texture->mapPixelToCoords(
+        sf::Vector2f event_target_coords = house_render_texture->mapPixelToCoords(
             sf::Vector2i(event.mouseButton.x, event.mouseButton.y)
         );
         
         sf::IntRect pixel_bounds(
             0, 
             0,
-            room.bounds.width * tile_map.SpriteSize(),
-            room.bounds.height * tile_map.SpriteSize()
+            house.bounds.width * tile_map.SpriteSize(),
+            house.bounds.height * tile_map.SpriteSize()
         );
 
 
@@ -101,7 +101,7 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
             !background->getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))
         ) {
 
-            for (auto it = room.tiles->begin(); it != room.tiles->end(); ) {
+            for (auto it = house.tiles->begin(); it != house.tiles->end(); ) {
                 sf::FloatRect current_tile_bounds(
                     it->x * tile_map.SpriteSize(),
                     it->y * tile_map.SpriteSize(),
@@ -110,14 +110,14 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
                 );
                 
                 if (current_tile_bounds.contains(event_target_coords)) {
-                    room.tiles->erase(it);
+                    house.tiles->erase(it);
                     break;
                 } else {
                     ++it;
                 }
             }
 
-            room.tiles->push_back(
+            house.tiles->push_back(
                 Tile { 
                     (int)floor(event_target_coords.x / tile_map.SpriteSize()),
                     (int)floor(event_target_coords.y / tile_map.SpriteSize()),
@@ -146,7 +146,7 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
     }
 
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::W) {
-        room.WriteRoomToFile("./assets/maps/room.bin");
+        house.WriteToFile("./assets/maps/room.bin");
     }
 
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space) {
@@ -170,14 +170,14 @@ void RoomScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_
     last_mouse_position = current_mouse_position;
 
     if (panning) {
-        room_view->move(sf::Vector2f(mouse_delta.x * -1, mouse_delta.y * -1));
+        house_view->move(sf::Vector2f(mouse_delta.x * -1, mouse_delta.y * -1));
     }
 
     if (event.type == sf::Event::Resized) {
-        room_view->setSize(event.size.width, event.size.height);
-        delete room_render_texture;
-        room_render_texture = new sf::RenderTexture();
-        room_render_texture->create(event.size.width, event.size.height); 
+        house_view->setSize(event.size.width, event.size.height);
+        delete house_render_texture;
+        house_render_texture = new sf::RenderTexture();
+        house_render_texture->create(event.size.width, event.size.height); 
     }
  
 }
@@ -203,23 +203,23 @@ void DrawGrid(sf::RenderTarget &target, int grid_height, int grid_width, int siz
     }
 }
 
-void RoomScene::Draw(sf::RenderTarget& target) {
+void HouseScene::Draw(sf::RenderTarget& target) {
     if (!editor_enabled) {
-        room_view->setCenter(player.getTransform());
+        house_view->setCenter(player.getTransform());
     }
 
     // Draw Room and Grid
-    room_render_texture->setView(*room_view);
-    room_render_texture->clear();
-    room.DrawRoom(*room_render_texture, tile_map);
+    house_render_texture->setView(*house_view);
+    house_render_texture->clear();
+    house.Draw(*house_render_texture, tile_map);
 
-    player.Draw(*room_render_texture);
+    player.Draw(*house_render_texture);
 
     if (editor_enabled) {
         DrawGrid(
-            *room_render_texture,
-            room.bounds.height, 
-            room.bounds.width, 
+            *house_render_texture,
+            house.bounds.height, 
+            house.bounds.width, 
             tile_map.SpriteSize()
         );
 
@@ -235,14 +235,14 @@ void RoomScene::Draw(sf::RenderTarget& target) {
         selected_tile_sprite.setOrigin(tile_map.size / 2, tile_map.size / 2);
         selected_tile_sprite.rotate(current_rotation);
 
-        room_render_texture->draw(selected_tile_sprite);
-        room_render_texture->display();
+        house_render_texture->draw(selected_tile_sprite);
+        house_render_texture->display();
     }
 
 
-    sf::Sprite room_render_sprite(room_render_texture->getTexture());
+    sf::Sprite house_render_sprite(house_render_texture->getTexture());
     sf::View current_window_view = target.getView();
-    target.draw(room_render_sprite);
+    target.draw(house_render_sprite);
 
     if (editor_enabled) {
         //Draw Tile Palette

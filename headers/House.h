@@ -5,7 +5,7 @@
 #include "SpriteSheet.h"
 
 // A map holds all data for a given tile layout within the game.
-struct Room {
+struct House {
     sf::IntRect bounds;
 	// std::vector<sf::Sprite>* tiles;
 	std::vector<Tile>* tiles;
@@ -20,12 +20,12 @@ struct Room {
 	 *
 	 * @return The created room
 	 */
-	Room(std::string);
-	Room(int, int, int, int);
-	~Room();
+	House(std::string);
+	House(int, int, int, int);
+	~House();
 
-	void DrawRoom(sf::RenderTarget &, SpriteSheet &);
+	void Draw(sf::RenderTarget &, SpriteSheet &);
 
-	void WriteRoomToFile(std::string);
+	void WriteToFile(std::string);
 };
 

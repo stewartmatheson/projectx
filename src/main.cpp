@@ -3,7 +3,7 @@
 #include <vector>
 #include <unordered_map>
 #include "SpriteSheet.h"
-#include "RoomScene.h"
+#include "HouseScene.h"
 
 int main(int argc, char** argv)
 {
@@ -44,8 +44,8 @@ int main(int argc, char** argv)
     };
     Entity player = Entity(500.f, .01f, player_animations);
     
-    Room room = argc == 2 ? Room(argv[1]) : Room(20, 20, window_height, window_width);
-    RoomScene room_scene(tile_map, window_height, window_width, room, player);
+    House house = argc == 2 ? House(argv[1]) : House(20, 20, window_height, window_width);
+    HouseScene house_scene(tile_map, window_height, window_width, house, player);
 
     while (window.isOpen())
     {
@@ -57,7 +57,7 @@ int main(int argc, char** argv)
                 window.setView(sf::View(visibleArea));
             }
 
-            room_scene.Update(event, sf::Mouse::getPosition(window));
+            house_scene.Update(event, sf::Mouse::getPosition(window));
          
             if (event.type == sf::Event::Closed)
                 window.close();
@@ -71,7 +71,7 @@ int main(int argc, char** argv)
         }
 
         window.clear();
-        room_scene.Draw(window);
+        house_scene.Draw(window);
 
         window.display();
     }

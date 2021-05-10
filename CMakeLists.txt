@@ -12,13 +12,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_executable(ProjectX
   headers/Animation.h
   headers/Tile.h
-  headers/RoomScene.h
-  headers/Room.h
+  headers/HouseScene.h
+  headers/House.h
   headers/SpriteSheet.h
   headers/Entity.h
   src/Animation.cpp
-  src/RoomScene.cpp
-  src/Room.cpp
+  src/HouseScene.cpp
+  src/House.cpp
   src/SpriteSheet.cpp
   src/Entity.cpp
   src/main.cpp

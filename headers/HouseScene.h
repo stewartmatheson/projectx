@@ -2,17 +2,17 @@
 
 #include <SFML/Graphics.hpp>
 #include "SpriteSheet.h"
-#include "Room.h"
+#include "House.h"
 #include "Entity.h"
 
 /**
  * An editor contains all data required to add, remove and edit tiles on a given map
  */
-class RoomScene {
+class HouseScene {
     // The blue rect around the selected tile in the tile palette
     sf::RectangleShape* selection_rectangle;	
 
-    // The current mouse room grid pos
+    // The current mouse house grid pos
     sf::Vector2i* current_mouse_grid_position;
 
     // The background shape for the tile toolbar editor
@@ -40,19 +40,19 @@ class RoomScene {
 
     bool panning;
 
-    sf::View* room_view;
+    sf::View* house_view;
 
-    sf::RenderTexture* room_render_texture;
+    sf::RenderTexture* house_render_texture;
 
-    Room &room;
+    House &house;
     
     Entity &player;
 
     bool editor_enabled;
 
 public:
-    RoomScene(SpriteSheet &, int, int, Room &, Entity &);
-    ~RoomScene();
+    HouseScene(SpriteSheet &, int, int, House &, Entity &);
+    ~HouseScene();
     void Draw(sf::RenderTarget &);
     void Update(const sf::Event &, const sf::Vector2i);
 };

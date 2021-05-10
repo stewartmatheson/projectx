@@ -1,7 +1,7 @@
 #include <fstream>
-#include "Room.h"
+#include "House.h"
 
-Room::Room(std::string file_name) {
+House::House(std::string file_name) {
     std::ifstream rf(file_name, std::ios::in | std::ios::binary);
 
     if (!rf) {
@@ -53,16 +53,16 @@ Room::Room(std::string file_name) {
     }
 }
 
-Room::Room(int map_height, int map_width, int window_width, int window_height)
+House::House(int map_height, int map_width, int window_width, int window_height)
     : bounds(0, 0, map_width, map_height) {
     tiles = new std::vector<Tile>();
 }
 
-Room::~Room() {
+House::~House() {
     delete tiles;
 }
 
-void Room::DrawRoom(sf::RenderTarget& target, SpriteSheet& tile_map) {
+void House::Draw(sf::RenderTarget& target, SpriteSheet& tile_map) {
     for(Tile tile : *tiles) {
         sf::Sprite sprite_to_draw((*tile_map.tiles)[tile.tile_map_index]);
         sprite_to_draw.setRotation(tile.rotation);
@@ -76,7 +76,7 @@ void Room::DrawRoom(sf::RenderTarget& target, SpriteSheet& tile_map) {
     }
 }
 
-void Room::WriteRoomToFile(std::string file_name) {
+void House::WriteToFile(std::string file_name) {
     std::ofstream wf(file_name, std::ios::out | std::ios::binary);
 
     if(!wf) {
