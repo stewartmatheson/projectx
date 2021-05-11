@@ -8,14 +8,12 @@ SpriteSheet::SpriteSheet (std::string texture_path, int scale, int size, int col
 		exit(1);
 	}
 
-	std::vector<sf::Sprite>* tile_sprites = new std::vector<sf::Sprite>();
+	tiles = new std::vector<sf::Sprite>();
 	for(int y = 0; y < cols; y++) {
 		for(int x = 0; x < rows; x++) {
-			tile_sprites->push_back(CreateTileSprite(x, y, scale, size));
+			tiles->push_back(CreateTileSprite(x, y, scale, size));
 		}
 	}
-
-	this->tiles = tile_sprites;
 };
 
 SpriteSheet::~SpriteSheet() {
