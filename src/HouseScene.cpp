@@ -30,7 +30,6 @@ HouseScene::HouseScene(SpriteSheet &tile_map, int window_height, int window_widt
     house_view = new sf::View(sf::FloatRect(0, 0, window_height, window_height));
 
     current_mouse_grid_position = new sf::Vector2i();
-    last_mouse_position = sf::Vector2i();
 
 }
 
