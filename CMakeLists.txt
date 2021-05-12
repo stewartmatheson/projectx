@@ -16,12 +16,14 @@ add_executable(ProjectX
   headers/House.h
   headers/SpriteSheet.h
   headers/Entity.h
+  headers/TilePaletteView.h
   src/Animation.cpp
   src/HouseScene.cpp
   src/House.cpp
   src/SpriteSheet.cpp
   src/Entity.cpp
   src/main.cpp
+  src/TilePaletteView.cpp
 )
 target_include_directories(ProjectX
   PRIVATE headers
