@@ -17,6 +17,7 @@ add_executable(ProjectX
   headers/SpriteSheet.h
   headers/Entity.h
   headers/TilePaletteView.h
+  headers/TilePaletteTile.h
   src/Animation.cpp
   src/HouseScene.cpp
   src/House.cpp

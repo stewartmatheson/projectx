@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 #include "SpriteSheet.h"
+#include "TilePaletteTile.h"
+
 
 class TilePaletteView {
 
@@ -15,7 +17,8 @@ class TilePaletteView {
     int selected_tile_index;
 
     // A list of vector of spirte tiles for rendering in the sidebar of the editor
-    std::vector<sf::Sprite>* tiles;
+    // std::vector<sf::Sprite>* tiles;
+    std::vector<TilePaletteTile> tiles;
 
     // The view for the current tile palette that appears on the left side of the window
     sf::View* tile_palette_view;

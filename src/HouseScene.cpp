@@ -1,16 +1,25 @@
 #include <math.h>
 #include <fstream>
 #include "HouseScene.h"
-#include "Entity.h"
 
-HouseScene::HouseScene(SpriteSheet &tile_map, int window_height, int window_width, House &house, Entity &player) 
-    : current_rotation(0), editor_enabled(true), panning(false),
-    house(house), tile_map(tile_map), player(player), tile_palette_view(tile_map, window_height) {
+HouseScene::HouseScene(
+        SpriteSheet &tile_map, 
+        int window_height, 
+        int window_width, 
+        House &house, 
+        Entity &player
+) : current_rotation(0), 
+    editor_enabled(true), 
+    panning(false),
+    house(house), 
+    tile_map(tile_map), 
+    player(player), 
+    tile_palette_view(tile_map, window_height) 
+{
 
     house_render_texture = new sf::RenderTexture();
     house_render_texture->create(window_width, window_height); 
     house_view = new sf::View(sf::FloatRect(0, 0, window_height, window_height));
-
     current_mouse_grid_position = new sf::Vector2i();
 }
 

@@ -1,6 +1,10 @@
 #include "TilePaletteView.h"
 
-TilePaletteView::TilePaletteView(SpriteSheet &tile_map, int window_height) : tile_map(tile_map), offset(20) {
+TilePaletteView::TilePaletteView(
+    SpriteSheet &tile_map, 
+    int window_height
+) : tile_map(tile_map), offset(20) {
+
     selection_rectangle = new sf::RectangleShape(sf::Vector2f(
         tile_map.SpriteSize(),
         tile_map.SpriteSize()
@@ -9,11 +13,13 @@ TilePaletteView::TilePaletteView(SpriteSheet &tile_map, int window_height) : til
     selection_rectangle->setOutlineThickness(2);
     selection_rectangle->setFillColor(sf::Color::Transparent);
 
-    // TODO : Do we need to copy these?
-    tiles = new std::vector<sf::Sprite>(*tile_map.tiles);
+    for (auto it = tile_map.tiles->begin(); it != tile_map.tiles->end(); ) {
+        tiles.push_back(TilePaletteTile{*it, PaletteTile});
+        ++it;
+    }
 
     int left_toolbar_width = offset * 2 + tile_map.SpriteSize();
-    int total_height = (tiles->size() * (tile_map.SpriteSize() + offset)) + offset;
+    int total_height = (tiles.size() * (tile_map.SpriteSize() + offset)) + offset;
     background = new sf::RectangleShape(sf::Vector2f(left_toolbar_width, total_height));
     background->setFillColor(sf::Color(60,60,60, 255));
 
@@ -24,20 +30,20 @@ TilePaletteView::TilePaletteView(SpriteSheet &tile_map, int window_height) : til
 
 void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
 
-    selection_rectangle->setPosition((*tiles)[selected_tile_index].getPosition());
-    for(int i = 0; i < tiles->size(); i ++) {
+    selection_rectangle->setPosition(tiles[selected_tile_index].icon.getPosition());
+    for(int i = 0; i < tiles.size(); i ++) {
         int current_y_pos = 
             (i * tile_map.SpriteSize()) + 
             (offset * i) + offset;
-        (*tiles)[i].setPosition(offset, current_y_pos);
+        tiles[i].icon.setPosition(offset, current_y_pos);
     }
 
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
         // Manage Selection Changed
         int current_event_tile_index = 0;
-        for(sf::Sprite t : *tiles) {
-            bool in_current_bound = t.getGlobalBounds().contains(
+        for(TilePaletteTile t : tiles) {
+            bool in_current_bound = t.icon.getGlobalBounds().contains(
                     tile_palette_render_texture->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y))
                     );
 
@@ -71,8 +77,8 @@ void TilePaletteView::Draw(sf::RenderTarget &target) {
     tile_palette_render_texture->setView(*tile_palette_view);
     tile_palette_render_texture->clear();
     tile_palette_render_texture->draw(*background);
-    for(sf::Sprite tile_sprite : *tiles) {
-        tile_palette_render_texture->draw(tile_sprite);
+    for(TilePaletteTile tile : tiles) {
+        tile_palette_render_texture->draw(tile.icon);
     }
     tile_palette_render_texture->draw(*selection_rectangle);
     tile_palette_render_texture->display();
