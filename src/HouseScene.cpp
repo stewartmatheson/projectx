@@ -136,7 +136,7 @@ void DrawGrid(sf::RenderTarget &target, int grid_height, int grid_width, int siz
     int total_grid_height = grid_height * size;
     int total_grid_width = grid_width * size;
 
-    for(int row = 1; row < (grid_height +1) * size; row = row + size) {
+    for(auto row = 1; row < (grid_height +1) * size; row = row + size) {
         sf::Vertex line[] = {
             sf::Vertex(sf::Vector2f(0, row), sf::Color::White),
             sf::Vertex(sf::Vector2f(total_grid_width, row), sf::Color::White)
@@ -144,7 +144,7 @@ void DrawGrid(sf::RenderTarget &target, int grid_height, int grid_width, int siz
         target.draw(line, 2, sf::Lines);
     }
 
-    for(int col = 1; col < (grid_width + 1) * size; col = col + size) {
+    for(auto col = 1; col < (grid_width + 1) * size; col = col + size) {
         sf::Vertex line[] = {
             sf::Vertex(sf::Vector2f(col, 0), sf::Color::White),
             sf::Vertex(sf::Vector2f(col, total_grid_height), sf::Color::White)

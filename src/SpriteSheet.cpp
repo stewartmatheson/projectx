@@ -9,8 +9,8 @@ SpriteSheet::SpriteSheet (std::string texture_path, int scale, int size, int col
 	}
 
 	tiles = new std::vector<sf::Sprite>();
-	for(int y = 0; y < cols; y++) {
-		for(int x = 0; x < rows; x++) {
+	for(auto y = 0; y < cols; y++) {
+		for(auto x = 0; x < rows; x++) {
 			tiles->push_back(CreateTileSprite(x, y, scale, size));
 		}
 	}
