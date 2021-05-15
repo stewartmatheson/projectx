@@ -107,25 +107,26 @@ void House::WriteToFile(std::string file_name) {
     int room_tile_count = tiles->size();
     wf.write(reinterpret_cast<const char *>(&room_tile_count), sizeof (room_tile_count));
 
-    for(auto i = 0; i < room_tile_count; i++) {
+
+    for(Tile t: *tiles) {
         wf.write(
-            reinterpret_cast<const char *>(&(*tiles)[i].rotation), 
-            sizeof ((*tiles)[i].rotation)
+            reinterpret_cast<const char *>(&t.rotation), 
+            sizeof (t.rotation)
         );
 
         wf.write(
-            reinterpret_cast<const char *>(&(*tiles)[i].tile_map_index), 
-            sizeof ((*tiles)[i].tile_map_index)
+            reinterpret_cast<const char *>(&t.tile_map_index), 
+            sizeof (t.tile_map_index)
         );
 
         wf.write(
-            reinterpret_cast<const char *>(&(*tiles)[i].x), 
-            sizeof ((*tiles)[i].x)
+            reinterpret_cast<const char *>(&t.x), 
+            sizeof (t.x)
         );
 
         wf.write(
-            reinterpret_cast<const char *>(&(*tiles)[i].y), 
-            sizeof ((*tiles)[i].y)
+            reinterpret_cast<const char *>(&t.y), 
+            sizeof (t.y)
         );
     }
 }
