@@ -31,7 +31,7 @@ TilePaletteView::TilePaletteView(
 void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
 
     selection_rectangle->setPosition(tiles[selected_tile_index].icon.getPosition());
-    for(int i = 0; i < tiles.size(); i ++) {
+    for(auto i = 0; i < tiles.size(); i ++) {
         int current_y_pos = 
             (i * tile_map.SpriteSize()) + 
             (offset * i) + offset;
@@ -42,7 +42,7 @@ void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
 
         // Manage Selection Changed
         int current_event_tile_index = 0;
-        for(TilePaletteTile t : tiles) {
+        for(auto t : tiles) {
             bool in_current_bound = t.icon.getGlobalBounds().contains(
                     tile_palette_render_texture->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y))
                     );
@@ -77,7 +77,7 @@ void TilePaletteView::Draw(sf::RenderTarget &target) {
     tile_palette_render_texture->setView(*tile_palette_view);
     tile_palette_render_texture->clear();
     tile_palette_render_texture->draw(*background);
-    for(TilePaletteTile tile : tiles) {
+    for(auto tile : tiles) {
         tile_palette_render_texture->draw(tile.icon);
     }
     tile_palette_render_texture->draw(*selection_rectangle);

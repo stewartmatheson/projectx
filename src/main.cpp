@@ -29,12 +29,12 @@ int main(int argc, char** argv)
     );
 
     std::vector<AnimationFrame> idle_frames;
-    for (int col = 0; col < 10; col++) {
+    for (auto col = 0; col < 10; col++) {
         idle_frames.push_back(AnimationFrame{col, 0});
     }
 
     std::vector<AnimationFrame> walk_frames;
-    for (int col = 0; col < 10; col++) {
+    for (auto col = 0; col < 10; col++) {
         walk_frames.push_back(AnimationFrame{col, 2});
     }
 

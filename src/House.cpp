@@ -27,7 +27,7 @@ House::House(std::string file_name) {
     );
 
 
-    for(int i = 0; i < room_tile_count; i++) {
+    for(auto i = 0; i < room_tile_count; i++) {
         Tile tile;
         rf.read(
             reinterpret_cast<char *>(&tile.rotation), 
@@ -63,7 +63,7 @@ House::~House() {
 }
 
 void House::Draw(sf::RenderTarget& target, SpriteSheet& tile_map) {
-    for(Tile tile : *tiles) {
+    for(auto tile : *tiles) {
         sf::Sprite sprite_to_draw((*tile_map.tiles)[tile.tile_map_index]);
         sprite_to_draw.setRotation(tile.rotation);
         int half_tile_size = tile_map.SpriteSize() / 2;
@@ -106,6 +106,7 @@ void House::WriteToFile(std::string file_name) {
 
     int room_tile_count = tiles->size();
     wf.write(reinterpret_cast<const char *>(&room_tile_count), sizeof (room_tile_count));
+
 
     for(Tile t: *tiles) {
         wf.write(
