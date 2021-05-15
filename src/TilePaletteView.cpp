@@ -3,7 +3,7 @@
 TilePaletteView::TilePaletteView(
     SpriteSheet &tile_map, 
     int window_height
-) : tile_map(tile_map), offset(20) {
+) : tile_map(tile_map), offset(20), selected_tile_index(0) {
 
     selection_rectangle = new sf::RectangleShape(sf::Vector2f(
         tile_map.SpriteSize(),
