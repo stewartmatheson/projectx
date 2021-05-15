@@ -42,7 +42,7 @@ int main(int argc, char** argv)
         {"idle", Animation(player_sprite_sheet, idle_frames, 32, 32, 8) },
         {"walk", Animation(player_sprite_sheet, walk_frames, 32, 32, 8) }
     };
-    Entity player = Entity(500.f, .01f, player_animations);
+    Entity player = Entity(PlayerEntity, 500.f, .01f, player_animations);
     
     House house = argc == 2 ? House(argv[1]) : House(20, 20, window_height, window_width);
     HouseScene house_scene(tile_map, window_height, window_width, house, player);

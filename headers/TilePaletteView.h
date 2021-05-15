@@ -31,6 +31,8 @@ class TilePaletteView {
     int offset;
 
 
+    sf::Sprite CreateIconSprite(int, sf::Color);
+
 public:
     TilePaletteView(SpriteSheet&, int);
     sf::RectangleShape* GetBackground();

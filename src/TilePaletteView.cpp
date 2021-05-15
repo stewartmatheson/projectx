@@ -17,15 +17,30 @@ TilePaletteView::TilePaletteView(
         tiles.push_back(TilePaletteTile{*it, PaletteTile});
         ++it;
     }
+ 
+    auto door_palette_sprite_icon = CreateIconSprite(tile_map.SpriteSize(), sf::Color::Red);
+    tiles.push_back(TilePaletteTile{door_palette_sprite_icon, PaletteEntity, DoorEntity });
 
-    int left_toolbar_width = offset * 2 + tile_map.SpriteSize();
-    int total_height = (tiles.size() * (tile_map.SpriteSize() + offset)) + offset;
+    auto ghost_palette_sprite_icon = CreateIconSprite(tile_map.SpriteSize(), sf::Color::Green);
+    tiles.push_back(TilePaletteTile{ghost_palette_sprite_icon, PaletteEntity, GhostEntity });
+
+    auto left_toolbar_width = offset * 2 + tile_map.SpriteSize();
+    auto total_height = (tiles.size() * (tile_map.SpriteSize() + offset)) + offset;
     background = new sf::RectangleShape(sf::Vector2f(left_toolbar_width, total_height));
     background->setFillColor(sf::Color(60,60,60, 255));
 
     tile_palette_render_texture = new sf::RenderTexture();
     tile_palette_render_texture->create(left_toolbar_width, window_height); 
     tile_palette_view = new sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
+}
+
+sf::Sprite TilePaletteView::CreateIconSprite(int sprite_size, sf::Color color) {
+    auto icon_sprite_render_texture = new sf::RenderTexture(); 
+    icon_sprite_render_texture->create(sprite_size, sprite_size);
+    auto icon_sprite = sf::RectangleShape(sf::Vector2f(sprite_size, sprite_size));
+    icon_sprite.setFillColor(color);
+    icon_sprite_render_texture->draw(icon_sprite);
+    return sf::Sprite(icon_sprite_render_texture->getTexture());
 }
 
 void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
@@ -44,8 +59,10 @@ void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
         int current_event_tile_index = 0;
         for(auto t : tiles) {
             bool in_current_bound = t.icon.getGlobalBounds().contains(
-                    tile_palette_render_texture->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y))
-                    );
+                tile_palette_render_texture->mapPixelToCoords(
+                    sf::Vector2i(event.mouseButton.x, event.mouseButton.y)
+                )
+            );
 
             if(in_current_bound) {
                 selected_tile_index = current_event_tile_index;		
@@ -58,8 +75,6 @@ void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
         event.mouseButton.x < tile_palette_render_texture->getSize().x
     ) {
         int upper_scroll_center = tile_palette_render_texture->getSize().y / 2;
-
-        // TODO : This does not appear in the window correctly there is around 50 px of black suggesting this is too long
         int lower_scroll_center = background->getSize().y - upper_scroll_center;
 
         if (event.mouseWheel.delta < 0 && tile_palette_view->getCenter().y > upper_scroll_center) {

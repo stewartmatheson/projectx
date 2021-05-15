@@ -4,6 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include "Animation.h"
 
+enum EntityType { PlayerEntity, GhostEntity, DoorEntity };
+
 class Entity {
     sf::Vector2f transform;
     sf::Vector2f direction;
@@ -14,10 +16,11 @@ class Entity {
     float acceleration;
     bool facing_left;
     std::unordered_map<std::string, Animation> animations;
+    EntityType type;
 
 public:
-    Entity(float speed, float acceleration);
-    Entity(float speed, float acceleration, std::unordered_map<std::string, Animation>&);
+    Entity(EntityType, float, float);
+    Entity(EntityType, float, float, std::unordered_map<std::string, Animation>&);
     sf::Vector2f getTransform();
     void Update(const sf::Event &);
     void Draw(sf::RenderTarget &);
