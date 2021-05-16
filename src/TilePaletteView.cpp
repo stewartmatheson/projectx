@@ -3,7 +3,7 @@
 TilePaletteView::TilePaletteView(
     SpriteSheet &tile_map, 
     int window_height
-) : tile_map(tile_map), offset(20) {
+) : tile_map(tile_map), offset(20), selected_tile_index(0) {
 
     selection_rectangle = new sf::RectangleShape(sf::Vector2f(
         tile_map.SpriteSize(),
@@ -32,6 +32,13 @@ TilePaletteView::TilePaletteView(
     tile_palette_render_texture = new sf::RenderTexture();
     tile_palette_render_texture->create(left_toolbar_width, window_height); 
     tile_palette_view = new sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
+}
+
+TilePaletteView::~TilePaletteView() {
+    delete background;
+    delete selection_rectangle;
+    delete tile_palette_render_texture;
+    delete tile_palette_view;
 }
 
 sf::Sprite TilePaletteView::CreateIconSprite(int sprite_size, sf::Color color) {
