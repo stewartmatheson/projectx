@@ -120,6 +120,10 @@ int TilePaletteView::GetSelectedTileIndex() {
     return selected_tile_index;
 }
 
+sf::Sprite& TilePaletteView::GetSelectedTileSprite() {
+    return tiles[selected_tile_index].icon;
+}
+
 sf::RectangleShape* TilePaletteView::GetBackground() {
     return background;
 }

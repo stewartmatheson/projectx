@@ -171,7 +171,7 @@ void HouseScene::Draw(sf::RenderTarget& target) {
         );
 
         // Draw Selected Tile
-        sf::Sprite selected_tile_sprite((*tile_map.tiles)[tile_palette_view.GetSelectedTileIndex()]);
+        auto selected_tile_sprite = tile_palette_view.GetSelectedTileSprite();
         selected_tile_sprite.setScale(sf::Vector2f(tile_map.scale, tile_map.scale));
         int half_tile_size = tile_map.SpriteSize() / 2;
         selected_tile_sprite.setPosition(

@@ -41,5 +41,6 @@ public:
     void Draw(sf::RenderTarget &);
     void Update(const sf::Event &, const sf::Vector2i);
     int GetSelectedTileIndex();
+    sf::Sprite& GetSelectedTileSprite();
 
 };
