@@ -24,6 +24,7 @@ class TilePaletteView {
     sf::View* tile_palette_view;
     
     sf::RenderTexture* tile_palette_render_texture;
+    sf::RenderTexture icon_sprite_render_texture;
 
     SpriteSheet &tile_map;
 
@@ -31,7 +32,7 @@ class TilePaletteView {
     int offset;
 
 
-    sf::Sprite CreateIconSprite(int, sf::Color);
+    sf::Sprite CreateIconSprite(int, sf::Color, int);
 
 public:
     TilePaletteView(SpriteSheet&, int);

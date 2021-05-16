@@ -14,18 +14,15 @@ HouseScene::HouseScene(
     house(house), 
     tile_map(tile_map), 
     player(player), 
-    tile_palette_view(tile_map, window_height) 
+    tile_palette_view(tile_map, window_height)
 {
-
-    house_render_texture = new sf::RenderTexture();
-    house_render_texture->create(window_width, window_height); 
+    house_render_texture.create(window_width, window_height); 
     house_view = new sf::View(sf::FloatRect(0, 0, window_height, window_height));
     current_mouse_grid_position = new sf::Vector2i();
 }
 
 HouseScene::~HouseScene() {
     delete current_mouse_grid_position;
-    delete house_render_texture;
     delete house_view;
 }
 
@@ -42,7 +39,7 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse
 
     tile_palette_view.Update(event, current_mouse_position);
 
-    sf::Vector2f current_target_coords = house_render_texture->mapPixelToCoords(
+    sf::Vector2f current_target_coords = house_render_texture.mapPixelToCoords(
             sf::Vector2i(current_mouse_position.x, current_mouse_position.y)
     );
 
@@ -51,7 +48,7 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse
      
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
         
-        sf::Vector2f event_target_coords = house_render_texture->mapPixelToCoords(
+        sf::Vector2f event_target_coords = house_render_texture.mapPixelToCoords(
             sf::Vector2i(event.mouseButton.x, event.mouseButton.y)
         );
         
@@ -125,9 +122,9 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse
 
     if (event.type == sf::Event::Resized) {
         house_view->setSize(event.size.width, event.size.height);
-        delete house_render_texture;
-        house_render_texture = new sf::RenderTexture();
-        house_render_texture->create(event.size.width, event.size.height); 
+        //delete house_render_texture;
+        //house_render_texture = new sf::RenderTexture();
+        house_render_texture.create(event.size.width, event.size.height); 
     }
  
 }
@@ -159,15 +156,15 @@ void HouseScene::Draw(sf::RenderTarget& target) {
     }
 
     // Draw Room and Grid
-    house_render_texture->setView(*house_view);
-    house_render_texture->clear();
-    house.Draw(*house_render_texture, tile_map);
+    house_render_texture.setView(*house_view);
+    house_render_texture.clear();
+    house.Draw(house_render_texture, tile_map);
 
-    player.Draw(*house_render_texture);
+    player.Draw(house_render_texture);
 
     if (editor_enabled) {
         DrawGrid(
-            *house_render_texture,
+            house_render_texture,
             house.bounds.height, 
             house.bounds.width, 
             tile_map.SpriteSize()
@@ -185,12 +182,12 @@ void HouseScene::Draw(sf::RenderTarget& target) {
         selected_tile_sprite.setOrigin(tile_map.size / 2, tile_map.size / 2);
         selected_tile_sprite.rotate(current_rotation);
 
-        house_render_texture->draw(selected_tile_sprite);
-        house_render_texture->display();
+        house_render_texture.draw(selected_tile_sprite);
+        house_render_texture.display();
     }
 
 
-    sf::Sprite house_render_sprite(house_render_texture->getTexture());
+    sf::Sprite house_render_sprite(house_render_texture.getTexture());
     sf::View current_window_view = target.getView();
     target.draw(house_render_sprite);
 

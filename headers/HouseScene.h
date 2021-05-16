@@ -23,7 +23,7 @@ class HouseScene {
 
     sf::View* house_view;
 
-    sf::RenderTexture* house_render_texture;
+    sf::RenderTexture house_render_texture;
 
     House &house;
     

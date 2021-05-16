@@ -18,11 +18,14 @@ TilePaletteView::TilePaletteView(
         ++it;
     }
  
-    auto door_palette_sprite_icon = CreateIconSprite(tile_map.SpriteSize(), sf::Color::Red);
+
+    icon_sprite_render_texture.create(tile_map.SpriteSize() * 2, tile_map.SpriteSize());
+    auto door_palette_sprite_icon = CreateIconSprite(tile_map.SpriteSize(), sf::Color::Red, 0);
     tiles.push_back(TilePaletteTile{door_palette_sprite_icon, PaletteEntity, DoorEntity });
 
-    auto ghost_palette_sprite_icon = CreateIconSprite(tile_map.SpriteSize(), sf::Color::Green);
+    auto ghost_palette_sprite_icon = CreateIconSprite(tile_map.SpriteSize(), sf::Color::Green, 1);
     tiles.push_back(TilePaletteTile{ghost_palette_sprite_icon, PaletteEntity, GhostEntity });
+
 
     auto left_toolbar_width = offset * 2 + tile_map.SpriteSize();
     auto total_height = (tiles.size() * (tile_map.SpriteSize() + offset)) + offset;
@@ -41,13 +44,17 @@ TilePaletteView::~TilePaletteView() {
     delete tile_palette_view;
 }
 
-sf::Sprite TilePaletteView::CreateIconSprite(int sprite_size, sf::Color color) {
-    auto icon_sprite_render_texture = new sf::RenderTexture(); 
-    icon_sprite_render_texture->create(sprite_size, sprite_size);
-    auto icon_sprite = sf::RectangleShape(sf::Vector2f(sprite_size, sprite_size));
-    icon_sprite.setFillColor(color);
-    icon_sprite_render_texture->draw(icon_sprite);
-    return sf::Sprite(icon_sprite_render_texture->getTexture());
+sf::Sprite TilePaletteView::CreateIconSprite(int sprite_size, sf::Color color, int render_offset) {
+    auto icon_rect = sf::RectangleShape(sf::Vector2f(sprite_size, sprite_size));
+    icon_rect.setFillColor(color);
+    icon_rect.setPosition(sprite_size * render_offset, 0);
+    icon_sprite_render_texture.draw(icon_rect);
+    icon_sprite_render_texture.display();
+
+    return sf::Sprite(
+        icon_sprite_render_texture.getTexture(), 
+        sf::IntRect(sprite_size * render_offset, 0, sprite_size, sprite_size)
+    );
 }
 
 void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
