@@ -13,9 +13,8 @@ TilePaletteView::TilePaletteView(
     selection_rectangle->setOutlineThickness(2);
     selection_rectangle->setFillColor(sf::Color::Transparent);
 
-    for (auto it = tile_map.tiles->begin(); it != tile_map.tiles->end(); ) {
-        tiles.push_back(TilePaletteTile{*it, PaletteTile});
-        ++it;
+    for (const auto &t: *tile_map.tiles) {
+        tiles.push_back(TilePaletteTile{t, PaletteTile});
     }
  
 

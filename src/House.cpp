@@ -108,7 +108,7 @@ void House::WriteToFile(std::string file_name) {
     wf.write(reinterpret_cast<const char *>(&room_tile_count), sizeof (room_tile_count));
 
 
-    for(Tile t: *tiles) {
+    for(const auto &t: *tiles) {
         wf.write(
             reinterpret_cast<const char *>(&t.rotation), 
             sizeof (t.rotation)
