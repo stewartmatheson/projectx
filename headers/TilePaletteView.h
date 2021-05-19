@@ -19,7 +19,7 @@ class TilePaletteView {
     int selected_tile_index;
 
     // The blue rect around the selected tile in the tile palette
-    sf::RectangleShape* selection_rectangle;	
+    sf::RectangleShape selection_rectangle;
 
     SpriteSheet &tile_map;
     

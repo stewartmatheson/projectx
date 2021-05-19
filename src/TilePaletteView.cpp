@@ -3,15 +3,14 @@
 TilePaletteView::TilePaletteView(
     SpriteSheet &tile_map, 
     int window_height
-) : offset(20), selected_tile_index(0), tile_map(tile_map) {
+) : offset(20),
+    selected_tile_index(0),
+    selection_rectangle(sf::Vector2f(tile_map.SpriteSize(), tile_map.SpriteSize())),
+    tile_map(tile_map) {
 
-    selection_rectangle = new sf::RectangleShape(sf::Vector2f(
-        tile_map.SpriteSize(),
-        tile_map.SpriteSize()
-    ));
-    selection_rectangle->setOutlineColor(sf::Color::Blue);
-    selection_rectangle->setOutlineThickness(2);
-    selection_rectangle->setFillColor(sf::Color::Transparent);
+    selection_rectangle.setOutlineColor(sf::Color::Blue);
+    selection_rectangle.setOutlineThickness(2);
+    selection_rectangle.setFillColor(sf::Color::Transparent);
 
     for (const auto &t: *tile_map.tiles) {
         tiles.push_back(TilePaletteTile{t, PaletteTile});
@@ -37,7 +36,6 @@ TilePaletteView::TilePaletteView(
 }
 
 TilePaletteView::~TilePaletteView() {
-    delete selection_rectangle;
     delete tile_palette_render_texture;
     delete tile_palette_view;
 }
@@ -57,7 +55,7 @@ sf::Sprite TilePaletteView::CreateIconSprite(int sprite_size, sf::Color color, i
 
 void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
 
-    selection_rectangle->setPosition(tiles[selected_tile_index].icon.getPosition());
+    selection_rectangle.setPosition(tiles[selected_tile_index].icon.getPosition());
     for(std::size_t i = 0; i < tiles.size(); i ++) {
         int current_y_pos = 
             (i * tile_map.SpriteSize()) + 
@@ -103,7 +101,7 @@ void TilePaletteView::Draw(sf::RenderTarget &target) {
     for(auto tile : tiles) {
         tile_palette_render_texture->draw(tile.icon);
     }
-    tile_palette_render_texture->draw(*selection_rectangle);
+    tile_palette_render_texture->draw(selection_rectangle);
     tile_palette_render_texture->display();
     sf::Sprite tile_palette_render_sprite(tile_palette_render_texture->getTexture());
     target.draw(tile_palette_render_sprite);
