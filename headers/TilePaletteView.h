@@ -8,7 +8,7 @@
 class TilePaletteView {
     
     // The background shape for the tile toolbar editor
-    sf::RectangleShape* background;	
+    sf::RectangleShape background;
 
     sf::RenderTexture icon_sprite_render_texture;
 
@@ -37,7 +37,7 @@ class TilePaletteView {
 public:
     TilePaletteView(SpriteSheet&, int);
     ~TilePaletteView();
-    sf::RectangleShape* GetBackground();
+    const sf::RectangleShape &GetBackground();
     void Draw(sf::RenderTarget &);
     void Update(const sf::Event &, const sf::Vector2i);
     int GetSelectedTileIndex();

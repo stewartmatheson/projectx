@@ -28,8 +28,8 @@ TilePaletteView::TilePaletteView(
 
     auto left_toolbar_width = offset * 2 + tile_map.SpriteSize();
     auto total_height = (tiles.size() * (tile_map.SpriteSize() + offset)) + offset;
-    background = new sf::RectangleShape(sf::Vector2f(left_toolbar_width, total_height));
-    background->setFillColor(sf::Color(60,60,60, 255));
+    background = sf::RectangleShape(sf::Vector2f(left_toolbar_width, total_height));
+    background.setFillColor(sf::Color(60,60,60, 255));
 
     tile_palette_render_texture = new sf::RenderTexture();
     tile_palette_render_texture->create(left_toolbar_width, window_height); 
@@ -37,7 +37,6 @@ TilePaletteView::TilePaletteView(
 }
 
 TilePaletteView::~TilePaletteView() {
-    delete background;
     delete selection_rectangle;
     delete tile_palette_render_texture;
     delete tile_palette_view;
@@ -84,7 +83,7 @@ void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
         (unsigned int)event.mouseButton.x < tile_palette_render_texture->getSize().x
     ) {
         int upper_scroll_center = tile_palette_render_texture->getSize().y / 2;
-        int lower_scroll_center = background->getSize().y - upper_scroll_center;
+        int lower_scroll_center = background.getSize().y - upper_scroll_center;
 
         if (event.mouseWheel.delta < 0 && tile_palette_view->getCenter().y > upper_scroll_center) {
             tile_palette_view->move(sf::Vector2f(0, 100 * event.mouseWheel.delta));
@@ -100,7 +99,7 @@ void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
 void TilePaletteView::Draw(sf::RenderTarget &target) {
     tile_palette_render_texture->setView(*tile_palette_view);
     tile_palette_render_texture->clear();
-    tile_palette_render_texture->draw(*background);
+    tile_palette_render_texture->draw(background);
     for(auto tile : tiles) {
         tile_palette_render_texture->draw(tile.icon);
     }
@@ -119,6 +118,6 @@ sf::Sprite& TilePaletteView::GetSelectedTileSprite() {
     return tiles[selected_tile_index].icon;
 }
 
-sf::RectangleShape* TilePaletteView::GetBackground() {
+const sf::RectangleShape &TilePaletteView::GetBackground() {
     return background;
 }
