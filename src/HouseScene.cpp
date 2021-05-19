@@ -11,19 +11,18 @@ HouseScene::HouseScene(
 ) : current_rotation(0), 
     editor_enabled(true), 
     house(house), 
+    house_view(sf::FloatRect(0, 0, window_height, window_height)),
     panning(false),
     player(player), 
     tile_map(tile_map), 
     tile_palette_view(tile_map, window_height)
 {
     house_render_texture.create(window_width, window_height); 
-    house_view = new sf::View(sf::FloatRect(0, 0, window_height, window_height));
     current_mouse_grid_position = new sf::Vector2i();
 }
 
 HouseScene::~HouseScene() {
     delete current_mouse_grid_position;
-    delete house_view;
 }
 
 void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_position) {
@@ -111,11 +110,11 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse
     last_mouse_position = current_mouse_position;
 
     if (panning) {
-        house_view->move(sf::Vector2f(mouse_delta.x * -1, mouse_delta.y * -1));
+        house_view.move(sf::Vector2f(mouse_delta.x * -1, mouse_delta.y * -1));
     }
 
     if (event.type == sf::Event::Resized) {
-        house_view->setSize(event.size.width, event.size.height);
+        house_view.setSize(event.size.width, event.size.height);
         //delete house_render_texture;
         //house_render_texture = new sf::RenderTexture();
         house_render_texture.create(event.size.width, event.size.height); 
@@ -146,11 +145,11 @@ void DrawGrid(sf::RenderTarget &target, int grid_height, int grid_width, int siz
 
 void HouseScene::Draw(sf::RenderTarget& target) {
     if (!editor_enabled) {
-        house_view->setCenter(player.getTransform());
+        house_view.setCenter(player.getTransform());
     }
 
     // Draw Room and Grid
-    house_render_texture.setView(*house_view);
+    house_render_texture.setView(house_view);
     house_render_texture.clear();
     house.Draw(house_render_texture, tile_map);
 

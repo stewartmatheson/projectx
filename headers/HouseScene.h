@@ -21,7 +21,7 @@ class HouseScene {
 
     sf::RenderTexture house_render_texture;
 
-    sf::View* house_view;
+    sf::View house_view;
 
     sf::Vector2i last_mouse_position;
 
