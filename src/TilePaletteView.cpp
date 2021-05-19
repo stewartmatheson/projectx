@@ -31,11 +31,10 @@ TilePaletteView::TilePaletteView(
     background.setFillColor(sf::Color(60,60,60, 255));
 
     tile_palette_render_texture.create(left_toolbar_width, window_height);
-    tile_palette_view = new sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
+    tile_palette_view = sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
 }
 
 TilePaletteView::~TilePaletteView() {
-    delete tile_palette_view;
 }
 
 sf::Sprite TilePaletteView::CreateIconSprite(int sprite_size, sf::Color color, int render_offset) {
@@ -81,19 +80,19 @@ void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
         int upper_scroll_center = tile_palette_render_texture.getSize().y / 2;
         int lower_scroll_center = background.getSize().y - upper_scroll_center;
 
-        if (event.mouseWheel.delta < 0 && tile_palette_view->getCenter().y > upper_scroll_center) {
-            tile_palette_view->move(sf::Vector2f(0, 100 * event.mouseWheel.delta));
+        if (event.mouseWheel.delta < 0 && tile_palette_view.getCenter().y > upper_scroll_center) {
+            tile_palette_view.move(sf::Vector2f(0, 100 * event.mouseWheel.delta));
         }
 
-        if (event.mouseWheel.delta > 0 && tile_palette_view->getCenter().y < lower_scroll_center) {
-            tile_palette_view->move(sf::Vector2f(0, 100 * event.mouseWheel.delta));
+        if (event.mouseWheel.delta > 0 && tile_palette_view.getCenter().y < lower_scroll_center) {
+            tile_palette_view.move(sf::Vector2f(0, 100 * event.mouseWheel.delta));
         }
     }
 
 }
 
 void TilePaletteView::Draw(sf::RenderTarget &target) {
-    tile_palette_render_texture.setView(*tile_palette_view);
+    tile_palette_render_texture.setView(tile_palette_view);
     tile_palette_render_texture.clear();
     tile_palette_render_texture.draw(background);
     for(auto tile : tiles) {

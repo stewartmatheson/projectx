@@ -26,7 +26,7 @@ class TilePaletteView {
     sf::RenderTexture tile_palette_render_texture;
 
     // The view for the current tile palette that appears on the left side of the window
-    sf::View* tile_palette_view;
+    sf::View tile_palette_view;
 
     // A list of vector of spirte tiles for rendering in the sidebar of the editor
     // std::vector<sf::Sprite>* tiles;
