@@ -70,18 +70,14 @@ void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
         // Manage Selection Changed
-        int current_event_tile_index = 0;
-        for(auto t : tiles) {
-            bool in_current_bound = t.icon.getGlobalBounds().contains(
-                tile_palette_render_texture->mapPixelToCoords(
-                    sf::Vector2i(event.mouseButton.x, event.mouseButton.y)
-                )
-            );
-
-            if(in_current_bound) {
-                selected_tile_index = current_event_tile_index;		
-            }
-            current_event_tile_index++;
+        auto event_target_coords = tile_palette_render_texture->mapPixelToCoords(
+            sf::Vector2i(event.mouseButton.x, event.mouseButton.y)
+        );
+        auto found = std::find_if(tiles.begin(), tiles.end(), [event_target_coords](const auto &t) {
+            return t.icon.getGlobalBounds().contains(event_target_coords);
+        });
+        if (found != tiles.end()) {
+            selected_tile_index = found - tiles.begin();
         }
     }
 
