@@ -11,7 +11,7 @@
  */
 class HouseScene {
     // The current mouse house grid pos
-    sf::Vector2i* current_mouse_grid_position;
+    sf::Vector2i current_mouse_grid_position;
 
     float current_rotation;
 

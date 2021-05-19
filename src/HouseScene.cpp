@@ -18,11 +18,9 @@ HouseScene::HouseScene(
     tile_palette_view(tile_map, window_height)
 {
     house_render_texture.create(window_width, window_height); 
-    current_mouse_grid_position = new sf::Vector2i();
 }
 
 HouseScene::~HouseScene() {
-    delete current_mouse_grid_position;
 }
 
 void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_position) {
@@ -42,8 +40,8 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse
             sf::Vector2i(current_mouse_position.x, current_mouse_position.y)
     );
 
-    current_mouse_grid_position->x = floor(current_target_coords.x / tile_map.SpriteSize());
-    current_mouse_grid_position->y = floor(current_target_coords.y / tile_map.SpriteSize());
+    current_mouse_grid_position.x = floor(current_target_coords.x / tile_map.SpriteSize());
+    current_mouse_grid_position.y = floor(current_target_coords.y / tile_map.SpriteSize());
      
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
         
@@ -168,8 +166,8 @@ void HouseScene::Draw(sf::RenderTarget& target) {
         selected_tile_sprite.setScale(sf::Vector2f(tile_map.scale, tile_map.scale));
         int half_tile_size = tile_map.SpriteSize() / 2;
         selected_tile_sprite.setPosition(
-            (current_mouse_grid_position->x * tile_map.SpriteSize()) + half_tile_size,
-            (current_mouse_grid_position->y * tile_map.SpriteSize()) + half_tile_size
+            (current_mouse_grid_position.x * tile_map.SpriteSize()) + half_tile_size,
+            (current_mouse_grid_position.y * tile_map.SpriteSize()) + half_tile_size
         );
         selected_tile_sprite.setColor(sf::Color(255, 255, 255, 170));
         selected_tile_sprite.setOrigin(tile_map.size / 2, tile_map.size / 2);
