@@ -60,7 +60,7 @@ sf::Sprite TilePaletteView::CreateIconSprite(int sprite_size, sf::Color color, i
 void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
 
     selection_rectangle->setPosition(tiles[selected_tile_index].icon.getPosition());
-    for(auto i = 0; i < tiles.size(); i ++) {
+    for(std::size_t i = 0; i < tiles.size(); i ++) {
         int current_y_pos = 
             (i * tile_map.SpriteSize()) + 
             (offset * i) + offset;
@@ -86,7 +86,7 @@ void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
     }
 
     if (event.type == sf::Event::MouseWheelMoved && 
-        event.mouseButton.x < tile_palette_render_texture->getSize().x
+        (unsigned int)event.mouseButton.x < tile_palette_render_texture->getSize().x
     ) {
         int upper_scroll_center = tile_palette_render_texture->getSize().y / 2;
         int lower_scroll_center = background->getSize().y - upper_scroll_center;
