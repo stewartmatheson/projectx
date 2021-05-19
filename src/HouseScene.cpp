@@ -76,8 +76,8 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse
 
             house.tiles->push_back(
                 Tile { 
-                    (int)floor(event_target_coords.x / tile_map.SpriteSize()),
-                    (int)floor(event_target_coords.y / tile_map.SpriteSize()),
+                    (int)event_target_coords.x / tile_map.SpriteSize(),
+                    (int)event_target_coords.y / tile_map.SpriteSize(),
                     (int)current_rotation,
                     tile_palette_view.GetSelectedTileIndex()
                 }
