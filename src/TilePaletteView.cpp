@@ -30,13 +30,11 @@ TilePaletteView::TilePaletteView(
     background = sf::RectangleShape(sf::Vector2f(left_toolbar_width, total_height));
     background.setFillColor(sf::Color(60,60,60, 255));
 
-    tile_palette_render_texture = new sf::RenderTexture();
-    tile_palette_render_texture->create(left_toolbar_width, window_height); 
+    tile_palette_render_texture.create(left_toolbar_width, window_height);
     tile_palette_view = new sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
 }
 
 TilePaletteView::~TilePaletteView() {
-    delete tile_palette_render_texture;
     delete tile_palette_view;
 }
 
@@ -66,7 +64,7 @@ void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
         // Manage Selection Changed
-        auto event_target_coords = tile_palette_render_texture->mapPixelToCoords(
+        auto event_target_coords = tile_palette_render_texture.mapPixelToCoords(
             sf::Vector2i(event.mouseButton.x, event.mouseButton.y)
         );
         auto found = std::find_if(tiles.begin(), tiles.end(), [event_target_coords](const auto &t) {
@@ -78,9 +76,9 @@ void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
     }
 
     if (event.type == sf::Event::MouseWheelMoved && 
-        (unsigned int)event.mouseButton.x < tile_palette_render_texture->getSize().x
+        (unsigned int)event.mouseButton.x < tile_palette_render_texture.getSize().x
     ) {
-        int upper_scroll_center = tile_palette_render_texture->getSize().y / 2;
+        int upper_scroll_center = tile_palette_render_texture.getSize().y / 2;
         int lower_scroll_center = background.getSize().y - upper_scroll_center;
 
         if (event.mouseWheel.delta < 0 && tile_palette_view->getCenter().y > upper_scroll_center) {
@@ -95,15 +93,15 @@ void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
 }
 
 void TilePaletteView::Draw(sf::RenderTarget &target) {
-    tile_palette_render_texture->setView(*tile_palette_view);
-    tile_palette_render_texture->clear();
-    tile_palette_render_texture->draw(background);
+    tile_palette_render_texture.setView(*tile_palette_view);
+    tile_palette_render_texture.clear();
+    tile_palette_render_texture.draw(background);
     for(auto tile : tiles) {
-        tile_palette_render_texture->draw(tile.icon);
+        tile_palette_render_texture.draw(tile.icon);
     }
-    tile_palette_render_texture->draw(selection_rectangle);
-    tile_palette_render_texture->display();
-    sf::Sprite tile_palette_render_sprite(tile_palette_render_texture->getTexture());
+    tile_palette_render_texture.draw(selection_rectangle);
+    tile_palette_render_texture.display();
+    sf::Sprite tile_palette_render_sprite(tile_palette_render_texture.getTexture());
     target.draw(tile_palette_render_sprite);
 }
 

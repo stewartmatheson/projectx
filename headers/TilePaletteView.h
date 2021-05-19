@@ -23,7 +23,7 @@ class TilePaletteView {
 
     SpriteSheet &tile_map;
     
-    sf::RenderTexture* tile_palette_render_texture;
+    sf::RenderTexture tile_palette_render_texture;
 
     // The view for the current tile palette that appears on the left side of the window
     sf::View* tile_palette_view;
