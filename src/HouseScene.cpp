@@ -111,7 +111,7 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse
     last_mouse_position = current_mouse_position;
 
     if (panning) {
-        house_view->move(sf::Vector2f(mouse_delta.x * -1, mouse_delta.y * -1));
+        house_view->move(mouse_delta.x * -1, mouse_delta.y * -1);
     }
 
     if (event.type == sf::Event::Resized) {
