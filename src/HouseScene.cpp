@@ -10,10 +10,10 @@ HouseScene::HouseScene(
         Entity &player
 ) : current_rotation(0), 
     editor_enabled(true), 
-    panning(false),
     house(house), 
-    tile_map(tile_map), 
+    panning(false),
     player(player), 
+    tile_map(tile_map), 
     tile_palette_view(tile_map, window_height)
 {
     house_render_texture.create(window_width, window_height); 
@@ -188,7 +188,6 @@ void HouseScene::Draw(sf::RenderTarget& target) {
 
 
     sf::Sprite house_render_sprite(house_render_texture.getTexture());
-    sf::View current_window_view = target.getView();
     target.draw(house_render_sprite);
 
     if (editor_enabled) {

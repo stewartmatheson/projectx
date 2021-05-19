@@ -13,23 +13,23 @@ class HouseScene {
     // The current mouse house grid pos
     sf::Vector2i* current_mouse_grid_position;
 
-    SpriteSheet &tile_map;
-
     float current_rotation;
+
+    bool editor_enabled;
+
+    House &house;
+
+    sf::RenderTexture house_render_texture;
+
+    sf::View* house_view;
 
     sf::Vector2i last_mouse_position;
 
     bool panning;
-
-    sf::View* house_view;
-
-    sf::RenderTexture house_render_texture;
-
-    House &house;
     
     Entity &player;
 
-    bool editor_enabled;
+    SpriteSheet &tile_map;
 
     TilePaletteView tile_palette_view;
 
