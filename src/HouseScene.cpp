@@ -188,7 +188,6 @@ void HouseScene::Draw(sf::RenderTarget& target) {
 
 
     sf::Sprite house_render_sprite(house_render_texture.getTexture());
-    sf::View current_window_view = target.getView();
     target.draw(house_render_sprite);
 
     if (editor_enabled) {
