@@ -1,10 +1,10 @@
 #include "Entity.h"
 
 Entity::Entity(EntityType type, float speed, float acceleration) : 
-    speed(speed), 
     acceleration(acceleration), 
     animations(),
     facing_left(true),
+    speed(speed), 
     type(type) {}
 
 Entity::Entity(
@@ -12,7 +12,7 @@ Entity::Entity(
     float speed, 
     float acceleration,
     std::unordered_map<std::string, Animation>& animations
-) : speed(speed), acceleration(acceleration), animations(animations), type(type) {}
+) : acceleration(acceleration), animations(animations), speed(speed), type(type) {}
 
 void Entity::Update(const sf::Event &event) {
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Left) {

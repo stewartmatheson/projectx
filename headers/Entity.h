@@ -7,15 +7,14 @@
 enum EntityType { PlayerEntity, GhostEntity, DoorEntity };
 
 class Entity {
-    sf::Vector2f transform;
-    sf::Vector2f direction;
-
+    float acceleration;
+    std::unordered_map<std::string, Animation> animations;
     // TODO : This should move out somewhere that can handle keyboards, control pads and other custom bindings
     sf::Vector2f controller;
-    float speed;
-    float acceleration;
+    sf::Vector2f direction;
     bool facing_left;
-    std::unordered_map<std::string, Animation> animations;
+    float speed;
+    sf::Vector2f transform;
     EntityType type;
 
 public:

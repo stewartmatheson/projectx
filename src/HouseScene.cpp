@@ -10,10 +10,10 @@ HouseScene::HouseScene(
         Entity &player
 ) : current_rotation(0), 
     editor_enabled(true), 
-    panning(false),
     house(house), 
-    tile_map(tile_map), 
+    panning(false),
     player(player), 
+    tile_map(tile_map), 
     tile_palette_view(tile_map, window_height)
 {
     house_render_texture.create(window_width, window_height); 

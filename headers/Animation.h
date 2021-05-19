@@ -8,12 +8,12 @@ struct AnimationFrame {
 };
 
 class Animation {
-    SpriteSheet& sprite_sheet;
     std::vector<AnimationFrame> animation_frames;
-    int frame_width;
-    int frame_height;
     std::size_t current_frame_counter;
+    int frame_height;
+    int frame_width;
     int speed;
+    SpriteSheet& sprite_sheet;
 public:
     sf::Sprite sprite;
     Animation(SpriteSheet &, std::vector<AnimationFrame>, int, int, int);
