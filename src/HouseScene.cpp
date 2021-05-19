@@ -60,8 +60,8 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse
         );
 
 
-        if (pixel_bounds.contains(sf::Vector2i(event_target_coords.x, event_target_coords.y)) && 
-            !tile_palette_view.GetBackground()->getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))
+        if (pixel_bounds.contains(event_target_coords.x, event_target_coords.y) && 
+            !tile_palette_view.GetBackground()->getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)
         ) {
             auto sprite_size = tile_map.SpriteSize();
             auto found = std::find_if(house.tiles->begin(), house.tiles->end(), [event_target_coords, sprite_size](const auto &t) {
