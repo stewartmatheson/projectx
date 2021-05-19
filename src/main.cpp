@@ -7,6 +7,7 @@
 
 int main(int argc, char** argv)
 {
+    int current_map_format_version = 1;
     int window_width = 1400;
     int window_height = 1400;
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML works!");
@@ -44,7 +45,7 @@ int main(int argc, char** argv)
     };
     Entity player = Entity(PlayerEntity, 500.f, .01f, player_animations);
     
-    House house = argc == 2 ? House(argv[1]) : House(20, 20, window_height, window_width);
+    Map house = argc == 2 ? Map(argv[1]) : Map(current_map_format_version, 20, 20, window_height, window_width);
     HouseScene house_scene(tile_map, window_height, window_width, house, player);
 
     while (window.isOpen())

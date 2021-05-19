@@ -13,14 +13,14 @@ add_executable(ProjectX
   headers/Animation.h
   headers/Tile.h
   headers/HouseScene.h
-  headers/House.h
+  headers/Map.h
   headers/SpriteSheet.h
   headers/Entity.h
   headers/TilePaletteView.h
   headers/TilePaletteTile.h
   src/Animation.cpp
   src/HouseScene.cpp
-  src/House.cpp
+  src/Map.cpp
   src/SpriteSheet.cpp
   src/Entity.cpp
   src/main.cpp
