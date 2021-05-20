@@ -57,8 +57,9 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse
         );
 
 
-        if (pixel_bounds.contains(sf::Vector2i(event_target_coords.x, event_target_coords.y)) && 
-            !tile_palette_view.GetBackground().getGlobalBounds().contains(sf::Vector2f(event.mouseButton.x, event.mouseButton.y))
+
+        if (pixel_bounds.contains(event_target_coords.x, event_target_coords.y) && 
+            !tile_palette_view.GetBackground().getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)
         ) {
             auto sprite_size = tile_map.SpriteSize();
             auto found = std::find_if(house.tiles->begin(), house.tiles->end(), [event_target_coords, sprite_size](const auto &t) {
@@ -102,7 +103,7 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse
 
     if (panning) {
         auto mouse_delta = current_mouse_position - last_mouse_position;
-        house_view.move(sf::Vector2f(mouse_delta.x * -1, mouse_delta.y * -1));
+        house_view.move(mouse_delta.x * -1, mouse_delta.y * -1);
     }
 
     last_mouse_position = current_mouse_position;
@@ -159,7 +160,7 @@ void HouseScene::Draw(sf::RenderTarget& target) {
 
         // Draw Selected Tile
         auto selected_tile_sprite = tile_palette_view.GetSelectedTileSprite();
-        selected_tile_sprite.setScale(sf::Vector2f(tile_map.scale, tile_map.scale));
+        selected_tile_sprite.setScale(tile_map.scale, tile_map.scale);
         int half_tile_size = tile_map.SpriteSize() / 2;
         selected_tile_sprite.setPosition(
             (current_mouse_grid_position.x * tile_map.SpriteSize()) + half_tile_size,
