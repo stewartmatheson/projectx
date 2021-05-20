@@ -8,7 +8,7 @@
 class TilePaletteView {
     
     // The background shape for the tile toolbar editor
-    sf::RectangleShape* background;	
+    sf::RectangleShape background;
 
     sf::RenderTexture icon_sprite_render_texture;
 
@@ -19,14 +19,14 @@ class TilePaletteView {
     int selected_tile_index;
 
     // The blue rect around the selected tile in the tile palette
-    sf::RectangleShape* selection_rectangle;	
+    sf::RectangleShape selection_rectangle;
 
     SpriteSheet &tile_map;
     
-    sf::RenderTexture* tile_palette_render_texture;
+    sf::RenderTexture tile_palette_render_texture;
 
     // The view for the current tile palette that appears on the left side of the window
-    sf::View* tile_palette_view;
+    sf::View tile_palette_view;
 
     // A list of vector of spirte tiles for rendering in the sidebar of the editor
     // std::vector<sf::Sprite>* tiles;
@@ -37,7 +37,7 @@ class TilePaletteView {
 public:
     TilePaletteView(SpriteSheet&, int);
     ~TilePaletteView();
-    sf::RectangleShape* GetBackground();
+    const sf::RectangleShape &GetBackground();
     void Draw(sf::RenderTarget &);
     void Update(const sf::Event &, const sf::Vector2i);
     int GetSelectedTileIndex();
