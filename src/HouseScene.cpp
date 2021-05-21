@@ -11,7 +11,7 @@ HouseScene::HouseScene(
 ) : current_rotation(0), 
     editor_enabled(true), 
     house(house), 
-    house_view(sf::FloatRect(0, 0, window_height, window_height)),
+    house_view(sf::FloatRect(0, 0, window_width, window_height)),
     panning(false),
     player(player), 
     tile_map(tile_map), 
