@@ -63,7 +63,7 @@ House::~House() {
 }
 
 void House::Draw(sf::RenderTarget& target, const SpriteSheet& tile_map) const {
-    for(auto tile : *tiles) {
+    for(const auto &tile : *tiles) {
         sf::Sprite sprite_to_draw((*tile_map.tiles)[tile.tile_map_index]);
         sprite_to_draw.setRotation(tile.rotation);
         int half_tile_size = tile_map.SpriteSize() / 2;
