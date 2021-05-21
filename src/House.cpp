@@ -62,7 +62,7 @@ House::~House() {
     delete tiles;
 }
 
-void House::Draw(sf::RenderTarget& target, SpriteSheet& tile_map) {
+void House::Draw(sf::RenderTarget& target, SpriteSheet& tile_map) const {
     for(auto tile : *tiles) {
         sf::Sprite sprite_to_draw((*tile_map.tiles)[tile.tile_map_index]);
         sprite_to_draw.setRotation(tile.rotation);
