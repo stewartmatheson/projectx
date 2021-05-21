@@ -76,7 +76,7 @@ void House::Draw(sf::RenderTarget& target, SpriteSheet& tile_map) {
     }
 }
 
-void House::WriteToFile(std::string file_name) {
+void House::WriteToFile(std::string file_name) const {
     std::ofstream wf(file_name, std::ios::out | std::ios::binary);
 
     if(!wf) {
