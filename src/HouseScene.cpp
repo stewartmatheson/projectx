@@ -6,11 +6,11 @@ HouseScene::HouseScene(
         SpriteSheet &tile_map, 
         int window_height, 
         int window_width, 
-        House &house, 
+        Map &map, 
         Entity &player
 ) : current_rotation(0), 
     editor_enabled(true), 
-    house(house), 
+    map(map), 
     house_view(sf::FloatRect(0, 0, window_width, window_height)),
     panning(false),
     player(player), 
@@ -52,8 +52,8 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse
         sf::IntRect pixel_bounds(
             0, 
             0,
-            house.bounds.width * tile_map.SpriteSize(),
-            house.bounds.height * tile_map.SpriteSize()
+            map.bounds.width * tile_map.SpriteSize(),
+            map.bounds.height * tile_map.SpriteSize()
         );
 
 
@@ -62,17 +62,17 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse
             !tile_palette_view.GetBackground().getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)
         ) {
             auto sprite_size = tile_map.SpriteSize();
-            auto found = std::find_if(house.tiles->begin(), house.tiles->end(), [event_target_coords, sprite_size](const auto &t) {
+            auto found = std::find_if(map.tiles->begin(), map.tiles->end(), [event_target_coords, sprite_size](const auto &t) {
                 return sf::FloatRect(
                     t.x * sprite_size, t.y * sprite_size,
                     sprite_size, sprite_size
                 ).contains(event_target_coords);
             });
-            if (found != house.tiles->end()) {
-                house.tiles->erase(found);
+            if (found != map.tiles->end()) {
+                map.tiles->erase(found);
             }
 
-            house.tiles->push_back(
+            map.tiles->push_back(
                 Tile { 
                     (int)event_target_coords.x / tile_map.SpriteSize(),
                     (int)event_target_coords.y / tile_map.SpriteSize(),
@@ -85,7 +85,7 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse
 
 
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::W) {
-        house.WriteToFile("./assets/maps/room.bin");
+        map.WriteToFile("./assets/maps/room.bin");
     }
 
     if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space) {
@@ -146,15 +146,15 @@ void HouseScene::Draw(sf::RenderTarget& target) {
     // Draw Room and Grid
     house_render_texture.setView(house_view);
     house_render_texture.clear();
-    house.Draw(house_render_texture, tile_map);
+    map.Draw(house_render_texture, tile_map);
 
     player.Draw(house_render_texture);
 
     if (editor_enabled) {
         DrawGrid(
             house_render_texture,
-            house.bounds.height, 
-            house.bounds.width, 
+            map.bounds.height, 
+            map.bounds.width, 
             tile_map.SpriteSize()
         );
 

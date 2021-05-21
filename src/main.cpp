@@ -44,8 +44,8 @@ int main(int argc, char** argv)
     };
     Entity player = Entity(PlayerEntity, 500.f, .01f, player_animations);
     
-    House house = argc == 2 ? House(argv[1]) : House(20, 20, window_height, window_width);
-    HouseScene house_scene(tile_map, window_height, window_width, house, player);
+    Map map = argc == 2 ? Map(argv[1]) : Map(20, 20, window_height, window_width);
+    HouseScene house_scene(tile_map, window_height, window_width, map, player);
 
     while (window.isOpen())
     {

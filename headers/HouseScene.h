@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "TilePaletteView.h"
 #include "SpriteSheet.h"
-#include "House.h"
+#include "Map.h"
 #include "Entity.h"
 
 /**
@@ -17,7 +17,7 @@ class HouseScene {
 
     bool editor_enabled;
 
-    House &house;
+    Map &map;
 
     sf::RenderTexture house_render_texture;
 
@@ -34,7 +34,7 @@ class HouseScene {
     TilePaletteView tile_palette_view;
 
 public:
-    HouseScene(SpriteSheet &, int, int, House &, Entity &);
+    HouseScene(SpriteSheet &, int, int, Map &, Entity &);
     ~HouseScene();
     void Draw(sf::RenderTarget &);
     void Update(const sf::Event &, const sf::Vector2i);

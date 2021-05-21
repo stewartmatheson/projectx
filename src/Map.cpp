@@ -1,7 +1,7 @@
 #include <fstream>
-#include "House.h"
+#include "Map.h"
 
-House::House(std::string file_name) {
+Map::Map(std::string file_name) {
     std::ifstream rf(file_name, std::ios::in | std::ios::binary);
 
     if (!rf) {
@@ -53,16 +53,16 @@ House::House(std::string file_name) {
     }
 }
 
-House::House(int map_height, int map_width, int window_width, int window_height)
+Map::Map(int map_height, int map_width, int window_width, int window_height)
     : bounds(0, 0, map_width, map_height) {
     tiles = new std::vector<Tile>();
 }
 
-House::~House() {
+Map::~Map() {
     delete tiles;
 }
 
-void House::Draw(sf::RenderTarget& target, const SpriteSheet& tile_map) const {
+void Map::Draw(sf::RenderTarget& target, const SpriteSheet& tile_map) const {
     for(const auto &tile : *tiles) {
         sf::Sprite sprite_to_draw((*tile_map.tiles)[tile.tile_map_index]);
         sprite_to_draw.setRotation(tile.rotation);
@@ -76,7 +76,7 @@ void House::Draw(sf::RenderTarget& target, const SpriteSheet& tile_map) const {
     }
 }
 
-void House::WriteToFile(std::string file_name) const {
+void Map::WriteToFile(std::string file_name) const {
     std::ofstream wf(file_name, std::ios::out | std::ios::binary);
 
     if(!wf) {
