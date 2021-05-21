@@ -109,7 +109,7 @@ int TilePaletteView::GetSelectedTileIndex() const {
     return selected_tile_index;
 }
 
-sf::Sprite& TilePaletteView::GetSelectedTileSprite() {
+const sf::Sprite& TilePaletteView::GetSelectedTileSprite() const {
     return tiles[selected_tile_index].icon;
 }
 
