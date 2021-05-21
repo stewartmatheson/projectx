@@ -20,7 +20,7 @@ class Entity {
 public:
     Entity(EntityType, float, float);
     Entity(EntityType, float, float, std::unordered_map<std::string, Animation>&);
-    sf::Vector2f getTransform();
+    sf::Vector2f &getTransform();
     void Update(const sf::Event &);
     void Draw(sf::RenderTarget &);
     void Reset();

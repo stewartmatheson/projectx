@@ -84,7 +84,7 @@ void Entity::Draw(sf::RenderTarget &target) {
 }
 
 
-sf::Vector2f Entity::getTransform() {
+sf::Vector2f &Entity::getTransform() {
     return transform;
 }
 
