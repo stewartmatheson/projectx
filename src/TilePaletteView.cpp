@@ -105,7 +105,7 @@ void TilePaletteView::Draw(sf::RenderTarget &target) {
 }
 
 
-int TilePaletteView::GetSelectedTileIndex() {
+int TilePaletteView::GetSelectedTileIndex() const {
     return selected_tile_index;
 }
 
@@ -113,6 +113,6 @@ sf::Sprite& TilePaletteView::GetSelectedTileSprite() {
     return tiles[selected_tile_index].icon;
 }
 
-const sf::RectangleShape &TilePaletteView::GetBackground() {
+const sf::RectangleShape &TilePaletteView::GetBackground() const {
     return background;
 }

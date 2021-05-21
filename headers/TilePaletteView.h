@@ -37,10 +37,10 @@ class TilePaletteView {
 public:
     TilePaletteView(SpriteSheet&, int);
     ~TilePaletteView();
-    const sf::RectangleShape &GetBackground();
+    const sf::RectangleShape &GetBackground() const;
     void Draw(sf::RenderTarget &);
     void Update(const sf::Event &, const sf::Vector2i);
-    int GetSelectedTileIndex();
+    int GetSelectedTileIndex() const;
     sf::Sprite& GetSelectedTileSprite();
 
 };
