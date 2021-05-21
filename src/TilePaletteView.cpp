@@ -95,7 +95,7 @@ void TilePaletteView::Draw(sf::RenderTarget &target) {
     tile_palette_render_texture.setView(tile_palette_view);
     tile_palette_render_texture.clear();
     tile_palette_render_texture.draw(background);
-    for(auto tile : tiles) {
+    for(const auto &tile : tiles) {
         tile_palette_render_texture.draw(tile.icon);
     }
     tile_palette_render_texture.draw(selection_rectangle);
@@ -105,14 +105,14 @@ void TilePaletteView::Draw(sf::RenderTarget &target) {
 }
 
 
-int TilePaletteView::GetSelectedTileIndex() {
+int TilePaletteView::GetSelectedTileIndex() const {
     return selected_tile_index;
 }
 
-sf::Sprite& TilePaletteView::GetSelectedTileSprite() {
+const sf::Sprite& TilePaletteView::GetSelectedTileSprite() const {
     return tiles[selected_tile_index].icon;
 }
 
-const sf::RectangleShape &TilePaletteView::GetBackground() {
+const sf::RectangleShape &TilePaletteView::GetBackground() const {
     return background;
 }

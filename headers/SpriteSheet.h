@@ -13,6 +13,6 @@ public:
 	std::vector<sf::Sprite>* tiles;
 	SpriteSheet(std::string, int, int, int, int);
 	~SpriteSheet();
-	int SpriteSize();
+	int SpriteSize() const;
 };
 

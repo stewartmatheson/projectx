@@ -35,6 +35,6 @@ sf::Sprite SpriteSheet::CreateTileSprite(int tile_map_x, int tile_map_y, int sca
 	return sprite;
 }
 
-int SpriteSheet::SpriteSize() {
+int SpriteSheet::SpriteSize() const {
   return scale * size;
 }

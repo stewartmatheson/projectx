@@ -14,7 +14,7 @@ struct House {
 	House(int, int, int, int);
 	~House();
 
-	void Draw(sf::RenderTarget &, SpriteSheet &);
-	void WriteToFile(std::string);
+	void Draw(sf::RenderTarget &, const SpriteSheet &) const;
+	void WriteToFile(std::string) const;
 };
 

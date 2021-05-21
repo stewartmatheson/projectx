@@ -62,8 +62,8 @@ House::~House() {
     delete tiles;
 }
 
-void House::Draw(sf::RenderTarget& target, SpriteSheet& tile_map) {
-    for(auto tile : *tiles) {
+void House::Draw(sf::RenderTarget& target, const SpriteSheet& tile_map) const {
+    for(const auto &tile : *tiles) {
         sf::Sprite sprite_to_draw((*tile_map.tiles)[tile.tile_map_index]);
         sprite_to_draw.setRotation(tile.rotation);
         int half_tile_size = tile_map.SpriteSize() / 2;
@@ -76,7 +76,7 @@ void House::Draw(sf::RenderTarget& target, SpriteSheet& tile_map) {
     }
 }
 
-void House::WriteToFile(std::string file_name) {
+void House::WriteToFile(std::string file_name) const {
     std::ofstream wf(file_name, std::ios::out | std::ios::binary);
 
     if(!wf) {
