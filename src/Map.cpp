@@ -10,70 +10,59 @@ Map::Map(std::string file_name) {
     }
    
     rf.read(reinterpret_cast<char *>(&bounds.left), sizeof (bounds.left));
-
     rf.read(reinterpret_cast<char *>(&bounds.top), sizeof (bounds.top));
-
     rf.read(reinterpret_cast<char *>(&bounds.width), sizeof (bounds.width));
-
     rf.read(reinterpret_cast<char *>(&bounds.height), sizeof (bounds.height));
 
-    tiles = new std::vector<Tile>();
-
-
-    int room_tile_count;
+    int layer_count;
     rf.read(
-        reinterpret_cast<char *>(&room_tile_count), 
-        sizeof(room_tile_count)
+        reinterpret_cast<char *>(&layer_count), 
+        sizeof(layer_count)
     );
 
-
-    for(auto i = 0; i < room_tile_count; i++) {
-        Tile tile;
+    for(auto i = 0; i < layer_count; i++) {
+        int room_tile_count;
         rf.read(
-            reinterpret_cast<char *>(&tile.rotation), 
-            sizeof (tile.rotation)
+            reinterpret_cast<char *>(&room_tile_count), 
+            sizeof(room_tile_count)
         );
 
-        rf.read(
-            reinterpret_cast<char *>(&tile.tile_map_index), 
-            sizeof (tile.tile_map_index)
-        );
+        std::vector<Tile> tiles;
 
-        rf.read(
-            reinterpret_cast<char *>(&tile.x), 
-            sizeof (tile.x)
-        );
+        for(auto i = 0; i < room_tile_count; i++) {
+            Tile tile;
+            rf.read(
+                reinterpret_cast<char *>(&tile.rotation), 
+                sizeof (tile.rotation)
+            );
 
-        rf.read(
-            reinterpret_cast<char *>(&tile.y), 
-            sizeof (tile.y)
-        );
+            rf.read(
+                reinterpret_cast<char *>(&tile.tile_map_index), 
+                sizeof (tile.tile_map_index)
+            );
 
-        tiles->push_back(tile);
+            rf.read(
+                reinterpret_cast<char *>(&tile.x), 
+                sizeof (tile.x)
+            );
+
+            rf.read(
+                reinterpret_cast<char *>(&tile.y), 
+                sizeof (tile.y)
+            );
+
+            tiles.push_back(tile);
+        }
+
+        tile_layers.push_back(TileLayer{i, tiles});
     }
+
 }
 
 Map::Map(int map_height, int map_width, int window_width, int window_height)
     : bounds(0, 0, map_width, map_height) {
-    tiles = new std::vector<Tile>();
-}
 
-Map::~Map() {
-    delete tiles;
-}
-
-void Map::Draw(sf::RenderTarget& target, const SpriteSheet& tile_map) const {
-    for(const auto &tile : *tiles) {
-        sf::Sprite sprite_to_draw((*tile_map.tiles)[tile.tile_map_index]);
-        sprite_to_draw.setRotation(tile.rotation);
-        int half_tile_size = tile_map.SpriteSize() / 2;
-        sprite_to_draw.setPosition(
-            (tile.x * tile_map.SpriteSize()) + half_tile_size,
-            (tile.y * tile_map.SpriteSize()) + half_tile_size
-        );
-        sprite_to_draw.setOrigin(tile_map.size / 2, tile_map.size / 2);
-        target.draw(sprite_to_draw);
-    }
+    tile_layers.push_back(TileLayer{0, std::vector<Tile>()});
 }
 
 void Map::WriteToFile(std::string file_name) const {
@@ -104,29 +93,56 @@ void Map::WriteToFile(std::string file_name) const {
         sizeof (bounds.height)
     );
 
-    int room_tile_count = tiles->size();
-    wf.write(reinterpret_cast<const char *>(&room_tile_count), sizeof (room_tile_count));
+    for (const auto &tile_layer: tile_layers) {
+        int room_tile_count = tile_layer.tiles.size();
+        wf.write(reinterpret_cast<const char *>(&room_tile_count), sizeof (room_tile_count));
 
+        for(const auto &t: tile_layer.tiles) {
+            wf.write(
+                reinterpret_cast<const char *>(&t.rotation), 
+                sizeof (t.rotation)
+            );
 
-    for(const auto &t: *tiles) {
-        wf.write(
-            reinterpret_cast<const char *>(&t.rotation), 
-            sizeof (t.rotation)
-        );
+            wf.write(
+                reinterpret_cast<const char *>(&t.tile_map_index), 
+                sizeof (t.tile_map_index)
+            );
 
-        wf.write(
-            reinterpret_cast<const char *>(&t.tile_map_index), 
-            sizeof (t.tile_map_index)
-        );
+            wf.write(
+                reinterpret_cast<const char *>(&t.x), 
+                sizeof (t.x)
+            );
 
-        wf.write(
-            reinterpret_cast<const char *>(&t.x), 
-            sizeof (t.x)
-        );
+            wf.write(
+                reinterpret_cast<const char *>(&t.y), 
+                sizeof (t.y)
+            );
+        }
 
-        wf.write(
-            reinterpret_cast<const char *>(&t.y), 
-            sizeof (t.y)
-        );
     }
+
 }
+
+sf::IntRect Map::GetBounds() {
+    return bounds;
+}
+
+std::vector<TileLayer>& Map::GetTileLayers() {
+    return tile_layers;
+}
+
+void Map::AddTile(int index, Tile tile) {
+    auto found = std::find_if(
+        tile_layers[index].tiles.begin(), 
+        tile_layers[index].tiles.end(), 
+        [tile](const auto &t) {
+            return t.x == tile.x && t.y == tile.y;
+        }
+    );
+
+    if (found != tile_layers[index].tiles.end()) {
+        tile_layers[index].tiles.erase(found);
+    }
+    tile_layers[index].tiles.push_back(tile);
+}
+

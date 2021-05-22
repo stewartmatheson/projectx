@@ -7,8 +7,8 @@
 
 int main(int argc, char** argv)
 {
-    int window_width = 1400;
-    int window_height = 1400;
+    int window_width = 1000;
+    int window_height = 1000;
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML works!");
     window.setFramerateLimit(60);
 
