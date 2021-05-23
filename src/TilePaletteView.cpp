@@ -24,6 +24,12 @@ TilePaletteView::TilePaletteView(
     auto ghost_palette_sprite_icon = CreateIconSprite(tile_map.SpriteSize(), sf::Color::Green, 1);
     tiles.push_back(TilePaletteTile{ghost_palette_sprite_icon, PaletteEntity, GhostEntity });
 
+    // Now that `tiles` is fully populated, we can do this once
+    for(std::size_t i = 0; i < tiles.size(); i ++) {
+        auto y = (i * tile_map.SpriteSize()) + (offset * i) + offset;
+        tiles[i].icon.setPosition(offset, y);
+    }
+    selection_rectangle.setPosition(tiles[selected_tile_index].icon.getPosition());
 
     auto left_toolbar_width = offset * 2 + tile_map.SpriteSize();
     auto total_height = (tiles.size() * (tile_map.SpriteSize() + offset)) + offset;
@@ -51,15 +57,6 @@ sf::Sprite TilePaletteView::CreateIconSprite(int sprite_size, sf::Color color, i
 }
 
 void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
-
-    selection_rectangle.setPosition(tiles[selected_tile_index].icon.getPosition());
-    for(std::size_t i = 0; i < tiles.size(); i ++) {
-        int current_y_pos = 
-            (i * tile_map.SpriteSize()) + 
-            (offset * i) + offset;
-        tiles[i].icon.setPosition(offset, current_y_pos);
-    }
-
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
         // Manage Selection Changed
@@ -71,6 +68,7 @@ void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
         });
         if (found != tiles.end()) {
             selected_tile_index = found - tiles.begin();
+            selection_rectangle.setPosition(tiles[selected_tile_index].icon.getPosition());
         }
     }
 
