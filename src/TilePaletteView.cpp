@@ -20,8 +20,8 @@ TilePaletteView::TilePaletteView(
     });
 
     auto entity_sprites = entity_map.GetSprites();
-    tiles.push_back(TilePaletteTile{entity_sprites[0], PaletteEntity, GhostEntity});
-    tiles.push_back(TilePaletteTile{entity_sprites[1], PaletteEntity, DoorEntity});
+    tiles.push_back(TilePaletteTile{entity_sprites[0], PaletteEntity, EntityType::GhostEntity});
+    tiles.push_back(TilePaletteTile{entity_sprites[1], PaletteEntity, EntityType::DoorEntity});
 
  
     auto left_toolbar_width = offset * 2 + tile_map.GetSpriteSize();

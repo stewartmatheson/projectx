@@ -4,7 +4,11 @@
 #include <SFML/Graphics.hpp>
 #include "Animation.h"
 
-enum EntityType { GhostEntity = 0, DoorEntity = 1, PlayerEntity = 2, };
+enum class EntityType { 
+    GhostEntity = 0, 
+    DoorEntity = 1, 
+    PlayerEntity = 2
+};
 
 class Entity {
     float acceleration;
@@ -27,6 +31,7 @@ public:
     sf::Vector2f GetTransform() const; 
     int GetTileMapIndex() const; 
     int GetRotation() const; 
+    EntityType GetEntityType () const; 
 };
 
 

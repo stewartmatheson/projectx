@@ -99,19 +99,14 @@ sf::Vector2f Entity::GetTransform() const {
 }
 
 int Entity::GetTileMapIndex() const {
-    /*
-    if (type == DoorEntity) {
-        return 1;
-    } else if (type == PlayerEntity) {
-        return 0;
-    } else {
-        std::cout << "Unknown Entity Type : " << type << std::endl;
-        exit(1);
-    }
-    */
-    return type;
+    typedef std::underlying_type<EntityType>::type utype;
+    return static_cast<utype>(type);
 }
 
 int Entity::GetRotation() const {
     return 0;
+}
+
+EntityType Entity::GetEntityType() const {
+    return type;
 }

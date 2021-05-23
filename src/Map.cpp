@@ -57,6 +57,21 @@ Map::Map(std::string file_name) {
         tile_layers.push_back(TileLayer{i, tiles});
     }
 
+    int entity_count;
+    rf.read(reinterpret_cast<char *>(&entity_count), sizeof(entity_count));
+    for(auto k = 0; k < entity_count; k++) {
+        
+        EntityType type;
+        rf.read(reinterpret_cast<char *>(&type), sizeof (int));
+
+        int x;
+        rf.read(reinterpret_cast<char *>(&x), sizeof (x));
+
+        int y;
+        rf.read(reinterpret_cast<char *>(&y), sizeof (y));
+
+        entities.push_back(Entity(type, 0, 0, x, y));
+    }
 }
 
 Map::Map(int map_height, int map_width, int window_width, int window_height)
@@ -73,25 +88,13 @@ void Map::WriteToFile(std::string file_name) const {
         exit(1);
     }
 
-    wf.write(
-        reinterpret_cast<const char *>(&bounds.left), 
-        sizeof (bounds.left)
-    );
+    wf.write(reinterpret_cast<const char *>(&bounds.left), sizeof (bounds.left));
+    wf.write(reinterpret_cast<const char *>(&bounds.top), sizeof (bounds.top));
+    wf.write(reinterpret_cast<const char *>(&bounds.width), sizeof (bounds.width));
+    wf.write(reinterpret_cast<const char *>(&bounds.height), sizeof (bounds.height));
 
-    wf.write(
-        reinterpret_cast<const char *>(&bounds.top), 
-        sizeof (bounds.top)
-    );
-
-    wf.write(
-        reinterpret_cast<const char *>(&bounds.width), 
-        sizeof (bounds.width)
-    );
-
-    wf.write(
-        reinterpret_cast<const char *>(&bounds.height), 
-        sizeof (bounds.height)
-    );
+    int size = tile_layers.size();
+    wf.write(reinterpret_cast<const char *>(&size), sizeof (size));
 
     for (const auto &tile_layer: tile_layers) {
         int room_tile_count = tile_layer.tiles.size();
@@ -120,6 +123,24 @@ void Map::WriteToFile(std::string file_name) const {
         }
 
     }
+
+    int entity_size = entities.size();
+    std::cout << entity_size << std::endl;
+    wf.write(reinterpret_cast<const char *>(&entity_size), sizeof (entity_size));
+
+    std::for_each(entities.begin(), entities.end(), [&wf](Entity entity){
+        EntityType type = entity.GetEntityType();
+        //typedef std::underlying_type<EntityType>::type utype;
+        //int i = static_cast<utype>(type);
+
+        wf.write(reinterpret_cast<const char *>(&type), sizeof (type));
+
+        int x = entity.GetTransform().x;
+        wf.write(reinterpret_cast<const char *>(&x), sizeof (x));
+
+        int y = entity.GetTransform().y;
+        wf.write(reinterpret_cast<const char *>(&y), sizeof (y));
+    });
 
 }
 
