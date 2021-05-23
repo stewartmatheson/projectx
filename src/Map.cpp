@@ -27,10 +27,10 @@ Map::Map(std::string file_name) {
             sizeof(room_tile_count)
         );
 
-        std::vector<Tile> tiles;
+        std::vector<MapTile> tiles;
 
         for(auto i = 0; i < room_tile_count; i++) {
-            Tile tile;
+            MapTile tile;
             rf.read(
                 reinterpret_cast<char *>(&tile.rotation), 
                 sizeof (tile.rotation)
@@ -62,7 +62,7 @@ Map::Map(std::string file_name) {
 Map::Map(int map_height, int map_width, int window_width, int window_height)
     : bounds(0, 0, map_width, map_height) {
 
-    tile_layers.push_back(TileLayer{0, std::vector<Tile>()});
+    tile_layers.push_back(TileLayer{0, std::vector<MapTile>()});
 }
 
 void Map::WriteToFile(std::string file_name) const {
@@ -131,7 +131,7 @@ std::vector<TileLayer>& Map::GetTileLayers() {
     return tile_layers;
 }
 
-void Map::AddTile(int index, Tile tile) {
+void Map::AddTile(int index, MapTile tile) {
     auto found = std::find_if(
         tile_layers[index].tiles.begin(), 
         tile_layers[index].tiles.end(), 
@@ -146,3 +146,11 @@ void Map::AddTile(int index, Tile tile) {
     tile_layers[index].tiles.push_back(tile);
 }
 
+void Map::AddEntity(Entity entity) {
+    entities.push_back(entity);
+}
+
+
+std::vector<Entity>& Map::GetEntities() {
+    return entities;
+}

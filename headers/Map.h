@@ -4,7 +4,7 @@
 #include "Entity.h"
 #include "SpriteSheet.h"
 
-struct Tile {
+struct MapTile {
     int x;
     int y;
     int rotation;
@@ -13,7 +13,7 @@ struct Tile {
 
 struct TileLayer {
     int layer_index;
-    std::vector<Tile> tiles;
+    std::vector<MapTile> tiles;
 };
 
 // A map holds all data for a given tile layout within the game.
@@ -21,7 +21,7 @@ class Map {
     int map_file_version;
     sf::IntRect bounds;
     std::vector<TileLayer> tile_layers;
-    std::vector<Entity> entity;
+    std::vector<Entity> entities;
 
 public:
 	Map(std::string);
@@ -30,6 +30,8 @@ public:
 	void WriteToFile(std::string) const;
     sf::IntRect GetBounds();
     std::vector<TileLayer>& GetTileLayers();
-    void AddTile(int, Tile);
+    std::vector<Entity>& GetEntities();
+    void AddTile(int, MapTile);
+    void AddEntity(Entity);
 };
 

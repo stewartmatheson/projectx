@@ -7,8 +7,8 @@ Animation::Animation(SpriteSheet & sprite_sheet, std::vector<AnimationFrame> ani
         frame_width(frame_width), 
         speed(speed),
         sprite_sheet(sprite_sheet) {
-    sprite.setTexture(sprite_sheet.texture);
-    sprite.setScale(sprite_sheet.scale, sprite_sheet.scale);
+    sprite.setTexture(sprite_sheet.GetTexture());
+    sprite.setScale(sprite_sheet.GetScale(), sprite_sheet.GetScale());
     sprite.setOrigin(frame_width / 2, frame_height / 2);
 }
 

@@ -20,11 +20,12 @@ class HouseScene {
     bool panning;
     Entity &player;
     SpriteSheet &tile_map;
+    SpriteSheet &entity_map;
     TilePaletteView tile_palette_view;
     int current_selected_tile_layer;
 
 public:
-    HouseScene(SpriteSheet &, int, int, Map &, Entity &);
+    HouseScene(SpriteSheet&, SpriteSheet&, int, int, Map &, Entity &);
     ~HouseScene();
     void Draw(sf::RenderTarget &);
     void Update(const sf::Event &, const sf::Vector2i);

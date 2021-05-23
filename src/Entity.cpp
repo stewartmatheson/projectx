@@ -1,10 +1,11 @@
 #include "Entity.h"
 
-Entity::Entity(EntityType type, float speed, float acceleration) : 
+Entity::Entity(EntityType type, float speed, float acceleration, float x, float y) : 
     acceleration(acceleration), 
     animations(),
     facing_left(true),
     speed(speed), 
+    transform(sf::Vector2f(x, y)),
     type(type) {}
 
 Entity::Entity(
@@ -91,4 +92,26 @@ const sf::Vector2f &Entity::getTransform() const {
 void Entity::Reset() {
     controller.x = 0;
     controller.y = 0;
+}
+
+sf::Vector2f Entity::GetTransform() const {
+    return transform;
+}
+
+int Entity::GetTileMapIndex() const {
+    /*
+    if (type == DoorEntity) {
+        return 1;
+    } else if (type == PlayerEntity) {
+        return 0;
+    } else {
+        std::cout << "Unknown Entity Type : " << type << std::endl;
+        exit(1);
+    }
+    */
+    return type;
+}
+
+int Entity::GetRotation() const {
+    return 0;
 }
