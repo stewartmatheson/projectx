@@ -98,7 +98,7 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse
 
 
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Middle) {
-        current_rotation += 90;
+        current_rotation = (current_rotation + 90) % 360;
     }
 
     if (panning) {
