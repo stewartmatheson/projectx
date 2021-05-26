@@ -14,11 +14,10 @@ class SpriteSheet {
 public:
 	SpriteSheet(std::string, int, int, int, int);
 	SpriteSheet(int, int);
-	int GetSpriteSize() const;
-    std::vector<sf::Sprite> GetSprites();
-    const sf::Texture& GetTexture();
-    int GetScale() const;
-    int GetSize() const;
-    
+	const int GetSpriteSize() const;
+    const std::vector<sf::Sprite>& GetSprites() const;
+    const sf::Texture& GetTexture() const;
+    const int GetScale() const;
+    const int GetSize() const;
 };
 

@@ -85,28 +85,24 @@ void Entity::Draw(sf::RenderTarget &target) {
 }
 
 
-const sf::Vector2f &Entity::getTransform() const {
-    return transform;
-}
-
 void Entity::Reset() {
     controller.x = 0;
     controller.y = 0;
 }
 
-sf::Vector2f Entity::GetTransform() const {
+const sf::Vector2f& Entity::GetTransform() const {
     return transform;
 }
 
-int Entity::GetTileMapIndex() const {
+const int Entity::GetTileMapIndex() const {
     typedef std::underlying_type<EntityType>::type utype;
     return static_cast<utype>(type);
 }
 
-int Entity::GetRotation() const {
+const int Entity::GetRotation() const {
     return 0;
 }
 
-EntityType Entity::GetEntityType() const {
+const EntityType Entity::GetEntityType() const {
     return type;
 }

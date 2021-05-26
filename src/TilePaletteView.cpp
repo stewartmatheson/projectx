@@ -15,7 +15,7 @@ TilePaletteView::TilePaletteView(
     selection_rectangle.setFillColor(sf::Color::Transparent);
 
     auto tile_sprites = tile_map.GetSprites();
-    std::for_each(tile_sprites.begin(), tile_sprites.end(), [this](sf::Sprite &sprite){ 
+    std::for_each(tile_sprites.begin(), tile_sprites.end(), [this](const auto &sprite){ 
         tiles.push_back(TilePaletteTile{sprite, PaletteTile});
     });
 

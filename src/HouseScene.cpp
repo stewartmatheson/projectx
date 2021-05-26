@@ -139,7 +139,7 @@ void DrawGrid(sf::RenderTarget &target, int grid_height, int grid_width, int siz
 
 void HouseScene::Draw(sf::RenderTarget& target) {
     if (!editor_enabled) {
-        house_view.setCenter(player.getTransform());
+        house_view.setCenter(player.GetTransform());
     }
 
     // Draw Room and Grid
@@ -161,7 +161,7 @@ void HouseScene::Draw(sf::RenderTarget& target) {
     }
 
     auto entities = map.GetEntities();
-    std::for_each(entities.begin(), entities.end(), [this](Entity &entity){
+    std::for_each(entities.begin(), entities.end(), [this](const auto &entity){
         sf::Sprite sprite_to_draw(entity_map.GetSprites()[entity.GetTileMapIndex()]);
         sprite_to_draw.setRotation(entity.GetRotation());
         int half_tile_size = entity_map.GetSpriteSize() / 2;

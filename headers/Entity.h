@@ -24,14 +24,13 @@ class Entity {
 public:
     Entity(EntityType, float, float, float, float);
     Entity(EntityType, float, float, std::unordered_map<std::string, Animation>&);
-    const sf::Vector2f &getTransform() const;
     void Update(const sf::Event &);
     void Draw(sf::RenderTarget &);
     void Reset();
-    sf::Vector2f GetTransform() const; 
-    int GetTileMapIndex() const; 
-    int GetRotation() const; 
-    EntityType GetEntityType () const; 
+    const sf::Vector2f& GetTransform() const; 
+    const int GetTileMapIndex() const; 
+    const int GetRotation() const; 
+    const EntityType GetEntityType () const; 
 };
 
 

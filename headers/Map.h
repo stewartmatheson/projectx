@@ -28,9 +28,9 @@ public:
 	Map(int, int, int, int);
 
 	void WriteToFile(std::string) const;
-    sf::IntRect GetBounds();
-    std::vector<TileLayer>& GetTileLayers();
-    std::vector<Entity>& GetEntities();
+    const sf::IntRect GetBounds() const;
+    const std::vector<TileLayer>& GetTileLayers() const;
+    const std::vector<Entity>& GetEntities() const;
     void AddTile(int, MapTile);
     void AddEntity(Entity);
 };

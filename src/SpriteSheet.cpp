@@ -55,22 +55,22 @@ sf::Sprite SpriteSheet::CreateTileSprite(int tile_map_x, int tile_map_y, int sca
 	return sprite;
 }
 
-int SpriteSheet::GetSpriteSize() const {
+const int SpriteSheet::GetSpriteSize() const {
   return scale * size;
 }
 
-int SpriteSheet::GetScale() const {
+const int SpriteSheet::GetScale() const {
     return scale;
 }
 
-int SpriteSheet::GetSize() const {
+const int SpriteSheet::GetSize() const {
     return size;
 }
 
-const sf::Texture& SpriteSheet::GetTexture() {
+const sf::Texture& SpriteSheet::GetTexture() const {
     return texture;
 }
 
-std::vector<sf::Sprite> SpriteSheet::GetSprites() {
+const std::vector<sf::Sprite>& SpriteSheet::GetSprites() const {
     return sprites;
 }

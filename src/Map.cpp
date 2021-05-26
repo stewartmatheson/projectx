@@ -62,7 +62,7 @@ Map::Map(std::string file_name) {
     for(auto k = 0; k < entity_count; k++) {
         
         EntityType type;
-        rf.read(reinterpret_cast<char *>(&type), sizeof (int));
+        rf.read(reinterpret_cast<char *>(&type), sizeof (type));
 
         int x;
         rf.read(reinterpret_cast<char *>(&x), sizeof (x));
@@ -125,7 +125,6 @@ void Map::WriteToFile(std::string file_name) const {
     }
 
     int entity_size = entities.size();
-    std::cout << entity_size << std::endl;
     wf.write(reinterpret_cast<const char *>(&entity_size), sizeof (entity_size));
 
     std::for_each(entities.begin(), entities.end(), [&wf](Entity entity){
@@ -144,11 +143,11 @@ void Map::WriteToFile(std::string file_name) const {
 
 }
 
-sf::IntRect Map::GetBounds() {
+const sf::IntRect Map::GetBounds() const {
     return bounds;
 }
 
-std::vector<TileLayer>& Map::GetTileLayers() {
+const std::vector<TileLayer>& Map::GetTileLayers() const {
     return tile_layers;
 }
 
@@ -172,6 +171,6 @@ void Map::AddEntity(Entity entity) {
 }
 
 
-std::vector<Entity>& Map::GetEntities() {
+const std::vector<Entity>& Map::GetEntities() const {
     return entities;
 }
