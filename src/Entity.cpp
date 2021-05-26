@@ -50,6 +50,13 @@ void Entity::Draw(sf::RenderTarget &target) {
     } 
 
     auto current_animation = animations.find(current_animation_key);
+    if (current_animation == animations.end()) {
+        // TODO : We might not want to do this each draw call.
+        sf::RectangleShape no_sprite(sf::Vector2f(50,80));
+        no_sprite.setPosition(transform);
+        target.draw(no_sprite);
+        return;
+    }
 
     if (facing_left && controller.x > 0) {
         facing_left = false;
@@ -71,16 +78,9 @@ void Entity::Draw(sf::RenderTarget &target) {
         );
     } 
 
-    if(current_animation != animations.end()) {
-        current_animation->second.Update();
-        current_animation->second.sprite.setPosition(transform);
-        target.draw(current_animation->second.sprite);
-    } else {
-        // TODO : We might not want to do this each draw call.
-        sf::RectangleShape no_sprite(sf::Vector2f(50,80));
-        no_sprite.setPosition(transform);
-        target.draw(no_sprite);
-    }
+    current_animation->second.Update();
+    current_animation->second.sprite.setPosition(transform);
+    target.draw(current_animation->second.sprite);
 
 }
 
