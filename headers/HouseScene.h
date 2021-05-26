@@ -11,7 +11,7 @@
  */
 class HouseScene {
     sf::Vector2i current_mouse_grid_position;
-    float current_rotation;
+    int current_rotation;
     bool editor_enabled;
     Map &map;
     sf::RenderTexture house_render_texture;

@@ -71,7 +71,7 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i &current_mous
                     MapTile { 
                         x,
                         y,
-                        (int)current_rotation,
+                        current_rotation,
                         tile_palette_view.GetSelectedTileIndex()
                     }
                 );
@@ -98,8 +98,9 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i &current_mous
     }
 
 
-    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Middle) {
-        current_rotation += 90;
+    if ((event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Middle) ||
+        (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::R)) {
+        current_rotation = (current_rotation + 90) % 360;
     }
 
     if (panning) {
