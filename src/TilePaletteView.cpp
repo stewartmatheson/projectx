@@ -23,7 +23,12 @@ TilePaletteView::TilePaletteView(
     tiles.push_back(TilePaletteTile{entity_sprites[0], PaletteEntity, EntityType::GhostEntity});
     tiles.push_back(TilePaletteTile{entity_sprites[1], PaletteEntity, EntityType::DoorEntity});
 
- 
+    for(std::size_t i = 0; i < tiles.size(); i ++) {
+        auto y = (i * tile_map.GetSpriteSize()) + (offset * i) + offset;
+        tiles[i].icon.setPosition(offset, y);
+    }
+    selection_rectangle.setPosition(tiles[selected_tile_index].icon.getPosition());
+
     auto left_toolbar_width = offset * 2 + tile_map.GetSpriteSize();
     auto total_height = (tiles.size() * (tile_map.GetSpriteSize() + offset)) + offset;
     background = sf::RectangleShape(sf::Vector2f(left_toolbar_width, total_height));
@@ -38,13 +43,6 @@ TilePaletteView::~TilePaletteView() {
 
 void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
 
-    selection_rectangle.setPosition(tiles[selected_tile_index].icon.getPosition());
-    for(std::size_t i = 0; i < tiles.size(); i ++) {
-        int current_y_pos = 
-            (i * tile_map.GetSpriteSize()) + 
-            (offset * i) + offset;
-        tiles[i].icon.setPosition(offset, current_y_pos);
-    }
 
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
@@ -57,6 +55,7 @@ void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
         });
         if (found != tiles.end()) {
             selected_tile_index = found - tiles.begin();
+            selection_rectangle.setPosition(tiles[selected_tile_index].icon.getPosition());
         }
     }
 
