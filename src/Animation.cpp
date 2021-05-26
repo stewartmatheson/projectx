@@ -21,7 +21,7 @@ void Animation::Update ()  {
     );
 
     sprite.setTextureRect(current_frame_rect);
-    if (current_frame_counter == (animation_frames.size() * speed) - (speed * 2)) {
+    if (current_frame_counter == (animation_frames.size() * speed) - 1) {
         current_frame_counter = 0;
     } else {
         current_frame_counter++;
