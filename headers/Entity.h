@@ -12,7 +12,10 @@ enum class EntityType {
 
 enum class EntityMode {
     Idle,
-    Walking
+    Throwing,
+    Walking,
+    Attacking,
+    Dying
 };
 
 class Entity {
