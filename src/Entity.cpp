@@ -12,7 +12,7 @@ Entity::Entity(
     EntityType type,
     float speed, 
     float acceleration,
-    std::unordered_map<std::string, Animation>& animations
+    std::unordered_map<EntityMode, Animation>& animations
 ) : acceleration(acceleration), animations(animations), speed(speed), type(type) {}
 
 void Entity::Update(const sf::Event &event) {
@@ -43,10 +43,10 @@ void Entity::Draw(sf::RenderTarget &target) {
     direction.y = ((controller.y * speed) - direction.y) * acceleration;
     transform = transform + direction;
 
-    std::string current_animation_key = "idle";
+    auto current_animation_key = EntityMode::Idle;
 
     if (controller.x != 0 || controller.y != 0) {
-        current_animation_key = "walk";
+        current_animation_key = EntityMode::Walking;
     } 
 
     auto current_animation = animations.find(current_animation_key);

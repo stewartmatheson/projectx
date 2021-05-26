@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include "SpriteSheet.h"
 #include "HouseScene.h"
+#include "Entity.h"
 
 int main(int argc, char** argv)
 {
@@ -43,9 +44,9 @@ int main(int argc, char** argv)
         walk_frames.push_back(AnimationFrame{col, 2});
     }
 
-    std::unordered_map<std::string, Animation> player_animations = {
-        {"idle", Animation(player_sprite_sheet, idle_frames, 32, 32, 8) },
-        {"walk", Animation(player_sprite_sheet, walk_frames, 32, 32, 8) }
+    std::unordered_map<EntityMode, Animation> player_animations = {
+        {EntityMode::Idle, Animation(player_sprite_sheet, idle_frames, 32, 32, 8) },
+        {EntityMode::Walking, Animation(player_sprite_sheet, walk_frames, 32, 32, 8) }
     };
     Entity player = Entity(EntityType::PlayerEntity, 500.f, .01f, player_animations);
     
