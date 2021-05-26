@@ -1,10 +1,11 @@
 #include "Entity.h"
 
-Entity::Entity(EntityType type, float speed, float acceleration) : 
+Entity::Entity(EntityType type, float speed, float acceleration, float x, float y) : 
     acceleration(acceleration), 
     animations(),
     facing_left(true),
     speed(speed), 
+    transform(sf::Vector2f(x, y)),
     type(type) {}
 
 Entity::Entity(
@@ -84,11 +85,24 @@ void Entity::Draw(sf::RenderTarget &target) {
 }
 
 
-const sf::Vector2f &Entity::getTransform() const {
-    return transform;
-}
-
 void Entity::Reset() {
     controller.x = 0;
     controller.y = 0;
+}
+
+const sf::Vector2f& Entity::GetTransform() const {
+    return transform;
+}
+
+const int Entity::GetTileMapIndex() const {
+    typedef std::underlying_type<EntityType>::type utype;
+    return static_cast<utype>(type);
+}
+
+const int Entity::GetRotation() const {
+    return 0;
+}
+
+const EntityType Entity::GetEntityType() const {
+    return type;
 }
