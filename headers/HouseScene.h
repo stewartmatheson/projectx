@@ -28,7 +28,7 @@ public:
     HouseScene(SpriteSheet&, SpriteSheet&, int, int, Map &, Entity &);
     ~HouseScene();
     void Draw(sf::RenderTarget &);
-    void Update(const sf::Event &, const sf::Vector2i);
+    void Update(const sf::Event &, const sf::Vector2i &);
 };
 
 

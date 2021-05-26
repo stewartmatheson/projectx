@@ -26,7 +26,7 @@ HouseScene::HouseScene(
 HouseScene::~HouseScene() {
 }
 
-void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_position) {
+void HouseScene::Update(const sf::Event& event, const sf::Vector2i &current_mouse_position) {
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::E) {
         editor_enabled = !editor_enabled;
         player.Reset();
@@ -39,8 +39,8 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse
 
     tile_palette_view.Update(event, current_mouse_position);
 
-    sf::Vector2f current_target_coords = house_render_texture.mapPixelToCoords(
-            sf::Vector2i(current_mouse_position.x, current_mouse_position.y)
+    auto current_target_coords = house_render_texture.mapPixelToCoords(
+        current_mouse_position
     );
 
     current_mouse_grid_position.x = floor(current_target_coords.x / tile_map.GetSpriteSize());
