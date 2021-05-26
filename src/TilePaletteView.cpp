@@ -2,31 +2,35 @@
 
 TilePaletteView::TilePaletteView(
     SpriteSheet &tile_map, 
+    SpriteSheet &entity_map, 
     int window_height
 ) : offset(20),
     selected_tile_index(0),
-    selection_rectangle(sf::Vector2f(tile_map.SpriteSize(), tile_map.SpriteSize())),
-    tile_map(tile_map) {
+    selection_rectangle(sf::Vector2f(tile_map.GetSpriteSize(), tile_map.GetSpriteSize())),
+    tile_map(tile_map), 
+    entity_map(entity_map) {
 
     selection_rectangle.setOutlineColor(sf::Color::Blue);
     selection_rectangle.setOutlineThickness(2);
     selection_rectangle.setFillColor(sf::Color::Transparent);
 
-    for (const auto &t: *tile_map.tiles) {
-        tiles.push_back(TilePaletteTile{t, PaletteTile});
+    auto tile_sprites = tile_map.GetSprites();
+    std::for_each(tile_sprites.begin(), tile_sprites.end(), [this](const auto &sprite){ 
+        tiles.push_back(TilePaletteTile{sprite, PaletteTile});
+    });
+
+    auto entity_sprites = entity_map.GetSprites();
+    tiles.push_back(TilePaletteTile{entity_sprites[0], PaletteEntity, EntityType::GhostEntity});
+    tiles.push_back(TilePaletteTile{entity_sprites[1], PaletteEntity, EntityType::DoorEntity});
+
+    for(std::size_t i = 0; i < tiles.size(); i ++) {
+        auto y = (i * tile_map.GetSpriteSize()) + (offset * i) + offset;
+        tiles[i].icon.setPosition(offset, y);
     }
- 
+    selection_rectangle.setPosition(tiles[selected_tile_index].icon.getPosition());
 
-    icon_sprite_render_texture.create(tile_map.SpriteSize() * 2, tile_map.SpriteSize());
-    auto door_palette_sprite_icon = CreateIconSprite(tile_map.SpriteSize(), sf::Color::Red, 0);
-    tiles.push_back(TilePaletteTile{door_palette_sprite_icon, PaletteEntity, DoorEntity });
-
-    auto ghost_palette_sprite_icon = CreateIconSprite(tile_map.SpriteSize(), sf::Color::Green, 1);
-    tiles.push_back(TilePaletteTile{ghost_palette_sprite_icon, PaletteEntity, GhostEntity });
-
-
-    auto left_toolbar_width = offset * 2 + tile_map.SpriteSize();
-    auto total_height = (tiles.size() * (tile_map.SpriteSize() + offset)) + offset;
+    auto left_toolbar_width = offset * 2 + tile_map.GetSpriteSize();
+    auto total_height = (tiles.size() * (tile_map.GetSpriteSize() + offset)) + offset;
     background = sf::RectangleShape(sf::Vector2f(left_toolbar_width, total_height));
     background.setFillColor(sf::Color(60,60,60, 255));
 
@@ -37,28 +41,8 @@ TilePaletteView::TilePaletteView(
 TilePaletteView::~TilePaletteView() {
 }
 
-sf::Sprite TilePaletteView::CreateIconSprite(int sprite_size, sf::Color color, int render_offset) {
-    auto icon_rect = sf::RectangleShape(sf::Vector2f(sprite_size, sprite_size));
-    icon_rect.setFillColor(color);
-    icon_rect.setPosition(sprite_size * render_offset, 0);
-    icon_sprite_render_texture.draw(icon_rect);
-    icon_sprite_render_texture.display();
-
-    return sf::Sprite(
-        icon_sprite_render_texture.getTexture(), 
-        sf::IntRect(sprite_size * render_offset, 0, sprite_size, sprite_size)
-    );
-}
-
 void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
 
-    selection_rectangle.setPosition(tiles[selected_tile_index].icon.getPosition());
-    for(std::size_t i = 0; i < tiles.size(); i ++) {
-        int current_y_pos = 
-            (i * tile_map.SpriteSize()) + 
-            (offset * i) + offset;
-        tiles[i].icon.setPosition(offset, current_y_pos);
-    }
 
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 
@@ -71,6 +55,7 @@ void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
         });
         if (found != tiles.end()) {
             selected_tile_index = found - tiles.begin();
+            selection_rectangle.setPosition(tiles[selected_tile_index].icon.getPosition());
         }
     }
 
@@ -109,8 +94,8 @@ int TilePaletteView::GetSelectedTileIndex() const {
     return selected_tile_index;
 }
 
-const sf::Sprite& TilePaletteView::GetSelectedTileSprite() const {
-    return tiles[selected_tile_index].icon;
+const TilePaletteTile& TilePaletteView::GetSelectedTile() const {
+    return tiles[selected_tile_index];
 }
 
 const sf::RectangleShape &TilePaletteView::GetBackground() const {

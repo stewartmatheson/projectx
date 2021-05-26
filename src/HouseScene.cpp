@@ -4,6 +4,7 @@
 
 HouseScene::HouseScene(
         SpriteSheet &tile_map, 
+        SpriteSheet &entity_map, 
         int window_height, 
         int window_width, 
         Map &map, 
@@ -15,7 +16,9 @@ HouseScene::HouseScene(
     panning(false),
     player(player), 
     tile_map(tile_map), 
-    tile_palette_view(tile_map, window_height)
+    entity_map(entity_map), 
+    tile_palette_view(tile_map, entity_map, window_height),
+    current_selected_tile_layer(0)
 {
     house_render_texture.create(window_width, window_height); 
 }
@@ -23,7 +26,7 @@ HouseScene::HouseScene(
 HouseScene::~HouseScene() {
 }
 
-void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse_position) {
+void HouseScene::Update(const sf::Event& event, const sf::Vector2i &current_mouse_position) {
     if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::E) {
         editor_enabled = !editor_enabled;
         player.Reset();
@@ -36,12 +39,12 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse
 
     tile_palette_view.Update(event, current_mouse_position);
 
-    sf::Vector2f current_target_coords = house_render_texture.mapPixelToCoords(
-            sf::Vector2i(current_mouse_position.x, current_mouse_position.y)
+    auto current_target_coords = house_render_texture.mapPixelToCoords(
+        current_mouse_position
     );
 
-    current_mouse_grid_position.x = floor(current_target_coords.x / tile_map.SpriteSize());
-    current_mouse_grid_position.y = floor(current_target_coords.y / tile_map.SpriteSize());
+    current_mouse_grid_position.x = floor(current_target_coords.x / tile_map.GetSpriteSize());
+    current_mouse_grid_position.y = floor(current_target_coords.y / tile_map.GetSpriteSize());
      
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
         
@@ -52,34 +55,32 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse
         sf::IntRect pixel_bounds(
             0, 
             0,
-            map.bounds.width * tile_map.SpriteSize(),
-            map.bounds.height * tile_map.SpriteSize()
+            map.GetBounds().width * tile_map.GetSpriteSize(),
+            map.GetBounds().height * tile_map.GetSpriteSize()
         );
-
-
 
         if (pixel_bounds.contains(event_target_coords.x, event_target_coords.y) && 
             !tile_palette_view.GetBackground().getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)
         ) {
-            auto sprite_size = tile_map.SpriteSize();
-            auto found = std::find_if(map.tiles->begin(), map.tiles->end(), [event_target_coords, sprite_size](const auto &t) {
-                return sf::FloatRect(
-                    t.x * sprite_size, t.y * sprite_size,
-                    sprite_size, sprite_size
-                ).contains(event_target_coords);
-            });
-            if (found != map.tiles->end()) {
-                map.tiles->erase(found);
-            }
+            auto x = (int)event_target_coords.x / tile_map.GetSpriteSize();
+            auto y = (int)event_target_coords.y / tile_map.GetSpriteSize();
 
-            map.tiles->push_back(
-                Tile { 
-                    (int)event_target_coords.x / tile_map.SpriteSize(),
-                    (int)event_target_coords.y / tile_map.SpriteSize(),
-                    current_rotation,
-                    tile_palette_view.GetSelectedTileIndex()
-                }
-            );
+            if (tile_palette_view.GetSelectedTile().type == PaletteTile) {
+                map.AddTile(
+                    current_selected_tile_layer, 
+                    MapTile { 
+                        x,
+                        y,
+                        current_rotation,
+                        tile_palette_view.GetSelectedTileIndex()
+                    }
+                );
+            } else if (tile_palette_view.GetSelectedTile().type == PaletteEntity){
+                map.AddEntity(Entity(tile_palette_view.GetSelectedTile().entity_type, 0, 0, x, y));
+            } else {
+                std::cout << "Map type not supported" << std::endl;
+                exit(1);
+            }
         }
     }
 
@@ -111,8 +112,6 @@ void HouseScene::Update(const sf::Event& event, const sf::Vector2i current_mouse
 
     if (event.type == sf::Event::Resized) {
         house_view.setSize(event.size.width, event.size.height);
-        //delete house_render_texture;
-        //house_render_texture = new sf::RenderTexture();
         house_render_texture.create(event.size.width, event.size.height); 
     }
  
@@ -141,34 +140,59 @@ void DrawGrid(sf::RenderTarget &target, int grid_height, int grid_width, int siz
 
 void HouseScene::Draw(sf::RenderTarget& target) {
     if (!editor_enabled) {
-        house_view.setCenter(player.getTransform());
+        house_view.setCenter(player.GetTransform());
     }
 
     // Draw Room and Grid
     house_render_texture.setView(house_view);
     house_render_texture.clear();
-    map.Draw(house_render_texture, tile_map);
+
+    for(const auto &tile_layer : map.GetTileLayers()) {
+        for(const auto &tile : tile_layer.tiles) {
+            sf::Sprite sprite_to_draw(tile_map.GetSprites()[tile.tile_map_index]);
+            sprite_to_draw.setRotation(tile.rotation);
+            int half_tile_size = tile_map.GetSpriteSize() / 2;
+            sprite_to_draw.setPosition(
+                (tile.x * tile_map.GetSpriteSize()) + half_tile_size,
+                (tile.y * tile_map.GetSpriteSize()) + half_tile_size
+            );
+            sprite_to_draw.setOrigin(tile_map.GetSize() / 2, tile_map.GetSize() / 2);
+            house_render_texture.draw(sprite_to_draw);
+        }
+    }
+
+    auto entities = map.GetEntities();
+    std::for_each(entities.begin(), entities.end(), [this](const auto &entity){
+        sf::Sprite sprite_to_draw(entity_map.GetSprites()[entity.GetTileMapIndex()]);
+        sprite_to_draw.setRotation(entity.GetRotation());
+        int half_tile_size = entity_map.GetSpriteSize() / 2;
+        sprite_to_draw.setPosition(
+            (entity.GetTransform().x * entity_map.GetSpriteSize()) + half_tile_size,
+            (entity.GetTransform().y * entity_map.GetSpriteSize()) + half_tile_size
+        );
+        sprite_to_draw.setOrigin(entity_map.GetSize() / 2, entity_map.GetSize() / 2);
+        house_render_texture.draw(sprite_to_draw);
+    });
 
     player.Draw(house_render_texture);
 
     if (editor_enabled) {
         DrawGrid(
             house_render_texture,
-            map.bounds.height, 
-            map.bounds.width, 
-            tile_map.SpriteSize()
+            map.GetBounds().height, 
+            map.GetBounds().width, 
+            tile_map.GetSpriteSize()
         );
 
         // Draw Selected Tile
-        auto selected_tile_sprite = tile_palette_view.GetSelectedTileSprite();
-        selected_tile_sprite.setScale(tile_map.scale, tile_map.scale);
-        int half_tile_size = tile_map.SpriteSize() / 2;
+        auto selected_tile_sprite = tile_palette_view.GetSelectedTile().icon;
+        int half_tile_size = tile_map.GetSpriteSize() / 2;
         selected_tile_sprite.setPosition(
-            (current_mouse_grid_position.x * tile_map.SpriteSize()) + half_tile_size,
-            (current_mouse_grid_position.y * tile_map.SpriteSize()) + half_tile_size
+            (current_mouse_grid_position.x * tile_map.GetSpriteSize()) + half_tile_size,
+            (current_mouse_grid_position.y * tile_map.GetSpriteSize()) + half_tile_size
         );
         selected_tile_sprite.setColor(sf::Color(255, 255, 255, 170));
-        selected_tile_sprite.setOrigin(tile_map.size / 2, tile_map.size / 2);
+        selected_tile_sprite.setOrigin(tile_map.GetSize() / 2, tile_map.GetSize() / 2);
         selected_tile_sprite.rotate(current_rotation);
 
         house_render_texture.draw(selected_tile_sprite);
