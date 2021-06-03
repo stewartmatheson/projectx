@@ -18,6 +18,7 @@ enum class EntityMode {
     Dying
 };
 
+template <typename T>
 class Entity {
     float acceleration;
     std::unordered_map<EntityMode, Animation> animations;
@@ -32,8 +33,8 @@ class Entity {
 public:
     Entity(EntityType, float, float, float, float);
     Entity(EntityType, float, float, std::unordered_map<EntityMode, Animation>&);
-    void Update(const sf::Event &);
-    void Draw(sf::RenderTarget &);
+    void Update(T& state);
+    // void Draw(sf::RenderTarget &);
     void Reset();
     const sf::Vector2f& GetTransform() const; 
     const int GetTileMapIndex() const; 

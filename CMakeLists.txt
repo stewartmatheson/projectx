@@ -18,6 +18,11 @@ add_executable(ProjectX
   headers/Entity.h
   headers/TilePaletteView.h
   headers/TilePaletteTile.h
+  headers/Controller.h
+  headers/EditorController.h
+  headers/PlayerController.h
+  headers/View.h
+  headers/EventWithMouse.h
   src/Animation.cpp
   src/HouseScene.cpp
   src/Map.cpp
@@ -25,6 +30,8 @@ add_executable(ProjectX
   src/Entity.cpp
   src/main.cpp
   src/TilePaletteView.cpp
+  src/EditorController.cpp
+  src/PlayerController.cpp
 )
 target_include_directories(ProjectX
   PRIVATE headers

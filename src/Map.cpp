@@ -74,7 +74,7 @@ Map::Map(std::string file_name) {
     }
 }
 
-Map::Map(int map_height, int map_width, int window_width, int window_height)
+Map::Map(int map_height, int map_width)
     : bounds(0, 0, map_width, map_height) {
 
     tile_layers.push_back(TileLayer{0, std::vector<MapTile>()});

@@ -19,13 +19,12 @@ struct TileLayer {
 // A map holds all data for a given tile layout within the game.
 class Map {
     int map_file_version;
-    sf::IntRect bounds;
     std::vector<TileLayer> tile_layers;
     std::vector<Entity> entities;
 
 public:
 	Map(std::string);
-	Map(int, int, int, int);
+	Map(int, int);
 
 	void WriteToFile(std::string) const;
     const sf::IntRect GetBounds() const;

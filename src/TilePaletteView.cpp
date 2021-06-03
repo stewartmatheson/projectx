@@ -38,45 +38,14 @@ TilePaletteView::TilePaletteView(
     tile_palette_view = sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
 }
 
-TilePaletteView::~TilePaletteView() {
-}
+TilePaletteView::~TilePaletteView() {}
 
-void TilePaletteView::Update(const sf::Event & event, const sf::Vector2i) {
-
-
-    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-
-        // Manage Selection Changed
-        auto event_target_coords = tile_palette_render_texture.mapPixelToCoords(
-            sf::Vector2i(event.mouseButton.x, event.mouseButton.y)
-        );
-        auto found = std::find_if(tiles.begin(), tiles.end(), [event_target_coords](const auto &t) {
-            return t.icon.getGlobalBounds().contains(event_target_coords);
-        });
-        if (found != tiles.end()) {
-            selected_tile_index = found - tiles.begin();
-            selection_rectangle.setPosition(tiles[selected_tile_index].icon.getPosition());
-        }
-    }
-
-    if (event.type == sf::Event::MouseWheelMoved && 
-        (unsigned int)event.mouseButton.x < tile_palette_render_texture.getSize().x
-    ) {
-        int upper_scroll_center = tile_palette_render_texture.getSize().y / 2;
-        int lower_scroll_center = background.getSize().y - upper_scroll_center;
-
-        if (event.mouseWheel.delta < 0 && tile_palette_view.getCenter().y > upper_scroll_center) {
-            tile_palette_view.move(0, 100 * event.mouseWheel.delta);
-        }
-
-        if (event.mouseWheel.delta > 0 && tile_palette_view.getCenter().y < lower_scroll_center) {
-            tile_palette_view.move(0, 100 * event.mouseWheel.delta);
-        }
-    }
-
-}
 
 void TilePaletteView::Draw(sf::RenderTarget &target) {
+
+    selection_rectangle.setPosition(tiles[selected_tile_index].icon.getPosition());
+
+
     tile_palette_render_texture.setView(tile_palette_view);
     tile_palette_render_texture.clear();
     tile_palette_render_texture.draw(background);
@@ -89,15 +58,3 @@ void TilePaletteView::Draw(sf::RenderTarget &target) {
     target.draw(tile_palette_render_sprite);
 }
 
-
-int TilePaletteView::GetSelectedTileIndex() const {
-    return selected_tile_index;
-}
-
-const TilePaletteTile& TilePaletteView::GetSelectedTile() const {
-    return tiles[selected_tile_index];
-}
-
-const sf::RectangleShape &TilePaletteView::GetBackground() const {
-    return background;
-}
