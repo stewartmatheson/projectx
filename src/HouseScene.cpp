@@ -27,12 +27,58 @@ player_sprite_sheet("./assets/NightThief.png", 4, 320, 1, 1),
 state(),
 controllers(),
 views(),
+animations(),
 reducer(state),
 map(reducer, map_file_name) {
     Init(window_width, window_height);
 }
 
 void HouseScene::Init(int window_width, int window_height) {
+
+    std::vector<AnimationFrame> idle_frames;
+    for (auto col = 0; col < 10; col++) {
+        idle_frames.push_back(AnimationFrame{col, 0});
+    }
+
+    animations.insert(
+        {EntityState::Idle, Animation(player_sprite_sheet, idle_frames, 32, 32, 8)}
+    );
+
+    std::vector<AnimationFrame> throw_frames;
+    for (auto col = 0; col < 10; col++) {
+        throw_frames.push_back(AnimationFrame{col, 1});
+    }
+
+    animations.insert(
+        {EntityState::Throwing, Animation(player_sprite_sheet, throw_frames, 32, 32, 8) }
+    );
+
+    std::vector<AnimationFrame> walk_frames;
+    for (auto col = 0; col < 10; col++) {
+        walk_frames.push_back(AnimationFrame{col, 2});
+    }
+
+    animations.insert(
+        {EntityState::Walking, Animation(player_sprite_sheet, walk_frames, 32, 32, 8) }
+    );
+
+    std::vector<AnimationFrame> attack_frames;
+    for (auto col = 0; col < 10; col++) {
+        attack_frames.push_back(AnimationFrame{col, 3});
+    }
+
+    animations.insert(
+        {EntityState::Attacking, Animation(player_sprite_sheet, attack_frames, 32, 32, 8) }
+    );
+
+    std::vector<AnimationFrame> die_frames;
+    for (auto col = 0; col < 10; col++) {
+        die_frames.push_back(AnimationFrame{col, 4});
+    }
+
+    animations.insert(
+        {EntityState::Dying, Animation(player_sprite_sheet, die_frames, 32, 32, 8) }
+    );
 
     // Here now we know we have a valid state we execute an action to load the map. Note here that
     // if we ever intend to dispatch these actions more than once they should be added to a controller
@@ -61,12 +107,6 @@ void HouseScene::Init(int window_width, int window_height) {
         tile_palette_render_texture,
         window_height
     ));
-
-    //views.push_back(GridView(tile_map.GetSpriteSize()));
-    //views.push_back(TileBackgroundView(tile_map));
-    //views.push_back(TilePaletteView(tile_map, entity_map, window_height));
-    //views.push_back(HouseSceneEntityView());
-    //views.push_back(EntityView(player_entity, player_sprite_sheet));
 }
 
 void HouseScene::HandleInput(EventWithMouse event) {
@@ -75,50 +115,20 @@ void HouseScene::HandleInput(EventWithMouse event) {
 }
 
 void HouseScene::Update() {
-    
     for(auto& controller : controllers)
         controller->Update(reducer);
 
     for(auto& entity : state.entities)
         entity.Update();
 
-    /*
-    std::for_each(
-        controllers.begin(), 
-        controllers.end(), 
-        [this](Controller<HouseSceneReducer>& controller) {
-            controller.Update(reducer);
-        }
-    );
-
-    
-    std::for_each(
-        state.entities.begin(), 
-        state.entities.end(), 
-        [](Entity& entity){
-            entity.Update();
-        }
-    );
-    */
+    for(auto& animation : animations)
+        animation.second.Update();
 }
 
 void HouseScene::Draw(sf::RenderTarget& render_target) {
     for(auto& view : views)
         view->Draw(render_target, state);
-
-    /*
-    std::for_each(
-        views.begin(), 
-        views.end(), 
-        [&render_target, this](View<HouseSceneState>& view){
-
-            view.Draw(render_target, state);
-        }
-    );
-    */
 }
-
-
 
 /*
 void HouseScene::Draw(sf::RenderTarget& target) {

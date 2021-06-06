@@ -4,7 +4,6 @@
 #include "Entity.h"
 
 class EntityView : public View<HouseSceneState> {
-    std::unordered_map<EntityState, Animation> animations;
     const Entity& entity;
 public:
     EntityView(const Entity& entity, const SpriteSheet& sprite_sheet);
