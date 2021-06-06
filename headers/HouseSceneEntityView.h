@@ -6,5 +6,5 @@ class HouseSceneEntityView : public View<HouseSceneState> {
     SpriteSheet& entity_map;
 public:
     HouseSceneEntityView();
-    void Draw(sf::RenderTarget&, const HouseSceneState&);
+    void Draw(sf::RenderTarget&, const HouseSceneState&) const;
 };

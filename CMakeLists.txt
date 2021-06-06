@@ -10,6 +10,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(ProjectX
+  headers/HouseSceneReducer.h
+  headers/TileLayer.h
   headers/Animation.h
   headers/Tile.h
   headers/HouseScene.h
@@ -23,6 +25,9 @@ add_executable(ProjectX
   headers/PlayerController.h
   headers/View.h
   headers/EventWithMouse.h
+  headers/HouseSceneState.h
+  headers/EntityView.h
+  headers/GridView.h
   src/Animation.cpp
   src/HouseScene.cpp
   src/Map.cpp
@@ -32,7 +37,11 @@ add_executable(ProjectX
   src/TilePaletteView.cpp
   src/EditorController.cpp
   src/PlayerController.cpp
+  src/HouseSceneReducer.cpp
+  src/EntityView.cpp
+  src/GridView.cpp
 )
+
 target_include_directories(ProjectX
   PRIVATE headers
 )

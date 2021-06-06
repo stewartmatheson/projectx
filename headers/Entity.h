@@ -10,7 +10,7 @@ enum class EntityType {
     PlayerEntity = 2
 };
 
-enum class EntityMode {
+enum class EntityState {
     Idle,
     Throwing,
     Walking,
@@ -18,28 +18,34 @@ enum class EntityMode {
     Dying
 };
 
-template <typename T>
 class Entity {
     float acceleration;
-    std::unordered_map<EntityMode, Animation> animations;
     // TODO : This should move out somewhere that can handle keyboards, control pads and other custom bindings
-    sf::Vector2f controller;
     sf::Vector2f direction;
     bool facing_left;
     float speed;
     sf::Vector2f transform;
+    sf::Vector2f velocity;
     EntityType type;
+    EntityState state;
 
 public:
     Entity(EntityType, float, float, float, float);
-    Entity(EntityType, float, float, std::unordered_map<EntityMode, Animation>&);
-    void Update(T& state);
-    // void Draw(sf::RenderTarget &);
-    void Reset();
+    void Update();
+
     const sf::Vector2f& GetTransform() const; 
+    const sf::Vector2f& GetVelocity() const; 
+    const float GetAcceleration() const; 
     const int GetTileMapIndex() const; 
     const int GetRotation() const; 
     const EntityType GetEntityType () const; 
+    const EntityState GetEntityState () const; 
+    const bool GetFacingLeft () const; 
+    const float GetSpeed () const; 
+
+    void SetVelocity (sf::Vector2f);
+    void SetTransform (sf::Vector2f);
 };
+
 
 

@@ -3,11 +3,13 @@
 EditorController::EditorController(
     int tile_map_sprite_size, 
     sf::RenderTexture& tile_palette_render_texture,
-    sf::RenderTexture& house_render_texture
+    sf::RenderTexture& house_render_texture,
+    Map& map
 ) :
 tile_map_sprite_size(tile_map_sprite_size),
 tile_palette_render_texture(tile_palette_render_texture),
-house_render_texture(house_render_texture) {}
+house_render_texture(house_render_texture),
+map(map) {}
 
 void EditorController::Update (HouseSceneReducer& reducer) {}
 
@@ -33,32 +35,32 @@ void EditorController::HandleInput (EventWithMouse event_with_mouse, HouseSceneR
         );
 
         auto found = std::find_if(
-            reducer.GetState().tile_palette_tiles.begin(), 
-            reducer.GetState().tile_palette_tiles.end(), 
+            reducer.GetState().editor_state.tile_palette_tiles.begin(), 
+            reducer.GetState().editor_state.tile_palette_tiles.end(), 
             [event_target_coords](const auto &t) {
                 return t.icon.getGlobalBounds().contains(event_target_coords);
             }
         );
 
-        if (found != reducer.GetState().tile_palette_tiles.end()) {
-            reducer.UpdateSelectedTileIndex(found - reducer.GetState().tile_palette_tiles.begin());
+        if (found != reducer.GetState().editor_state.tile_palette_tiles.end()) {
+            reducer.UpdateSelectedTileIndex(found - reducer.GetState().editor_state.tile_palette_tiles.begin());
         }
     }
 
     if (event_with_mouse.event.type == sf::Event::MouseWheelMoved && 
-        (unsigned int)event_with_mouse.event.mouseButton.x < reducer.GetState().tile_palette_bounds.x
+        (unsigned int)event_with_mouse.event.mouseButton.x < reducer.GetState().editor_state.tile_palette_bounds.x
     ) {
-        int upper_scroll_center = reducer.GetState().tile_palette_bounds.y / 2;
-        int lower_scroll_center = reducer.GetState().tile_palette_bounds.y - upper_scroll_center;
+        int upper_scroll_center = reducer.GetState().editor_state.tile_palette_bounds.y / 2;
+        int lower_scroll_center = reducer.GetState().editor_state.tile_palette_bounds.y - upper_scroll_center;
 
         if (event_with_mouse.event.mouseWheel.delta < 0 && 
-            reducer.GetState().tile_palette_view.getCenter().y > upper_scroll_center
+            reducer.GetState().editor_state.tile_palette_view.getCenter().y > upper_scroll_center
         ) {
             reducer.MoveTilePaletteView(0, 100 * event_with_mouse.event.mouseWheel.delta);
         }
 
         if (event_with_mouse.event.mouseWheel.delta > 0 && 
-            reducer.GetState().tile_palette_view.getCenter().y < lower_scroll_center
+            reducer.GetState().editor_state.tile_palette_view.getCenter().y < lower_scroll_center
         ) {
             reducer.MoveTilePaletteView(0, 100 * event_with_mouse.event.mouseWheel.delta);
         }
@@ -90,14 +92,14 @@ void EditorController::HandleInput (EventWithMouse event_with_mouse, HouseSceneR
         );
 
         if (pixel_bounds.contains(event_target_coords.x, event_target_coords.y) && 
-            !reducer.GetState().tile_palette_background.getGlobalBounds()
+            !reducer.GetState().editor_state.tile_palette_background.getGlobalBounds()
                 .contains(event_with_mouse.event.mouseButton.x, event_with_mouse.event.mouseButton.y)
         ) {
             auto x = (int)event_target_coords.x / tile_map_sprite_size;
             auto y = (int)event_target_coords.y / tile_map_sprite_size;
 
-            auto selected_tile = reducer.GetState().tile_palette_tiles[
-                reducer.GetState().selected_tile_index
+            auto selected_tile = reducer.GetState().editor_state.tile_palette_tiles[
+                reducer.GetState().editor_state.selected_tile_index
             ];
 
             if (selected_tile.type == PaletteTile) {
@@ -131,10 +133,10 @@ void EditorController::HandleInput (EventWithMouse event_with_mouse, HouseSceneR
          event_with_mouse.event.mouseButton.button == sf::Mouse::Middle) ||
         (event_with_mouse.event.type == sf::Event::KeyReleased && 
          event_with_mouse.event.key.code == sf::Keyboard::R)) {
-        reducer.SetRotation((reducer.GetState().selected_tile_rotation + 90) % 360);
+        reducer.SetRotation((reducer.GetState().editor_state.selected_tile_rotation + 90) % 360);
     }
 
-    if (reducer.GetState().panning) {
+    if (reducer.GetState().editor_state.panning) {
         auto mouse_delta = current_mouse_position - last_mouse_position;
         reducer.MoveHouseView(mouse_delta.x * -1, mouse_delta.y * -1);
     }

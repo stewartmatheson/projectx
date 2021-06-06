@@ -1,6 +1,7 @@
+#include <vector>
 #include "Animation.h"
 
-Animation::Animation(SpriteSheet & sprite_sheet, std::vector<AnimationFrame> animation_frames, int frame_width, int frame_height, int speed) 
+Animation::Animation(const SpriteSheet& sprite_sheet, std::vector<AnimationFrame> animation_frames, int frame_width, int frame_height, int speed) 
     :   animation_frames(animation_frames), 
         current_frame_counter(0),
         frame_height(frame_height), 

@@ -7,9 +7,14 @@ int main(int argc, char** argv) {
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML works!");
     window.setFramerateLimit(60);
     
-    Map map = argc == 2 ? Map(argv[1]) : Map(20, 20);
-    HouseScene* current_scene = new HouseScene(map);
+    //Map map = argc == 2 ? Map(argv[1]) : Map(20, 20);
+    //HouseScene current_scene = HouseScene(window_width, window_height, sf::IntRect(0, 0, 20, 20));
+    //HouseScene current_scene = HouseScene(window_width, window_height, sf::IntRect(0, 0, 20, 20));
 
+    std::unique_ptr<HouseScene> current_scene = argc == 2 
+        ? std::make_unique<HouseScene>(window_width, window_height, sf::IntRect(0, 0, 20, 20))
+        : std::make_unique<HouseScene>(window_width, window_height, argv[1]);
+    
     while(window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -29,7 +34,7 @@ int main(int argc, char** argv) {
                 }
             }
 
-            current_scene->HandleInput(event);
+            current_scene->HandleInput(EventWithMouse{ event, sf::Mouse::getPosition(window) });
         }
         current_scene->Update();
         current_scene->Draw(window);

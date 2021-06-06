@@ -1,18 +1,13 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "SpriteSheet.h"
-#include "TilePaletteTile.h"
+#include "View.h"
+#include "HouseSceneState.h"
 
-
-class TilePaletteView {
-    
-
-    // The view for the current tile palette that appears on the left side of the window
-
-
+class TilePaletteView : public View<HouseSceneState> {
+    sf::RenderTexture& tile_palette_render_texture;
 public:
-    TilePaletteView(SpriteSheet&, SpriteSheet&, int);
+    TilePaletteView(SpriteSheet&, SpriteSheet&, sf::RenderTexture&, int);
     ~TilePaletteView();
-    void Draw(sf::RenderTarget &);
+    void Draw(sf::RenderTarget&, const HouseSceneState&) const;
 };

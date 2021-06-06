@@ -5,6 +5,6 @@
 template <typename T>
 class View {
 public: 
-    virtual void Draw(sf::RenderTarget& render_target, const T& state) = 0;
+    virtual void Draw(sf::RenderTarget&, const T&) const = 0;
 };
 
