@@ -1,8 +1,8 @@
 #include "TileBackgroundView.h"
 
-TileBackgroundView::TileBackgroundView(SpriteSheet& tile_map) : tile_map(tile_map) {}
+TileBackgroundView::TileBackgroundView(const SpriteSheet& tile_map) : tile_map(tile_map) {}
 
-void TileBackgroundView::Draw(sf::RenderTarget& render_target, const HouseSceneState& state) {
+void TileBackgroundView::Draw(sf::RenderTarget& render_target, const HouseSceneState& state) const {
     // TODO  : Fix this raw loop
     for(const auto &tile_layer : state.tile_layers) {
         for(const auto &tile : tile_layer.tiles) {

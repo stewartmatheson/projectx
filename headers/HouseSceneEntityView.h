@@ -1,10 +1,11 @@
 #pragma once
 
-#include "HouseScene.h"
+#include "HouseSceneState.h"
+#include "View.h"
 
 class HouseSceneEntityView : public View<HouseSceneState> {
-    SpriteSheet& entity_map;
+    const SpriteSheet& tile_map;
 public:
-    HouseSceneEntityView();
+    HouseSceneEntityView(const SpriteSheet& tile_map);
     void Draw(sf::RenderTarget&, const HouseSceneState&) const;
 };

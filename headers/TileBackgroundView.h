@@ -1,10 +1,11 @@
 #pragma once
 
-#include "HouseScene.h"
+#include "HouseSceneState.h"
+#include "View.h"
 
 class TileBackgroundView : public View<HouseSceneState> {
-    SpriteSheet& tile_map;
+    const SpriteSheet& tile_map;
 public:
-    TileBackgroundView(SpriteSheet&);
+    TileBackgroundView(const SpriteSheet&);
     void Draw(sf::RenderTarget&, const HouseSceneState&) const;
 };

@@ -43,15 +43,20 @@ void EditorController::HandleInput (EventWithMouse event_with_mouse, HouseSceneR
         );
 
         if (found != reducer.GetState().editor_state.tile_palette_tiles.end()) {
-            reducer.UpdateSelectedTileIndex(found - reducer.GetState().editor_state.tile_palette_tiles.begin());
+            reducer.UpdateSelectedTileIndex(
+                found - reducer.GetState().editor_state.tile_palette_tiles.begin()
+            );
         }
     }
 
     if (event_with_mouse.event.type == sf::Event::MouseWheelMoved && 
-        (unsigned int)event_with_mouse.event.mouseButton.x < reducer.GetState().editor_state.tile_palette_bounds.x
+        event_with_mouse.event.mouseButton.x < reducer.GetState().editor_state.tile_palette_bounds.x
     ) {
         int upper_scroll_center = reducer.GetState().editor_state.tile_palette_bounds.y / 2;
-        int lower_scroll_center = reducer.GetState().editor_state.tile_palette_bounds.y - upper_scroll_center;
+        int lower_scroll_center = reducer
+            .GetState()
+            .editor_state
+            .tile_palette_bounds.y - upper_scroll_center;
 
         if (event_with_mouse.event.mouseWheel.delta < 0 && 
             reducer.GetState().editor_state.tile_palette_view.getCenter().y > upper_scroll_center

@@ -8,7 +8,7 @@
 #include "TilePaletteView.h"
 #include "HouseSceneEntityView.h"
 #include "EntityView.h"
-#include "HouseSceneEntityView.h"
+#include "HouseSceneReducer.h"
 
 HouseScene::HouseScene(int window_width, int window_height, sf::IntRect map_bounds) :
 tile_map("./assets/tilemap.png", 4, 16, 5, 7),
@@ -27,7 +27,7 @@ player_sprite_sheet("./assets/NightThief.png", 4, 320, 1, 1),
 state(),
 controllers(),
 views(),
-animations(),
+player_animations(),
 reducer(state),
 map(reducer, map_file_name) {
     Init(window_width, window_height);
@@ -40,7 +40,7 @@ void HouseScene::Init(int window_width, int window_height) {
         idle_frames.push_back(AnimationFrame{col, 0});
     }
 
-    animations.insert(
+    player_animations.insert(
         {EntityState::Idle, Animation(player_sprite_sheet, idle_frames, 32, 32, 8)}
     );
 
@@ -49,7 +49,7 @@ void HouseScene::Init(int window_width, int window_height) {
         throw_frames.push_back(AnimationFrame{col, 1});
     }
 
-    animations.insert(
+    player_animations.insert(
         {EntityState::Throwing, Animation(player_sprite_sheet, throw_frames, 32, 32, 8) }
     );
 
@@ -58,7 +58,7 @@ void HouseScene::Init(int window_width, int window_height) {
         walk_frames.push_back(AnimationFrame{col, 2});
     }
 
-    animations.insert(
+    player_animations.insert(
         {EntityState::Walking, Animation(player_sprite_sheet, walk_frames, 32, 32, 8) }
     );
 
@@ -67,7 +67,7 @@ void HouseScene::Init(int window_width, int window_height) {
         attack_frames.push_back(AnimationFrame{col, 3});
     }
 
-    animations.insert(
+    player_animations.insert(
         {EntityState::Attacking, Animation(player_sprite_sheet, attack_frames, 32, 32, 8) }
     );
 
@@ -76,13 +76,13 @@ void HouseScene::Init(int window_width, int window_height) {
         die_frames.push_back(AnimationFrame{col, 4});
     }
 
-    animations.insert(
+    player_animations.insert(
         {EntityState::Dying, Animation(player_sprite_sheet, die_frames, 32, 32, 8) }
     );
 
     // Here now we know we have a valid state we execute an action to load the map. Note here that
     // if we ever intend to dispatch these actions more than once they should be added to a controller
-    auto player_entity = Entity(EntityType::PlayerEntity, 500.f, .01f, 0, 0);
+    auto player_entity = Entity(EntityType::PlayerEntity, 500.f, .01f, 0, 0, player_animations);
     reducer.AddEntity(player_entity);
 
     scene_render_target.create(window_width, window_height);
@@ -98,8 +98,12 @@ void HouseScene::Init(int window_width, int window_height) {
     
     views.push_back(std::make_unique<GridView>(tile_map.GetSpriteSize()));
     views.push_back(std::make_unique<TileBackgroundView>(tile_map));
-    views.push_back(std::make_unique<HouseSceneEntityView>());
-    views.push_back(std::make_unique<EntityView>(player_entity, player_sprite_sheet));
+    views.push_back(std::make_unique<HouseSceneEntityView>(entity_map));
+    views.push_back(std::make_unique<EntityView>(
+        player_entity, 
+        player_sprite_sheet,
+        player_animations
+    ));
     
     views.push_back(std::make_unique<TilePaletteView>(
         tile_map, 
@@ -121,8 +125,8 @@ void HouseScene::Update() {
     for(auto& entity : state.entities)
         entity.Update();
 
-    for(auto& animation : animations)
-        animation.second.Update();
+    for(auto& player_animation : player_animations)
+        player_animation.second.Update();
 }
 
 void HouseScene::Draw(sf::RenderTarget& render_target) {

@@ -6,20 +6,20 @@
 class HouseSceneReducer {
     HouseSceneState& state;
 public:
-    HouseSceneReducer(HouseSceneState& state);
+    HouseSceneReducer(HouseSceneState&);
     const HouseSceneState& GetState();
     void ToggleEditorEnabled();
     void ResetPlayer();
-    void UpdateSelectedTileIndex(const int index);
-    void AddTileLayer(TileLayer tile_layer);
-    void AddEntity(Entity entity);
-    void AddTile(int x, int y);
-    void AddEntity(int x, int y);
+    void UpdateSelectedTileIndex(int);
+    void AddTileLayer(TileLayer);
+    void AddEntity(Entity);
+    void AddTile(int, int);
+    void AddEntity(int, int);
     void AddPlayer();
-    void SetPanning(bool panning_mode);
-    void SetMapBounds(sf::IntRect map_bounds);
-    void SetRotation(int rotation);
-    void MoveTilePaletteView(int x, int y);
-    void MoveHouseView(int x, int y);
-    void HouseViewSetSize(int x, int y);
+    void SetPanning(bool);
+    void SetMapBounds(sf::IntRect);
+    void SetRotation(int);
+    void MoveTilePaletteView(int, int);
+    void MoveHouseView(int, int);
+    void HouseViewSetSize(int, int);
 };

@@ -1,5 +1,7 @@
 #include "PlayerController.h"
 
+PlayerController::PlayerController(Entity& entity) : entity(entity) {}
+
 void PlayerController::HandleInput (EventWithMouse event_with_mouse, HouseSceneReducer &state) {
 
     if (event_with_mouse.event.type == sf::Event::KeyPressed && event_with_mouse.event.key.code == sf::Keyboard::Left) {

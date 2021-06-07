@@ -19,7 +19,7 @@ class HouseScene {
     int tile_palette_offset;
     std::vector<std::unique_ptr<Controller<HouseSceneReducer>>> controllers;
     std::vector<std::unique_ptr<View<HouseSceneState>>> views;
-    std::unordered_map<EntityState, Animation> animations;
+    std::unordered_map<EntityState, Animation> player_animations;
     HouseSceneReducer reducer;
     void Init(int, int);
     Map map;

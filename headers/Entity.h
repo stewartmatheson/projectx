@@ -20,7 +20,6 @@ enum class EntityState {
 
 class Entity {
     float acceleration;
-    // TODO : This should move out somewhere that can handle keyboards, control pads and other custom bindings
     sf::Vector2f direction;
     bool facing_left;
     float speed;
@@ -28,9 +27,10 @@ class Entity {
     sf::Vector2f velocity;
     EntityType type;
     EntityState state;
+    std::unordered_map<EntityState, Animation>& animations;
 
 public:
-    Entity(EntityType, float, float, float, float);
+    Entity(EntityType, float, float, float, float, std::unordered_map<EntityState, Animation>&);
     void Update();
 
     const sf::Vector2f& GetTransform() const; 

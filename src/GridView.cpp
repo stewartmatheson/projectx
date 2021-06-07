@@ -2,8 +2,8 @@
 
 GridView::GridView(int size) : size(size) {}
 
-void GridView::Draw(sf::RenderTarget &target, const HouseSceneState& state) {
-    if (!state.editor_enabled) {
+void GridView::Draw(sf::RenderTarget &target, const HouseSceneState& state) const {
+    if (!state.editor_state.editor_enabled) {
         return;
     }
 

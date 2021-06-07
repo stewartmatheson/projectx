@@ -10,13 +10,15 @@ tile_palette_render_texture(tile_palette_render_texture)
 {}
 
 void TilePaletteView::Draw(sf::RenderTarget& target, const HouseSceneState& state) const {
+    /*
     auto selected_tile_position = state
         .editor_state
         .tile_palette_tiles[state.editor_state.selected_tile_index]
         .icon.getPosition();
 
     // TODO : Figure out where this lives
-    //selection_rectangle.setPosition(selected_tile_position);
+    selection_rectangle.setPosition(selected_tile_position);
+    */
 
     tile_palette_render_texture.setView(state.editor_state.tile_palette_view);
     tile_palette_render_texture.clear();
