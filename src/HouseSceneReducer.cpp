@@ -16,7 +16,6 @@ void HouseSceneReducer::AddTileLayer(TileLayer tile_layer) {
     state.tile_layers.push_back(tile_layer);
 }
 
-
 void HouseSceneReducer::AddTile(int x, int y) {
     auto state = GetState();
     auto tile = MapTile { 
@@ -25,14 +24,13 @@ void HouseSceneReducer::AddTile(int x, int y) {
         state.editor_state.selected_tile_rotation,
         state.editor_state.selected_tile_index
     };
+
+    if (state.tile_layers.size() == 0) {
+        state.tile_layers.push_back(TileLayer{0, std::vector<MapTile>()});
+    }
+
     state.tile_layers[0].tiles.push_back(tile);
 }
-
-/*
-void HouseSceneReducer::MoveHouseView(int x, int y) {
-    state.house_view.setSize(x, y);
-}
-*/
 
 void HouseSceneReducer::AddEntity(int x, int y) {
     auto state = GetState();
@@ -80,5 +78,13 @@ void HouseSceneReducer::ResetPlayer() {
     if (found_player != state.entities.end()) {
         found_player->SetVelocity(sf::Vector2f(0,0));
     }
+}
+
+void HouseSceneReducer::AddTilePaletteTile(TilePaletteTile tile_to_add, int sprite_size) {
+    auto offset = 20;
+    auto current_tile_index = state.editor_state.tile_palette_tiles.size();
+    auto y = (current_tile_index * sprite_size) + (offset * current_tile_index) + offset;
+    tile_to_add.icon.setPosition(offset, y);
+    state.editor_state.tile_palette_tiles.push_back(tile_to_add);
 }
 

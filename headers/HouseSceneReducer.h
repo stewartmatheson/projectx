@@ -15,11 +15,11 @@ public:
     void AddEntity(Entity);
     void AddTile(int, int);
     void AddEntity(int, int);
-    void AddPlayer();
     void SetPanning(bool);
     void SetMapBounds(sf::IntRect);
     void SetRotation(int);
     void MoveTilePaletteView(int, int);
     void MoveHouseView(int, int);
     void HouseViewSetSize(int, int);
+    void AddTilePaletteTile(TilePaletteTile, int);
 };

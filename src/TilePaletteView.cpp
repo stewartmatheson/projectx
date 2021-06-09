@@ -20,11 +20,15 @@ void TilePaletteView::Draw(sf::RenderTarget& target, const HouseSceneState& stat
     selection_rectangle.setPosition(selected_tile_position);
     */
 
+    if (!state.editor_state.editor_enabled) {
+        return;
+    }
     tile_palette_render_texture.setView(state.editor_state.tile_palette_view);
     tile_palette_render_texture.clear();
     tile_palette_render_texture.draw(state.editor_state.tile_palette_background);
 
-    for(const auto &tile : state.editor_state.tile_palette_tiles) {
+    for (const auto &tile : state.editor_state.tile_palette_tiles)
+    {
         tile_palette_render_texture.draw(tile.icon);
     }
 
@@ -32,7 +36,6 @@ void TilePaletteView::Draw(sf::RenderTarget& target, const HouseSceneState& stat
     tile_palette_render_texture.display();
     sf::Sprite tile_palette_render_sprite(tile_palette_render_texture.getTexture());
     target.draw(tile_palette_render_sprite);
-
 }
 
 /*
@@ -47,14 +50,10 @@ selection_rectangle(sf::Vector2f(tile_map.GetSpriteSize(), tile_map.GetSpriteSiz
 tile_map(tile_map), 
 entity_map(entity_map) {
 
+
     selection_rectangle.setOutlineColor(sf::Color::Blue);
     selection_rectangle.setOutlineThickness(2);
     selection_rectangle.setFillColor(sf::Color::Transparent);
-
-    auto tile_sprites = tile_map.GetSprites();
-    std::for_each(tile_sprites.begin(), tile_sprites.end(), [this](const auto &sprite){ 
-        tiles.push_back(TilePaletteTile{sprite, PaletteTile});
-    });
 
     auto entity_sprites = entity_map.GetSprites();
     tiles.push_back(TilePaletteTile{entity_sprites[0], PaletteEntity, EntityType::GhostEntity});

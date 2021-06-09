@@ -17,11 +17,14 @@ void EditorController::HandleInput (EventWithMouse event_with_mouse, HouseSceneR
  
     if (event_with_mouse.event.type == sf::Event::KeyPressed && 
         event_with_mouse.event.key.code == sf::Keyboard::E) {
-
         reducer.ToggleEditorEnabled();
         reducer.ResetPlayer();
+        return;
     }
 
+    if (!reducer.GetState().editor_state.editor_enabled) {
+        return;
+    }
 
     if (event_with_mouse.event.type == sf::Event::MouseButtonPressed && 
         event_with_mouse.event.mouseButton.button == sf::Mouse::Left) {

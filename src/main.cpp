@@ -12,8 +12,8 @@ int main(int argc, char** argv) {
     //HouseScene current_scene = HouseScene(window_width, window_height, sf::IntRect(0, 0, 20, 20));
 
     std::unique_ptr<HouseScene> current_scene = argc == 2 
-        ? std::make_unique<HouseScene>(window_width, window_height, sf::IntRect(0, 0, 20, 20))
-        : std::make_unique<HouseScene>(window_width, window_height, argv[1]);
+        ? std::make_unique<HouseScene>(window_width, window_height, argv[1])
+        : std::make_unique<HouseScene>(window_width, window_height, sf::IntRect(0, 0, 20, 20));
     
     while(window.isOpen()) {
         sf::Event event;
@@ -38,6 +38,7 @@ int main(int argc, char** argv) {
         }
         current_scene->Update();
         current_scene->Draw(window);
+        window.display();
     }
 
     return 0;

@@ -1,6 +1,6 @@
 #include "PlayerController.h"
 
-PlayerController::PlayerController(Entity& entity) : entity(entity) {}
+PlayerController::PlayerController() {}
 
 void PlayerController::HandleInput (EventWithMouse event_with_mouse, HouseSceneReducer &state) {
 
@@ -34,18 +34,33 @@ void PlayerController::HandleInput (EventWithMouse event_with_mouse, HouseSceneR
     */
 }
 
-void PlayerController::Update (HouseSceneReducer& state) {
-    auto acceleration = entity.GetAcceleration();
-    auto player_velocity = entity.GetVelocity();
-    auto speed = entity.GetSpeed();
+void PlayerController::Update (HouseSceneReducer& reducer) {
+    auto entities = reducer.GetState().entities;
+
+    // TODO : There has to be a better way of doing this. It might get very slow to have to 
+    // search all entites all the time.
+    auto found_player = std::find_if(
+        entities.begin(), 
+        entities.end(),
+        [](const auto &entity) { return entity.GetEntityType() == EntityType::PlayerEntity; }
+    );
+
+    if (found_player == entities.end()) {
+        return;
+    }
+
+    auto acceleration = found_player->GetAcceleration();
+    auto player_velocity = found_player->GetVelocity();
+    auto speed = found_player->GetSpeed();
     auto new_velocity = sf::Vector2f(
         ((current_input.x * speed) - player_velocity.x) * acceleration,
         ((current_input.y * speed) - player_velocity.y) * acceleration
     ); 
-    entity.SetTransform(entity.GetTransform() + new_velocity);
+    found_player->SetTransform(found_player->GetTransform() + new_velocity);
 }
 
 
 void PlayerController::Reset() {
-    entity.SetVelocity(sf::Vector2f(0, 0));
+    std::cout << "PlayerController::Reset not implemented yet" << std::endl;
+    // entity.SetVelocity(sf::Vector2f(0, 0));
 }

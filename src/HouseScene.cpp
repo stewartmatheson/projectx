@@ -18,6 +18,7 @@ state(),
 reducer(state),
 map(reducer) {
     Init(window_width, window_height);
+    reducer.SetMapBounds(map_bounds);
 }
 
 HouseScene::HouseScene(int window_width, int window_height, std::string map_file_name) :
@@ -34,6 +35,19 @@ map(reducer, map_file_name) {
 }
 
 void HouseScene::Init(int window_width, int window_height) {
+    
+    auto tile_sprites = tile_map.GetSprites();
+    std::for_each(tile_sprites.begin(), tile_sprites.end(), [this](const auto &sprite){ 
+        reducer.AddTilePaletteTile(TilePaletteTile{sprite, PaletteTile}, tile_map.GetSpriteSize());
+    });
+
+    auto offset = 20;
+    auto left_toolbar_width = offset * 2 + tile_map.GetSpriteSize();
+    state.editor_state.tile_palette_background = sf::RectangleShape(sf::Vector2f(left_toolbar_width, window_height));
+    state.editor_state.tile_palette_background.setFillColor(sf::Color(60,60,60, 255));
+
+    tile_palette_render_texture.create(left_toolbar_width, window_height);
+    state.editor_state.tile_palette_view = sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
 
     std::vector<AnimationFrame> idle_frames;
     for (auto col = 0; col < 10; col++) {
@@ -82,8 +96,7 @@ void HouseScene::Init(int window_width, int window_height) {
 
     // Here now we know we have a valid state we execute an action to load the map. Note here that
     // if we ever intend to dispatch these actions more than once they should be added to a controller
-    auto player_entity = Entity(EntityType::PlayerEntity, 500.f, .01f, 0, 0, player_animations);
-    reducer.AddEntity(player_entity);
+    reducer.AddEntity(Entity(EntityType::PlayerEntity, 500.f, .01f, 0, 0, player_animations));
 
     scene_render_target.create(window_width, window_height);
 
@@ -93,14 +106,14 @@ void HouseScene::Init(int window_width, int window_height) {
         scene_render_target,
         map
     ));
-    
-    controllers.push_back(std::make_unique<PlayerController>(player_entity));
+
+
+    controllers.push_back(std::make_unique<PlayerController>());
     
     views.push_back(std::make_unique<GridView>(tile_map.GetSpriteSize()));
     views.push_back(std::make_unique<TileBackgroundView>(tile_map));
     views.push_back(std::make_unique<HouseSceneEntityView>(entity_map));
     views.push_back(std::make_unique<EntityView>(
-        player_entity, 
         player_sprite_sheet,
         player_animations
     ));
