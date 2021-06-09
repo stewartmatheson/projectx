@@ -54,23 +54,4 @@ entity_map(entity_map) {
 
 }
 
-TilePaletteView::~TilePaletteView() {}
-
-
-void TilePaletteView::Draw(sf::RenderTarget &target) {
-
-    selection_rectangle.setPosition(tiles[selected_tile_index].icon.getPosition());
-
-    tile_palette_render_texture.setView(tile_palette_view);
-    tile_palette_render_texture.clear();
-    tile_palette_render_texture.draw(background);
-    for(const auto &tile : tiles) {
-        tile_palette_render_texture.draw(tile.icon);
-    }
-    tile_palette_render_texture.draw(selection_rectangle);
-    tile_palette_render_texture.display();
-    sf::Sprite tile_palette_render_sprite(tile_palette_render_texture.getTexture());
-    target.draw(tile_palette_render_sprite);
-}
-
 */
