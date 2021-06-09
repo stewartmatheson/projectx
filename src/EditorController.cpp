@@ -11,7 +11,16 @@ tile_palette_render_texture(tile_palette_render_texture),
 house_render_texture(house_render_texture),
 map(map) {}
 
-void EditorController::Update (HouseSceneReducer& reducer) {}
+void EditorController::Update (HouseSceneReducer& reducer) {
+    auto state = reducer.GetState();
+
+    auto selected_tile_position = state
+        .editor_state
+        .tile_palette_tiles[state.editor_state.selected_tile_index]
+        .icon.getPosition();
+
+    reducer.SetSelectionRectanglePosition(selected_tile_position);
+}
 
 void EditorController::HandleInput (EventWithMouse event_with_mouse, HouseSceneReducer& reducer) {
  
@@ -53,13 +62,13 @@ void EditorController::HandleInput (EventWithMouse event_with_mouse, HouseSceneR
     }
 
     if (event_with_mouse.event.type == sf::Event::MouseWheelMoved && 
-        event_with_mouse.event.mouseButton.x < reducer.GetState().editor_state.tile_palette_bounds.x
+        event_with_mouse.event.mouseButton.x < reducer.GetState().editor_state.tile_palette_bounds.getSize().x
     ) {
-        int upper_scroll_center = reducer.GetState().editor_state.tile_palette_bounds.y / 2;
-        int lower_scroll_center = reducer
-            .GetState()
-            .editor_state
-            .tile_palette_bounds.y - upper_scroll_center;
+        int upper_scroll_center = reducer.GetState().editor_state.tile_palette_bounds.getSize().y / 2;
+
+        int lower_scroll_center = 
+            reducer.GetState().editor_state.tile_palette_background_total_height - 
+            upper_scroll_center;
 
         if (event_with_mouse.event.mouseWheel.delta < 0 && 
             reducer.GetState().editor_state.tile_palette_view.getCenter().y > upper_scroll_center

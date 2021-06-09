@@ -18,8 +18,11 @@ public:
     void SetPanning(bool);
     void SetMapBounds(sf::IntRect);
     void SetRotation(int);
+    void SetTilePaletteBounds(int, int, int);
     void MoveTilePaletteView(int, int);
     void MoveHouseView(int, int);
     void HouseViewSetSize(int, int);
     void AddTilePaletteTile(TilePaletteTile, int);
+    void InitSelectionRectangle(int);
+    void SetSelectionRectanglePosition(sf::Vector2f);
 };

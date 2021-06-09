@@ -88,3 +88,21 @@ void HouseSceneReducer::AddTilePaletteTile(TilePaletteTile tile_to_add, int spri
     state.editor_state.tile_palette_tiles.push_back(tile_to_add);
 }
 
+void HouseSceneReducer::SetTilePaletteBounds(int x, int y, int total_height) {
+    state.editor_state.tile_palette_bounds = sf::IntRect(0, 0, x, y);
+    state.editor_state.tile_palette_background_total_height = total_height;
+}
+
+void HouseSceneReducer::InitSelectionRectangle(int sprite_size) {
+    state.editor_state.tile_palette_selection_rectangle.setSize(sf::Vector2f(sprite_size, sprite_size));
+    state.editor_state.tile_palette_selection_rectangle.setOutlineColor(sf::Color::Blue);
+    state.editor_state.tile_palette_selection_rectangle.setOutlineThickness(2);
+    state.editor_state.tile_palette_selection_rectangle.setFillColor(sf::Color::Transparent);
+}
+
+void HouseSceneReducer::SetSelectionRectanglePosition(sf::Vector2f new_position) {
+    state
+        .editor_state
+        .tile_palette_selection_rectangle
+        .setPosition(new_position);
+}

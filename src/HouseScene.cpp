@@ -43,11 +43,17 @@ void HouseScene::Init(int window_width, int window_height) {
 
     auto offset = 20;
     auto left_toolbar_width = offset * 2 + tile_map.GetSpriteSize();
-    state.editor_state.tile_palette_background = sf::RectangleShape(sf::Vector2f(left_toolbar_width, window_height));
+
+
+    auto total_height = (state.editor_state.tile_palette_tiles.size() * (tile_map.GetSpriteSize() + offset)) + offset;
+    reducer.SetTilePaletteBounds(left_toolbar_width, window_height, total_height);
+    state.editor_state.tile_palette_background = sf::RectangleShape(sf::Vector2f(left_toolbar_width, total_height));
     state.editor_state.tile_palette_background.setFillColor(sf::Color(60,60,60, 255));
 
     tile_palette_render_texture.create(left_toolbar_width, window_height);
     state.editor_state.tile_palette_view = sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
+
+    reducer.InitSelectionRectangle(tile_map.GetSpriteSize());
 
     std::vector<AnimationFrame> idle_frames;
     for (auto col = 0; col < 10; col++) {

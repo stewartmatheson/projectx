@@ -8,9 +8,10 @@ struct HouseSceneEditorState {
     bool editor_enabled;
     bool panning;
     int selected_tile_index;
-    sf::Vector2i tile_palette_bounds;
+    sf::IntRect tile_palette_bounds;
     int selected_tile_layer;
     int selected_tile_rotation;
+    int tile_palette_background_total_height;
     sf::RectangleShape tile_palette_background;
     sf::RectangleShape tile_palette_selection_rectangle;
     sf::View tile_palette_view;

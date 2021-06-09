@@ -10,15 +10,6 @@ tile_palette_render_texture(tile_palette_render_texture)
 {}
 
 void TilePaletteView::Draw(sf::RenderTarget& target, const HouseSceneState& state) const {
-    /*
-    auto selected_tile_position = state
-        .editor_state
-        .tile_palette_tiles[state.editor_state.selected_tile_index]
-        .icon.getPosition();
-
-    // TODO : Figure out where this lives
-    selection_rectangle.setPosition(selected_tile_position);
-    */
 
     if (!state.editor_state.editor_enabled) {
         return;
@@ -50,11 +41,6 @@ selection_rectangle(sf::Vector2f(tile_map.GetSpriteSize(), tile_map.GetSpriteSiz
 tile_map(tile_map), 
 entity_map(entity_map) {
 
-
-    selection_rectangle.setOutlineColor(sf::Color::Blue);
-    selection_rectangle.setOutlineThickness(2);
-    selection_rectangle.setFillColor(sf::Color::Transparent);
-
     auto entity_sprites = entity_map.GetSprites();
     tiles.push_back(TilePaletteTile{entity_sprites[0], PaletteEntity, EntityType::GhostEntity});
     tiles.push_back(TilePaletteTile{entity_sprites[1], PaletteEntity, EntityType::DoorEntity});
@@ -65,13 +51,7 @@ entity_map(entity_map) {
     }
     selection_rectangle.setPosition(tiles[selected_tile_index].icon.getPosition());
 
-    auto left_toolbar_width = offset * 2 + tile_map.GetSpriteSize();
-    auto total_height = (tiles.size() * (tile_map.GetSpriteSize() + offset)) + offset;
-    background = sf::RectangleShape(sf::Vector2f(left_toolbar_width, total_height));
-    background.setFillColor(sf::Color(60,60,60, 255));
 
-    tile_palette_render_texture.create(left_toolbar_width, window_height);
-    tile_palette_view = sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
 }
 
 TilePaletteView::~TilePaletteView() {}
