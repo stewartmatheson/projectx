@@ -41,9 +41,26 @@ void HouseScene::Init(int window_width, int window_height) {
         reducer.AddTilePaletteTile(TilePaletteTile{sprite, PaletteTile}, tile_map.GetSpriteSize());
     });
 
+    auto entity_sprites = entity_map.GetSprites();
+    reducer.AddTilePaletteTile(
+        TilePaletteTile{entity_sprites[0], PaletteEntity, EntityType::GhostEntity},
+        entity_map.GetSpriteSize()
+    );
+
+    reducer.AddTilePaletteTile(
+        TilePaletteTile{entity_sprites[1], PaletteEntity, EntityType::DoorEntity}, 
+        entity_map.GetSpriteSize()
+    );
+
+    /*
+    for(std::size_t i = 0; i < tiles.size(); i ++) {
+        auto y = (i * tile_map.GetSpriteSize()) + (offset * i) + offset;
+        tiles[i].icon.setPosition(offset, y);
+    }
+    */
+
     auto offset = 20;
     auto left_toolbar_width = offset * 2 + tile_map.GetSpriteSize();
-
 
     auto total_height = (state.editor_state.tile_palette_tiles.size() * (tile_map.GetSpriteSize() + offset)) + offset;
     reducer.SetTilePaletteBounds(left_toolbar_width, window_height, total_height);

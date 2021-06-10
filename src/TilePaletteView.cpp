@@ -28,30 +28,3 @@ void TilePaletteView::Draw(sf::RenderTarget& target, const HouseSceneState& stat
     sf::Sprite tile_palette_render_sprite(tile_palette_render_texture.getTexture());
     target.draw(tile_palette_render_sprite);
 }
-
-/*
-TilePaletteView::TilePaletteView(
-    SpriteSheet &tile_map, 
-    SpriteSheet &entity_map, 
-    int window_height
-) : 
-offset(20),
-selected_tile_index(0),
-selection_rectangle(sf::Vector2f(tile_map.GetSpriteSize(), tile_map.GetSpriteSize())),
-tile_map(tile_map), 
-entity_map(entity_map) {
-
-    auto entity_sprites = entity_map.GetSprites();
-    tiles.push_back(TilePaletteTile{entity_sprites[0], PaletteEntity, EntityType::GhostEntity});
-    tiles.push_back(TilePaletteTile{entity_sprites[1], PaletteEntity, EntityType::DoorEntity});
-
-    for(std::size_t i = 0; i < tiles.size(); i ++) {
-        auto y = (i * tile_map.GetSpriteSize()) + (offset * i) + offset;
-        tiles[i].icon.setPosition(offset, y);
-    }
-    selection_rectangle.setPosition(tiles[selected_tile_index].icon.getPosition());
-
-
-}
-
-*/
