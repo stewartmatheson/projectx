@@ -24,14 +24,6 @@ void PlayerController::HandleInput (EventWithMouse event_with_mouse, HouseSceneR
         current_input = sf::Vector2f(0, 0);
     }
 
-
-    // TODO : not sure where this should live
-    /*
-    if (!state.editor_enabled) {
-        player.Update(event);
-        return;
-    }
-    */
 }
 
 void PlayerController::Update (HouseSceneReducer& reducer) {
@@ -42,7 +34,9 @@ void PlayerController::Update (HouseSceneReducer& reducer) {
     auto found_player = std::find_if(
         entities.begin(), 
         entities.end(),
-        [](const auto &entity) { return entity.GetEntityType() == EntityType::PlayerEntity; }
+        [](const auto &entity) { 
+            return entity.GetEntityType() == EntityType::PlayerEntity; 
+        }
     );
 
     if (found_player == entities.end()) {
@@ -57,6 +51,11 @@ void PlayerController::Update (HouseSceneReducer& reducer) {
         ((current_input.y * speed) - player_velocity.y) * acceleration
     ); 
     found_player->SetTransform(found_player->GetTransform() + new_velocity);
+
+    
+    if (!reducer.GetState().editor_state.editor_enabled) {
+        reducer.SetHouseViewCenter(found_player->GetTransform());
+    }
 }
 
 

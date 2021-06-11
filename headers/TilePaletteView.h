@@ -5,8 +5,8 @@
 #include "HouseSceneState.h"
 
 class TilePaletteView : public View<HouseSceneState> {
-    sf::RenderTexture& tile_palette_render_texture;
+    sf::RenderTexture tile_palette_render_texture;
 public:
-    TilePaletteView(SpriteSheet&, SpriteSheet&, sf::RenderTexture&, int);
+    TilePaletteView(SpriteSheet&, SpriteSheet&, int, int);
     void Draw(sf::RenderTarget&, const HouseSceneState&) const;
 };

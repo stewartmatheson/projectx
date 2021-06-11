@@ -30,6 +30,7 @@ add_executable(ProjectX
   headers/GridView.h
   headers/HouseSceneEntityView.h
   headers/TileBackgroundView.h
+  headers/ViewLayer.h
   src/Animation.cpp
   src/HouseScene.cpp
   src/Map.cpp
@@ -44,6 +45,7 @@ add_executable(ProjectX
   src/GridView.cpp
   src/HouseSceneEntityView.cpp
   src/TileBackgroundView.cpp
+  src/ViewLayer.cpp
 )
 
 target_include_directories(ProjectX

@@ -5,9 +5,9 @@
 #include "TileLayer.h"
 
 struct HouseSceneEditorState {
-    bool editor_enabled;
+    bool editor_enabled = false;
     bool panning;
-    int selected_tile_index;
+    int selected_tile_index = 0;
     sf::IntRect tile_palette_bounds;
     int selected_tile_layer;
     int selected_tile_rotation;

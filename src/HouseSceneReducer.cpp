@@ -106,3 +106,7 @@ void HouseSceneReducer::SetSelectionRectanglePosition(sf::Vector2f new_position)
         .tile_palette_selection_rectangle
         .setPosition(new_position);
 }
+
+void HouseSceneReducer::SetHouseViewCenter(sf::Vector2f new_position) {
+    state.house_view.setCenter(new_position);
+}
