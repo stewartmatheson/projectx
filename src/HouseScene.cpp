@@ -148,6 +148,10 @@ void HouseScene::Init(int window_width, int window_height) {
         std::unique_ptr<SelectedTileView>{new SelectedTileView(tile_map)}
     );
 
+    house_map_view_layer.AddView(
+        std::unique_ptr<TileBackgroundView>{new TileBackgroundView(tile_map)}
+    );
+
     tile_palette_view_layer.AddView(
         std::unique_ptr<TilePaletteView>{new TilePaletteView(
             tile_map, 

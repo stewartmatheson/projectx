@@ -17,7 +17,6 @@ void HouseSceneReducer::AddTileLayer(TileLayer tile_layer) {
 }
 
 void HouseSceneReducer::AddTile(int x, int y) {
-    auto state = GetState();
     auto tile = MapTile { 
         x,
         y,
