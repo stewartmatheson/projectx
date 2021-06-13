@@ -55,16 +55,7 @@ void HouseScene::Init(int window_width, int window_height) {
         entity_map.GetSpriteSize()
     );
 
-    /*
-    for(std::size_t i = 0; i < tiles.size(); i ++) {
-        auto y = (i * tile_map.GetSpriteSize()) + (offset * i) + offset;
-        tiles[i].icon.setPosition(offset, y);
-    }
-    */
-
-    //auto offset = 20;
     auto left_toolbar_width = offset * 2 + tile_map.GetSpriteSize();
-
     auto total_height = (state.editor_state.tile_palette_tiles.size() * (tile_map.GetSpriteSize() + offset)) + offset;
 
     reducer.SetTilePaletteBounds(left_toolbar_width, window_height, total_height);
@@ -124,7 +115,16 @@ void HouseScene::Init(int window_width, int window_height) {
 
     // Here now we know we have a valid state we execute an action to load the map. Note here that
     // if we ever intend to dispatch these actions more than once they should be added to a controller
-    reducer.AddEntity(Entity(EntityType::PlayerEntity, 500.f, .01f, 0, 0, player_animations));
+    reducer.AddEntity(
+        Entity(
+            EntityType::PlayerEntity, 
+            500.f, 
+            .01f, 
+            0, 
+            0, 
+            std::make_shared<std::unordered_map<EntityState, Animation>>(player_animations)
+        )
+    );
 
     controllers.push_back(std::unique_ptr<EditorController>{ new EditorController(
         entity_map.GetSpriteSize(),  
@@ -134,20 +134,6 @@ void HouseScene::Init(int window_width, int window_height) {
     )});
  
     controllers.push_back(std::make_unique<PlayerController>());
-
-    // TODO : We might be able to use a raw pointer here or even a shared pointer. Look this up and figure it out
-    house_map_view_layer.AddView(
-        std::unique_ptr<GridView>{new GridView(tile_map.GetSpriteSize())}
-    );
-
-
-    house_map_view_layer.AddView(
-        std::unique_ptr<SelectedTileView>{new SelectedTileView(tile_map)}
-    );
-
-    house_map_view_layer.AddView(
-        std::unique_ptr<TileBackgroundView>{new TileBackgroundView(tile_map)}
-    );
 
     tile_palette_view_layer.AddView(
         std::unique_ptr<TilePaletteView>{new TilePaletteView(
@@ -159,35 +145,20 @@ void HouseScene::Init(int window_width, int window_height) {
     );
 
     house_map_view_layer.AddView(
-        std::unique_ptr<EntityView>{new EntityView(player_sprite_sheet, player_animations)}
+        std::unique_ptr<GridView>{new GridView(tile_map.GetSpriteSize())}
     );
-    /*
-    tile_palette_render_texture.create(left_toolbar_width, window_height);
-    scene_render_target.create(window_width, window_height);
 
- 
+    house_map_view_layer.AddView(
+        std::unique_ptr<SelectedTileView>{new SelectedTileView(tile_map)}
+    );
 
-    views.push_back(SceneView{
-        std::make_unique<TileBackgroundView>(tile_map),
-        &scene_render_target
-    });
+    house_map_view_layer.AddView(
+        std::unique_ptr<TileBackgroundView>{new TileBackgroundView(tile_map)}
+    );
 
-    views.push_back(SceneView{
-        std::make_unique<HouseSceneEntityView>(entity_map),
-        &scene_render_target
-    });
-
-    views.push_back(SceneView{
-        std::make_unique<TilePaletteView>(
-            tile_map, 
-            entity_map, 
-            tile_palette_render_texture,
-            window_height
-        ),
-        NULL
-    });
-    
-    */
+    house_map_view_layer.AddView(
+        std::unique_ptr<EntityView>{new EntityView(entity_map, player_animations)}
+    );
 }
 
 void HouseScene::HandleInput(EventWithMouse event) {
@@ -207,23 +178,6 @@ void HouseScene::Update() {
 }
 
 void HouseScene::Draw(sf::RenderTarget& render_target) {
-    /*
-    scene_render_target.setView(reducer.GetState().house_view);
-    scene_render_target.clear();
-    for(auto& view : views) {
-        if (view.render_target_optional) {
-            view.view->Draw(*view.render_target_optional, state);
-        } else {
-            view.view->Draw(render_target, state);
-        }
-    }
-
-    scene_render_target.display();
-    sf::Sprite house_render_sprite(scene_render_target.getTexture());
-    render_target.draw(house_render_sprite);
-    */
-
-    
     house_map_view_layer.Draw(render_target, state.house_view, state);
     tile_palette_view_layer.Draw(render_target, state.editor_state.tile_palette_view, state);
 }

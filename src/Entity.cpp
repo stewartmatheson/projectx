@@ -6,7 +6,7 @@ Entity::Entity(
     float acceleration, 
     float x, 
     float y,
-    std::unordered_map<EntityState, Animation>& animations
+    std::weak_ptr<std::unordered_map<EntityState, Animation>> animations
 ) : 
 acceleration(acceleration), 
 facing_left(true),
@@ -30,20 +30,31 @@ void Entity::Update() {
     if (!facing_left && velocity.x < 0) {
         facing_left = true;
     }
-    
-    auto current_animation = animations.find(GetEntityState());
-    if (facing_left) {
-        current_animation->second.sprite.setScale(
-            -4,
-            current_animation->second.sprite.getScale().y
-        );
-    } else {
-        current_animation->second.sprite.setScale(
-            4,
-            current_animation->second.sprite.getScale().y
-        );
-    } 
-    current_animation->second.sprite.setPosition(GetTransform());
+
+    // TODO : This most likely won't work as different entities will move the animations around before
+    // they are drawn
+    auto shared_animations = animations.lock();
+    if (shared_animations) {
+        std::cout 
+            << static_cast<std::underlying_type<EntityType>::type>(type) 
+            << " " 
+            << shared_animations->size() << std::endl;
+
+        auto current_animation = shared_animations->find(GetEntityState());
+
+        if (facing_left) {
+            current_animation->second.sprite.setScale(
+                -4,
+                current_animation->second.sprite.getScale().y
+            );
+        } else {
+            current_animation->second.sprite.setScale(
+                4,
+                current_animation->second.sprite.getScale().y
+            );
+        } 
+        current_animation->second.sprite.setPosition(GetTransform());
+    }
 }
 
 const sf::Vector2f& Entity::GetTransform() const {

@@ -32,14 +32,19 @@ void HouseSceneReducer::AddTile(int x, int y) {
 }
 
 void HouseSceneReducer::AddEntity(int x, int y) {
-    auto state = GetState();
     auto entity_type = state
         .editor_state
         .tile_palette_tiles[state.editor_state.selected_tile_index]
         .entity_type;
     
-    std::unordered_map<EntityState, Animation> animations = {};
-    auto entity = Entity(entity_type, 0, 0, x, y, animations);
+    auto entity = Entity(
+        entity_type, 
+        0, 
+        0, 
+        x, 
+        y,
+        std::weak_ptr<std::unordered_map<EntityState, Animation>>()
+    );
     state.entities.push_back(entity);
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <unordered_map>
 #include <SFML/Graphics.hpp>
 #include "Animation.h"
@@ -27,10 +28,17 @@ class Entity {
     sf::Vector2f velocity;
     EntityType type;
     EntityState state;
-    std::unordered_map<EntityState, Animation>& animations;
+    std::weak_ptr<std::unordered_map<EntityState, Animation>> animations;
 
 public:
-    Entity(EntityType, float, float, float, float, std::unordered_map<EntityState, Animation>&);
+    Entity(
+        EntityType, 
+        float, 
+        float, 
+        float, 
+        float, 
+        std::weak_ptr<std::unordered_map<EntityState, Animation>>
+    );
     void Update();
 
     const sf::Vector2f& GetTransform() const; 

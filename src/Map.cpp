@@ -82,7 +82,17 @@ reducer(reducer)
         rf.read(reinterpret_cast<char *>(&y), sizeof (y));
             
         std::unordered_map<EntityState, Animation> animations = {};
-        reducer.AddEntity(Entity(type, 0, 0, x, y, animations));
+
+        reducer.AddEntity(
+            Entity(
+                type, 
+                0, 
+                0, 
+                x, 
+                y,
+                std::weak_ptr<std::unordered_map<EntityState, Animation>>()
+            )
+        );
     }
 }
 

@@ -2,9 +2,10 @@
 #include "Animation.h"
 
 EntityView::EntityView(
-    const SpriteSheet& sprite_sheet, 
+    const SpriteSheet& entity_sprite_sheet, 
     const std::unordered_map<EntityState, Animation>& animations) :
-animations(animations) {}
+animations(animations), 
+entity_sprite_sheet(entity_sprite_sheet) {}
 
 void EntityView::Draw(sf::RenderTarget& target, const HouseSceneState& state) const {
     auto entities = state.entities; 
@@ -30,4 +31,19 @@ void EntityView::Draw(sf::RenderTarget& target, const HouseSceneState& state) co
     }
 
     target.draw(current_animation->second.sprite);
+
+    std::for_each(entities.begin(), entities.end(), [&target, this](const auto &entity){
+        if (entity.GetEntityType() == EntityType::PlayerEntity) {
+            return;
+        }
+        sf::Sprite sprite_to_draw(entity_sprite_sheet.GetSprites()[entity.GetTileMapIndex()]);
+        sprite_to_draw.setRotation(entity.GetRotation());
+        int half_tile_size = entity_sprite_sheet.GetSpriteSize() / 2;
+        sprite_to_draw.setPosition(
+            (entity.GetTransform().x * entity_sprite_sheet.GetSpriteSize()) + half_tile_size,
+            (entity.GetTransform().y * entity_sprite_sheet.GetSpriteSize()) + half_tile_size
+        );
+        sprite_to_draw.setOrigin(entity_sprite_sheet.GetSize() / 2, entity_sprite_sheet.GetSize() / 2);
+        target.draw(sprite_to_draw);
+    });
 }
