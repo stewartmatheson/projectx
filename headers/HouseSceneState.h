@@ -10,12 +10,13 @@ struct HouseSceneEditorState {
     int selected_tile_index = 0;
     sf::IntRect tile_palette_bounds;
     int selected_tile_layer;
-    int selected_tile_rotation;
+    int selected_tile_rotation = 0;
     int tile_palette_background_total_height;
     sf::RectangleShape tile_palette_background;
     sf::RectangleShape tile_palette_selection_rectangle;
     sf::View tile_palette_view;
     std::vector<TilePaletteTile> tile_palette_tiles;
+    sf::Vector2i selected_editor_square;
 };
 
 struct HouseSceneState {

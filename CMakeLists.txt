@@ -31,6 +31,7 @@ add_executable(ProjectX
   headers/HouseSceneEntityView.h
   headers/TileBackgroundView.h
   headers/ViewLayer.h
+  headers/SelectedTileView.h
   src/Animation.cpp
   src/HouseScene.cpp
   src/Map.cpp
@@ -46,6 +47,7 @@ add_executable(ProjectX
   src/HouseSceneEntityView.cpp
   src/TileBackgroundView.cpp
   src/ViewLayer.cpp
+  src/SelectedTileView.cpp
 )
 
 target_include_directories(ProjectX

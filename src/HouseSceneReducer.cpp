@@ -110,3 +110,7 @@ void HouseSceneReducer::SetSelectionRectanglePosition(sf::Vector2f new_position)
 void HouseSceneReducer::SetHouseViewCenter(sf::Vector2f new_position) {
     state.house_view.setCenter(new_position);
 }
+
+void HouseSceneReducer::UpdateSelectedEditorSquare(sf::Vector2i updated_mouse_position) {
+    state.editor_state.selected_editor_square = updated_mouse_position;
+}

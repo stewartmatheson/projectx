@@ -1,4 +1,7 @@
+
+#include <math.h>
 #include "EditorController.h"
+
 
 EditorController::EditorController(
     int tile_map_sprite_size, 
@@ -23,7 +26,8 @@ void EditorController::Update (HouseSceneReducer& reducer) {
 }
 
 void EditorController::HandleInput (EventWithMouse event_with_mouse, HouseSceneReducer& reducer) {
- 
+
+
     if (event_with_mouse.event.type == sf::Event::KeyPressed && 
         event_with_mouse.event.key.code == sf::Keyboard::E) {
         reducer.ToggleEditorEnabled();
@@ -83,13 +87,16 @@ void EditorController::HandleInput (EventWithMouse event_with_mouse, HouseSceneR
         }
     }
 
-    // TODO : Figure out why we are donig this
-    //auto current_target_coords = house_render_texture.mapPixelToCoords(
-        //event_with_mouse.window_mouse_position
-    //);
+    if (reducer.GetState().editor_state.editor_enabled) {
+        auto current_target_coords = house_render_texture.mapPixelToCoords(
+            event_with_mouse.window_mouse_position
+        );
 
-    // current_mouse_grid_position.x = floor(current_target_coords.x / tile_map.GetSpriteSize());
-    // current_mouse_grid_position.y = floor(current_target_coords.y / tile_map.GetSpriteSize());
+        reducer.UpdateSelectedEditorSquare(sf::Vector2i(
+            floor(current_target_coords.x / tile_map_sprite_size),
+            floor(current_target_coords.y / tile_map_sprite_size)
+        ));
+    }
      
     if (event_with_mouse.event.type == sf::Event::MouseButtonPressed && 
         event_with_mouse.event.mouseButton.button == sf::Mouse::Left) {

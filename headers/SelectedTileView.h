@@ -1,9 +1,10 @@
 
-#include "HouseScene.h"
+#include "HouseSceneState.h"
+#include "View.h"
 
 class SelectedTileView : public View<HouseSceneState> {
-    int sprite_size;
+    const SpriteSheet& sprite_sheet;
 public:
-    SelectedTileView(int);
-    void Draw(sf::RenderTarget&, const HouseSceneState&);
+    SelectedTileView(const SpriteSheet&);
+    void Draw(sf::RenderTarget&, const HouseSceneState&) const;
 };

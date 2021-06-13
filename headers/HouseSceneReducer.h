@@ -25,5 +25,6 @@ public:
     void AddTilePaletteTile(TilePaletteTile, int);
     void InitSelectionRectangle(int);
     void SetSelectionRectanglePosition(sf::Vector2f);
+    void UpdateSelectedEditorSquare(sf::Vector2i);
     void SetHouseViewCenter(sf::Vector2f);
 };

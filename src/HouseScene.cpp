@@ -9,6 +9,7 @@
 #include "HouseSceneEntityView.h"
 #include "EntityView.h"
 #include "HouseSceneReducer.h"
+#include "SelectedTileView.h"
 
 HouseScene::HouseScene(int window_width, int window_height, int offset, sf::IntRect map_bounds) :
 offset(offset),
@@ -141,6 +142,10 @@ void HouseScene::Init(int window_width, int window_height) {
 
     house_map_view_layer.AddView(
         std::unique_ptr<EntityView>{new EntityView(player_sprite_sheet, player_animations)}
+    );
+
+    house_map_view_layer.AddView(
+        std::unique_ptr<SelectedTileView>{new SelectedTileView(tile_map)}
     );
 
     tile_palette_view_layer.AddView(
