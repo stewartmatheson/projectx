@@ -6,7 +6,7 @@
 
 struct HouseSceneEditorState {
     bool editor_enabled = false;
-    bool panning;
+    bool panning = false;
     int selected_tile_index = 0;
     sf::IntRect tile_palette_bounds;
     int selected_tile_layer;

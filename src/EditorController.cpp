@@ -161,11 +161,11 @@ void EditorController::HandleInput (EventWithMouse event_with_mouse, HouseSceneR
     }
 
     if (reducer.GetState().editor_state.panning) {
-        auto mouse_delta = current_mouse_position - last_mouse_position;
+        auto mouse_delta = event_with_mouse.window_mouse_position - last_mouse_position;
         reducer.MoveHouseView(mouse_delta.x * -1, mouse_delta.y * -1);
     }
 
-    last_mouse_position = current_mouse_position;
+    last_mouse_position = event_with_mouse.window_mouse_position;
 
     if (event_with_mouse.event.type == sf::Event::Resized) {
         reducer.MoveHouseView(
