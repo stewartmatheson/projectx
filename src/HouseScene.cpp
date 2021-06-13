@@ -31,14 +31,13 @@ entity_map(4, 16),
 player_sprite_sheet("./assets/NightThief.png", 4, 320, 1, 1),
 house_map_view_layer(window_height, window_width),
 tile_palette_view_layer(window_height, offset * 2 + tile_map.GetSpriteSize()),
-player_animations(),
 reducer(state),
 map(reducer, map_file_name) {
     Init(window_width, window_height);
 }
 
 void HouseScene::Init(int window_width, int window_height) {
-    
+    player_animations = std::make_shared<std::unordered_map<EntityState, Animation>>();
     auto tile_sprites = tile_map.GetSprites();
     std::for_each(tile_sprites.begin(), tile_sprites.end(), [this](const auto &sprite){ 
         reducer.AddTilePaletteTile(TilePaletteTile{sprite, PaletteTile}, tile_map.GetSpriteSize());
@@ -73,7 +72,7 @@ void HouseScene::Init(int window_width, int window_height) {
         idle_frames.push_back(AnimationFrame{col, 0});
     }
 
-    player_animations.insert(
+    player_animations->insert(
         {EntityState::Idle, Animation(player_sprite_sheet, idle_frames, 32, 32, 8)}
     );
 
@@ -82,7 +81,7 @@ void HouseScene::Init(int window_width, int window_height) {
         throw_frames.push_back(AnimationFrame{col, 1});
     }
 
-    player_animations.insert(
+    player_animations->insert(
         {EntityState::Throwing, Animation(player_sprite_sheet, throw_frames, 32, 32, 8) }
     );
 
@@ -91,7 +90,7 @@ void HouseScene::Init(int window_width, int window_height) {
         walk_frames.push_back(AnimationFrame{col, 2});
     }
 
-    player_animations.insert(
+    player_animations->insert(
         {EntityState::Walking, Animation(player_sprite_sheet, walk_frames, 32, 32, 8) }
     );
 
@@ -100,7 +99,7 @@ void HouseScene::Init(int window_width, int window_height) {
         attack_frames.push_back(AnimationFrame{col, 3});
     }
 
-    player_animations.insert(
+    player_animations->insert(
         {EntityState::Attacking, Animation(player_sprite_sheet, attack_frames, 32, 32, 8) }
     );
 
@@ -109,7 +108,7 @@ void HouseScene::Init(int window_width, int window_height) {
         die_frames.push_back(AnimationFrame{col, 4});
     }
 
-    player_animations.insert(
+    player_animations->insert(
         {EntityState::Dying, Animation(player_sprite_sheet, die_frames, 32, 32, 8) }
     );
 
@@ -122,7 +121,7 @@ void HouseScene::Init(int window_width, int window_height) {
             .01f, 
             0, 
             0, 
-            std::make_shared<std::unordered_map<EntityState, Animation>>(player_animations)
+            player_animations
         )
     );
 
@@ -173,7 +172,7 @@ void HouseScene::Update() {
     for(auto& entity : state.entities)
         entity.Update();
 
-    for(auto& player_animation : player_animations)
+    for(auto& player_animation : *player_animations)
         player_animation.second.Update();
 }
 

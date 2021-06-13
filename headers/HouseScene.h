@@ -20,7 +20,7 @@ class HouseScene {
     std::vector<std::unique_ptr<Controller<HouseSceneReducer>>> controllers;
     ViewLayer house_map_view_layer;
     ViewLayer tile_palette_view_layer;
-    std::unordered_map<EntityState, Animation> player_animations;
+    std::shared_ptr<std::unordered_map<EntityState, Animation>> player_animations;
     HouseSceneReducer reducer;
     void Init(int, int);
     Map map;

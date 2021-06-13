@@ -33,8 +33,7 @@ void Entity::Update() {
 
     // TODO : This most likely won't work as different entities will move the animations around before
     // they are drawn
-    auto shared_animations = animations.lock();
-    if (shared_animations) {
+    if (auto shared_animations = animations.lock()) {
         std::cout 
             << static_cast<std::underlying_type<EntityType>::type>(type) 
             << " " 
