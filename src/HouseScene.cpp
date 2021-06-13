@@ -12,7 +12,7 @@
 
 HouseScene::HouseScene(int window_width, int window_height, int offset, sf::IntRect map_bounds) :
 offset(offset),
-tile_map("./assets/tilemap.png", 4, 16, 5, 7),
+tile_map("./assets/house.png", 4, 16, 5, 7),
 entity_map(4, 16),
 player_sprite_sheet("./assets/NightThief.png", 4, 320, 1, 1),
 house_map_view_layer(window_height, window_width),
@@ -25,7 +25,7 @@ map(reducer) {
 
 HouseScene::HouseScene(int window_width, int window_height, int offset, std::string map_file_name) :
 offset(offset),
-tile_map("./assets/tilemap.png", 4, 16, 5, 7),
+tile_map("./assets/house.png", 4, 16, 5, 7),
 entity_map(4, 16),
 player_sprite_sheet("./assets/NightThief.png", 4, 320, 1, 1),
 house_map_view_layer(window_height, window_width),
