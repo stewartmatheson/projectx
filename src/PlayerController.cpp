@@ -50,9 +50,11 @@ void PlayerController::Update (HouseSceneReducer& reducer) {
         ((current_input.x * speed) - player_velocity.x) * acceleration,
         ((current_input.y * speed) - player_velocity.y) * acceleration
     ); 
-    found_player->SetTransform(found_player->GetTransform() + new_velocity);
 
-    
+    reducer.SetEntityVelocity(new_velocity);
+    reducer.SetEntityTransform(found_player->GetTransform() + new_velocity);
+
+
     if (!reducer.GetState().editor_state.editor_enabled) {
         reducer.SetHouseViewCenter(found_player->GetTransform());
     }

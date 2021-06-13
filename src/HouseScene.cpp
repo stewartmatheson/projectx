@@ -140,9 +140,6 @@ void HouseScene::Init(int window_width, int window_height) {
         std::unique_ptr<GridView>{new GridView(tile_map.GetSpriteSize())}
     );
 
-    house_map_view_layer.AddView(
-        std::unique_ptr<EntityView>{new EntityView(player_sprite_sheet, player_animations)}
-    );
 
     house_map_view_layer.AddView(
         std::unique_ptr<SelectedTileView>{new SelectedTileView(tile_map)}
@@ -161,6 +158,9 @@ void HouseScene::Init(int window_width, int window_height) {
         )}
     );
 
+    house_map_view_layer.AddView(
+        std::unique_ptr<EntityView>{new EntityView(player_sprite_sheet, player_animations)}
+    );
     /*
     tile_palette_render_texture.create(left_toolbar_width, window_height);
     scene_render_target.create(window_width, window_height);

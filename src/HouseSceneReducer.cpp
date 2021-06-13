@@ -113,3 +113,11 @@ void HouseSceneReducer::SetHouseViewCenter(sf::Vector2f new_position) {
 void HouseSceneReducer::UpdateSelectedEditorSquare(sf::Vector2i updated_mouse_position) {
     state.editor_state.selected_editor_square = updated_mouse_position;
 }
+
+void HouseSceneReducer::SetEntityTransform(sf::Vector2f new_transform) {
+    state.entities[0].SetTransform(new_transform);
+}
+
+void HouseSceneReducer::SetEntityVelocity(sf::Vector2f new_velocity) {
+    state.entities[0].SetVelocity(new_velocity);
+}

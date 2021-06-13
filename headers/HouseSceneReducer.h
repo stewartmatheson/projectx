@@ -27,4 +27,6 @@ public:
     void SetSelectionRectanglePosition(sf::Vector2f);
     void UpdateSelectedEditorSquare(sf::Vector2i);
     void SetHouseViewCenter(sf::Vector2f);
+    void SetEntityTransform(sf::Vector2f);
+    void SetEntityVelocity(sf::Vector2f);
 };

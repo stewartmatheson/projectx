@@ -20,7 +20,6 @@ void EntityView::Draw(sf::RenderTarget& target, const HouseSceneState& state) co
         return;
     }
 
-
     auto current_animation = animations.find(found_player->GetEntityState());
     if (current_animation == animations.end()) {
         // TODO : We might not want to do this each draw call.
