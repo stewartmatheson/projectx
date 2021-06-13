@@ -6,7 +6,6 @@
 #include "GridView.h"
 #include "TileBackgroundView.h"
 #include "TilePaletteView.h"
-#include "HouseSceneEntityView.h"
 #include "EntityView.h"
 #include "HouseSceneReducer.h"
 #include "SelectedTileView.h"

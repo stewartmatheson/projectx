@@ -34,11 +34,6 @@ void Entity::Update() {
     // TODO : This most likely won't work as different entities will move the animations around before
     // they are drawn
     if (auto shared_animations = animations.lock()) {
-        std::cout 
-            << static_cast<std::underlying_type<EntityType>::type>(type) 
-            << " " 
-            << shared_animations->size() << std::endl;
-
         auto current_animation = shared_animations->find(GetEntityState());
 
         if (facing_left) {

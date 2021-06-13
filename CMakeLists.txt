@@ -28,7 +28,6 @@ add_executable(ProjectX
   headers/HouseSceneState.h
   headers/EntityView.h
   headers/GridView.h
-  headers/HouseSceneEntityView.h
   headers/TileBackgroundView.h
   headers/ViewLayer.h
   headers/SelectedTileView.h
@@ -44,7 +43,6 @@ add_executable(ProjectX
   src/HouseSceneReducer.cpp
   src/EntityView.cpp
   src/GridView.cpp
-  src/HouseSceneEntityView.cpp
   src/TileBackgroundView.cpp
   src/ViewLayer.cpp
   src/SelectedTileView.cpp
