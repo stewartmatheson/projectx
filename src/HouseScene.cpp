@@ -9,6 +9,7 @@
 #include "EntityView.h"
 #include "HouseSceneReducer.h"
 #include "SelectedTileView.h"
+#include "BoxSelectionView.h"
 
 HouseScene::HouseScene(int window_width, int window_height, int offset, sf::IntRect map_bounds) :
 offset(offset),
@@ -143,23 +144,28 @@ void HouseScene::Init(int window_width, int window_height) {
     );
 
     house_map_view_layer.AddView(
-        std::unique_ptr<GridView>{new GridView(tile_map.GetSpriteSize())}
-    );
-
-    house_map_view_layer.AddView(
         std::unique_ptr<SelectedTileView>{new SelectedTileView(tile_map)}
     );
+
 
     house_map_view_layer.AddView(
         std::unique_ptr<TileBackgroundView>{new TileBackgroundView(tile_map)}
     );
 
     house_map_view_layer.AddView(
+        std::unique_ptr<GridView>{new GridView(tile_map.GetSpriteSize())}
+    );
+
+    house_map_view_layer.AddView(
         std::unique_ptr<EntityView>{new EntityView(entity_map, player_animations)}
+    );
+
+    house_map_view_layer.AddView(
+        std::unique_ptr<BoxSelectionView>{new BoxSelectionView()}
     );
 }
 
-void HouseScene::HandleInput(EventWithMouse event) {
+void HouseScene::HandleInput(const EventWithMouse& event) {
     for(auto& controller : controllers)
         controller->HandleInput(event, reducer);
 }

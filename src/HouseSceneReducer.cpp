@@ -126,3 +126,36 @@ void HouseSceneReducer::SetEntityTransform(sf::Vector2f new_transform) {
 void HouseSceneReducer::SetEntityVelocity(sf::Vector2f new_velocity) {
     state.entities[0].SetVelocity(new_velocity);
 }
+
+void HouseSceneReducer::MousePressedAt() {
+    state.editor_state.mouse_down = true; 
+}
+
+void HouseSceneReducer::MouseReleased() {
+    state.editor_state.mouse_down = false; 
+    state.editor_state.mouse_dragging = false;
+}
+
+void HouseSceneReducer::UpdateMousePosition(sf::Vector2f current_mouse_position) {
+    if (state.editor_state.mouse_down) {
+        auto delta = sf::Vector2f(
+            (state.editor_state.mouse_down_at.x - state.editor_state.current_mouse_position.x) * -1,
+            (state.editor_state.mouse_down_at.y - state.editor_state.current_mouse_position.y) * -1
+        );
+
+        if (
+            (delta.x < 5 && delta.x > 0) || 
+            (delta.x > -5 && delta.x < 0) || 
+            (delta.y < 5 && delta.y > 0) || 
+            (delta.y > -5 && delta.y < 0)) {
+            state.editor_state.mouse_dragging = false;
+        } else {
+            state.editor_state.mouse_dragging = true;
+        }
+    } else {
+        state.editor_state.mouse_down_at = current_mouse_position;
+    }
+
+    state.editor_state.current_mouse_position = current_mouse_position;
+
+}

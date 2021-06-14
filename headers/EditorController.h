@@ -12,6 +12,8 @@ class EditorController : public Controller<HouseSceneReducer> {
     sf::RenderTexture& house_render_texture;
     sf::Vector2i last_mouse_position;
     Map& map;
+
+    void HandleInputBoxSelection(EventWithMouse, HouseSceneReducer&);
 public:
     EditorController(int, sf::RenderTexture&, sf::RenderTexture&, Map&);
     void Update(HouseSceneReducer&);

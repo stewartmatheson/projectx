@@ -29,4 +29,7 @@ public:
     void SetHouseViewCenter(sf::Vector2f);
     void SetEntityTransform(sf::Vector2f);
     void SetEntityVelocity(sf::Vector2f);
+    void MousePressedAt();
+    void MouseReleased();
+    void UpdateMousePosition(sf::Vector2f);
 };

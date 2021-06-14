@@ -23,11 +23,11 @@ void EditorController::Update (HouseSceneReducer& reducer) {
         .icon.getPosition();
 
     reducer.SetSelectionRectanglePosition(selected_tile_position);
+
 }
 
-void EditorController::HandleInput (EventWithMouse event_with_mouse, HouseSceneReducer& reducer) {
-
-
+void EditorController::HandleInput (const EventWithMouse event_with_mouse, HouseSceneReducer& reducer) {
+   
     if (event_with_mouse.event.type == sf::Event::KeyPressed && 
         event_with_mouse.event.key.code == sf::Keyboard::E) {
         reducer.ToggleEditorEnabled();
@@ -39,17 +39,16 @@ void EditorController::HandleInput (EventWithMouse event_with_mouse, HouseSceneR
         return;
     }
 
-    if (event_with_mouse.event.type == sf::Event::MouseButtonPressed && 
+
+    if (event_with_mouse.event.type == sf::Event::MouseButtonReleased && 
         event_with_mouse.event.mouseButton.button == sf::Mouse::Left) {
 
-        // Manage Selection Changed
         auto event_target_coords = tile_palette_render_texture.mapPixelToCoords(
             sf::Vector2i(
                 event_with_mouse.event.mouseButton.x, 
                 event_with_mouse.event.mouseButton.y
             )
         );
-
         auto found = std::find_if(
             reducer.GetState().editor_state.tile_palette_tiles.begin(), 
             reducer.GetState().editor_state.tile_palette_tiles.end(), 
@@ -98,8 +97,9 @@ void EditorController::HandleInput (EventWithMouse event_with_mouse, HouseSceneR
         ));
     }
      
-    if (event_with_mouse.event.type == sf::Event::MouseButtonPressed && 
-        event_with_mouse.event.mouseButton.button == sf::Mouse::Left) {
+    if (event_with_mouse.event.type == sf::Event::MouseButtonReleased && 
+        event_with_mouse.event.mouseButton.button == sf::Mouse::Left &&
+        !reducer.GetState().editor_state.mouse_dragging) {
         
         sf::Vector2f event_target_coords = house_render_texture.mapPixelToCoords(
             sf::Vector2i(
@@ -178,4 +178,29 @@ void EditorController::HandleInput (EventWithMouse event_with_mouse, HouseSceneR
         ); 
     }
  
+    HandleInputBoxSelection(event_with_mouse, reducer);
+}
+
+void EditorController::HandleInputBoxSelection (
+    EventWithMouse event_with_mouse, 
+    HouseSceneReducer& reducer
+) {
+        
+    auto window_target_coords = house_render_texture.mapPixelToCoords(
+            sf::Vector2i(
+                event_with_mouse.window_mouse_position.x, 
+                event_with_mouse.window_mouse_position.y
+                )
+            );
+    reducer.UpdateMousePosition(window_target_coords);
+
+    if (event_with_mouse.event.type == sf::Event::MouseButtonPressed &&
+        event_with_mouse.event.mouseButton.button == sf::Mouse::Left) {
+        reducer.MousePressedAt();
+    } 
+
+    if (event_with_mouse.event.type == sf::Event::MouseButtonReleased &&
+        event_with_mouse.event.mouseButton.button == sf::Mouse::Left) {
+        reducer.MouseReleased();
+    } 
 }

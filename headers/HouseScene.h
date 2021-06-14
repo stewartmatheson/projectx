@@ -28,7 +28,7 @@ class HouseScene {
 public:
     HouseScene(int, int, int, sf::IntRect);
     HouseScene(int, int, int, std::string);
-    void HandleInput(EventWithMouse);
+    void HandleInput(const EventWithMouse&);
     void Update();
     void Draw(sf::RenderTarget& window);
 };
