@@ -1,0 +1,128 @@
+#include "HouseSceneReducer.h"
+
+HouseSceneReducer::HouseSceneReducer(HouseSceneState& state) : state(state) {}
+
+const HouseSceneState& HouseSceneReducer::GetState()  { return state; }
+
+void HouseSceneReducer::MoveTilePaletteView(int x, int y) {
+    state.editor_state.tile_palette_view.move(x, y);
+}
+
+void HouseSceneReducer::MoveHouseView(int x, int y) {
+    state.house_view.move(x, y);
+}
+
+void HouseSceneReducer::AddTileLayer(TileLayer tile_layer) {
+    state.tile_layers.push_back(tile_layer);
+}
+
+void HouseSceneReducer::AddTile(int x, int y) {
+    auto tile = MapTile { 
+        x,
+        y,
+        state.editor_state.selected_tile_rotation,
+        state.editor_state.selected_tile_index
+    };
+
+    if (state.tile_layers.size() == 0) {
+        state.tile_layers.push_back(TileLayer{0, std::vector<MapTile>()});
+    }
+
+    state.tile_layers[0].tiles.push_back(tile);
+}
+
+void HouseSceneReducer::AddEntity(int x, int y) {
+    auto entity_type = state
+        .editor_state
+        .tile_palette_tiles[state.editor_state.selected_tile_index]
+        .entity_type;
+    
+    auto entity = Entity(
+        entity_type, 
+        0, 
+        0, 
+        x, 
+        y,
+        std::weak_ptr<std::unordered_map<EntityState, Animation>>()
+    );
+    state.entities.push_back(entity);
+}
+
+void HouseSceneReducer::AddEntity(Entity entity) {
+    state.entities.push_back(entity);
+}
+
+void HouseSceneReducer::SetPanning(bool new_panning_value) {
+    state.editor_state.panning = new_panning_value; 
+}
+
+void HouseSceneReducer::SetRotation(int new_selected_rotation) {
+    state.editor_state.selected_tile_rotation = new_selected_rotation; 
+}
+
+void HouseSceneReducer::UpdateSelectedTileIndex(int new_index) {
+    state.editor_state.selected_tile_index = new_index; 
+}
+
+void HouseSceneReducer::ToggleEditorEnabled() {
+    state.editor_state.editor_enabled = !state.editor_state.editor_enabled;
+}
+
+void HouseSceneReducer::SetMapBounds(sf::IntRect new_map_bounds) {
+    state.map_bounds = new_map_bounds;
+}
+
+void HouseSceneReducer::ResetPlayer() {
+    auto found_player = std::find_if(
+        state.entities.begin(), 
+        state.entities.end(),
+        [](const auto &entity) { return entity.GetEntityType() == EntityType::PlayerEntity; }
+    );
+
+    if (found_player != state.entities.end()) {
+        found_player->SetVelocity(sf::Vector2f(0,0));
+    }
+}
+
+void HouseSceneReducer::AddTilePaletteTile(TilePaletteTile tile_to_add, int sprite_size) {
+    auto offset = 20;
+    auto current_tile_index = state.editor_state.tile_palette_tiles.size();
+    auto y = (current_tile_index * sprite_size) + (offset * current_tile_index) + offset;
+    tile_to_add.icon.setPosition(offset, y);
+    state.editor_state.tile_palette_tiles.push_back(tile_to_add);
+}
+
+void HouseSceneReducer::SetTilePaletteBounds(int x, int y, int total_height) {
+    state.editor_state.tile_palette_bounds = sf::IntRect(0, 0, x, y);
+    state.editor_state.tile_palette_background_total_height = total_height;
+}
+
+void HouseSceneReducer::InitSelectionRectangle(int sprite_size) {
+    state.editor_state.tile_palette_selection_rectangle.setSize(sf::Vector2f(sprite_size, sprite_size));
+    state.editor_state.tile_palette_selection_rectangle.setOutlineColor(sf::Color::Blue);
+    state.editor_state.tile_palette_selection_rectangle.setOutlineThickness(2);
+    state.editor_state.tile_palette_selection_rectangle.setFillColor(sf::Color::Transparent);
+}
+
+void HouseSceneReducer::SetSelectionRectanglePosition(sf::Vector2f new_position) {
+    state
+        .editor_state
+        .tile_palette_selection_rectangle
+        .setPosition(new_position);
+}
+
+void HouseSceneReducer::SetHouseViewCenter(sf::Vector2f new_position) {
+    state.house_view.setCenter(new_position);
+}
+
+void HouseSceneReducer::UpdateSelectedEditorSquare(sf::Vector2i updated_mouse_position) {
+    state.editor_state.selected_editor_square = updated_mouse_position;
+}
+
+void HouseSceneReducer::SetEntityTransform(sf::Vector2f new_transform) {
+    state.entities[0].SetTransform(new_transform);
+}
+
+void HouseSceneReducer::SetEntityVelocity(sf::Vector2f new_velocity) {
+    state.entities[0].SetVelocity(new_velocity);
+}

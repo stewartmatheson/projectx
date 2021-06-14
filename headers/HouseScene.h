@@ -1,34 +1,35 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "TilePaletteView.h"
 #include "SpriteSheet.h"
+#include "Controller.h"
+#include "EventWithMouse.h"
+#include "HouseSceneReducer.h"
+#include "HouseSceneState.h"
 #include "Map.h"
-#include "Entity.h"
+#include "ViewLayer.h"
 
-/**
- * An editor contains all data required to add, remove and edit tiles on a given map
- */
+
 class HouseScene {
-    sf::Vector2i current_mouse_grid_position;
-    int current_rotation;
-    bool editor_enabled;
-    Map &map;
-    sf::RenderTexture house_render_texture;
-    sf::View house_view;
-    sf::Vector2i last_mouse_position;
-    bool panning;
-    Entity &player;
-    SpriteSheet &tile_map;
-    SpriteSheet &entity_map;
-    TilePaletteView tile_palette_view;
-    int current_selected_tile_layer;
+    int offset;
+    SpriteSheet tile_map;
+    SpriteSheet entity_map;
+    SpriteSheet player_sprite_sheet;
+    HouseSceneState state;
+    int tile_palette_offset;
+    std::vector<std::unique_ptr<Controller<HouseSceneReducer>>> controllers;
+    ViewLayer house_map_view_layer;
+    ViewLayer tile_palette_view_layer;
+    std::shared_ptr<std::unordered_map<EntityState, Animation>> player_animations;
+    HouseSceneReducer reducer;
+    void Init(int, int);
+    Map map;
 
 public:
-    HouseScene(SpriteSheet&, SpriteSheet&, int, int, Map &, Entity &);
-    ~HouseScene();
-    void Draw(sf::RenderTarget &);
-    void Update(const sf::Event &, const sf::Vector2i &);
+    HouseScene(int, int, int, sf::IntRect);
+    HouseScene(int, int, int, std::string);
+    void HandleInput(EventWithMouse);
+    void Update();
+    void Draw(sf::RenderTarget& window);
 };
-
 

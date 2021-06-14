@@ -1,211 +1,182 @@
-#include <math.h>
-#include <fstream>
 #include "HouseScene.h"
+#include "Animation.h"
+#include "Entity.h"
+#include "EditorController.h"
+#include "PlayerController.h"
+#include "GridView.h"
+#include "TileBackgroundView.h"
+#include "TilePaletteView.h"
+#include "EntityView.h"
+#include "HouseSceneReducer.h"
+#include "SelectedTileView.h"
 
-HouseScene::HouseScene(
-        SpriteSheet &tile_map, 
-        SpriteSheet &entity_map, 
-        int window_height, 
-        int window_width, 
-        Map &map, 
-        Entity &player
-) : current_rotation(0), 
-    editor_enabled(true), 
-    map(map), 
-    house_view(sf::FloatRect(0, 0, window_width, window_height)),
-    panning(false),
-    player(player), 
-    tile_map(tile_map), 
-    entity_map(entity_map), 
-    tile_palette_view(tile_map, entity_map, window_height),
-    current_selected_tile_layer(0)
-{
-    house_render_texture.create(window_width, window_height); 
+HouseScene::HouseScene(int window_width, int window_height, int offset, sf::IntRect map_bounds) :
+offset(offset),
+tile_map("./assets/house.png", 4, 16, 5, 7),
+entity_map(4, 16),
+player_sprite_sheet("./assets/NightThief.png", 4, 320, 1, 1),
+house_map_view_layer(window_height, window_width),
+tile_palette_view_layer(window_height, offset * 2 + tile_map.GetSpriteSize()),
+reducer(state),
+map(reducer) {
+    Init(window_width, window_height);
+    reducer.SetMapBounds(map_bounds);
 }
 
-HouseScene::~HouseScene() {
+HouseScene::HouseScene(int window_width, int window_height, int offset, std::string map_file_name) :
+offset(offset),
+tile_map("./assets/house.png", 4, 16, 5, 7),
+entity_map(4, 16),
+player_sprite_sheet("./assets/NightThief.png", 4, 320, 1, 1),
+house_map_view_layer(window_height, window_width),
+tile_palette_view_layer(window_height, offset * 2 + tile_map.GetSpriteSize()),
+reducer(state),
+map(reducer, map_file_name) {
+    Init(window_width, window_height);
 }
 
-void HouseScene::Update(const sf::Event& event, const sf::Vector2i &current_mouse_position) {
-    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::E) {
-        editor_enabled = !editor_enabled;
-        player.Reset();
-    }
-
-    if (!editor_enabled) {
-        player.Update(event);
-        return;
-    }
-
-    tile_palette_view.Update(event, current_mouse_position);
-
-    auto current_target_coords = house_render_texture.mapPixelToCoords(
-        current_mouse_position
-    );
-
-    current_mouse_grid_position.x = floor(current_target_coords.x / tile_map.GetSpriteSize());
-    current_mouse_grid_position.y = floor(current_target_coords.y / tile_map.GetSpriteSize());
-     
-    if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-        
-        sf::Vector2f event_target_coords = house_render_texture.mapPixelToCoords(
-            sf::Vector2i(event.mouseButton.x, event.mouseButton.y)
-        );
-        
-        sf::IntRect pixel_bounds(
-            0, 
-            0,
-            map.GetBounds().width * tile_map.GetSpriteSize(),
-            map.GetBounds().height * tile_map.GetSpriteSize()
-        );
-
-        if (pixel_bounds.contains(event_target_coords.x, event_target_coords.y) && 
-            !tile_palette_view.GetBackground().getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)
-        ) {
-            auto x = (int)event_target_coords.x / tile_map.GetSpriteSize();
-            auto y = (int)event_target_coords.y / tile_map.GetSpriteSize();
-
-            if (tile_palette_view.GetSelectedTile().type == PaletteTile) {
-                map.AddTile(
-                    current_selected_tile_layer, 
-                    MapTile { 
-                        x,
-                        y,
-                        current_rotation,
-                        tile_palette_view.GetSelectedTileIndex()
-                    }
-                );
-            } else if (tile_palette_view.GetSelectedTile().type == PaletteEntity){
-                map.AddEntity(Entity(tile_palette_view.GetSelectedTile().entity_type, 0, 0, x, y));
-            } else {
-                std::cout << "Map type not supported" << std::endl;
-                exit(1);
-            }
-        }
-    }
-
-
-    if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::W) {
-        map.WriteToFile("./assets/maps/room.bin");
-    }
-
-    if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Space) {
-        panning = false;
-    }
-
-    if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space) {
-        panning = true;
-    }
-
-
-    if ((event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Middle) ||
-        (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::R)) {
-        current_rotation = (current_rotation + 90) % 360;
-    }
-
-    if (panning) {
-        auto mouse_delta = current_mouse_position - last_mouse_position;
-        house_view.move(mouse_delta.x * -1, mouse_delta.y * -1);
-    }
-
-    last_mouse_position = current_mouse_position;
-
-    if (event.type == sf::Event::Resized) {
-        house_view.setSize(event.size.width, event.size.height);
-        house_render_texture.create(event.size.width, event.size.height); 
-    }
- 
-}
-
-void DrawGrid(sf::RenderTarget &target, int grid_height, int grid_width, int size) {
-    int total_grid_height = grid_height * size;
-    int total_grid_width = grid_width * size;
-
-    for(auto row = 1; row < (grid_height +1) * size; row = row + size) {
-        sf::Vertex line[] = {
-            sf::Vertex(sf::Vector2f(0, row), sf::Color::White),
-            sf::Vertex(sf::Vector2f(total_grid_width, row), sf::Color::White)
-        };
-        target.draw(line, 2, sf::Lines);
-    }
-
-    for(auto col = 1; col < (grid_width + 1) * size; col = col + size) {
-        sf::Vertex line[] = {
-            sf::Vertex(sf::Vector2f(col, 0), sf::Color::White),
-            sf::Vertex(sf::Vector2f(col, total_grid_height), sf::Color::White)
-        };
-        target.draw(line, 2, sf::Lines);
-    }
-}
-
-void HouseScene::Draw(sf::RenderTarget& target) {
-    if (!editor_enabled) {
-        house_view.setCenter(player.GetTransform());
-    }
-
-    // Draw Room and Grid
-    house_render_texture.setView(house_view);
-    house_render_texture.clear();
-
-    for(const auto &tile_layer : map.GetTileLayers()) {
-        for(const auto &tile : tile_layer.tiles) {
-            sf::Sprite sprite_to_draw(tile_map.GetSprites()[tile.tile_map_index]);
-            sprite_to_draw.setRotation(tile.rotation);
-            int half_tile_size = tile_map.GetSpriteSize() / 2;
-            sprite_to_draw.setPosition(
-                (tile.x * tile_map.GetSpriteSize()) + half_tile_size,
-                (tile.y * tile_map.GetSpriteSize()) + half_tile_size
-            );
-            sprite_to_draw.setOrigin(tile_map.GetSize() / 2, tile_map.GetSize() / 2);
-            house_render_texture.draw(sprite_to_draw);
-        }
-    }
-
-    auto entities = map.GetEntities();
-    std::for_each(entities.begin(), entities.end(), [this](const auto &entity){
-        sf::Sprite sprite_to_draw(entity_map.GetSprites()[entity.GetTileMapIndex()]);
-        sprite_to_draw.setRotation(entity.GetRotation());
-        int half_tile_size = entity_map.GetSpriteSize() / 2;
-        sprite_to_draw.setPosition(
-            (entity.GetTransform().x * entity_map.GetSpriteSize()) + half_tile_size,
-            (entity.GetTransform().y * entity_map.GetSpriteSize()) + half_tile_size
-        );
-        sprite_to_draw.setOrigin(entity_map.GetSize() / 2, entity_map.GetSize() / 2);
-        house_render_texture.draw(sprite_to_draw);
+void HouseScene::Init(int window_width, int window_height) {
+    player_animations = std::make_shared<std::unordered_map<EntityState, Animation>>();
+    auto tile_sprites = tile_map.GetSprites();
+    std::for_each(tile_sprites.begin(), tile_sprites.end(), [this](const auto &sprite){ 
+        reducer.AddTilePaletteTile(TilePaletteTile{sprite, PaletteTile}, tile_map.GetSpriteSize());
     });
 
-    player.Draw(house_render_texture);
+    auto entity_sprites = entity_map.GetSprites();
+    reducer.AddTilePaletteTile(
+        TilePaletteTile{entity_sprites[0], PaletteEntity, EntityType::GhostEntity},
+        entity_map.GetSpriteSize()
+    );
 
-    if (editor_enabled) {
-        DrawGrid(
-            house_render_texture,
-            map.GetBounds().height, 
-            map.GetBounds().width, 
-            tile_map.GetSpriteSize()
-        );
+    reducer.AddTilePaletteTile(
+        TilePaletteTile{entity_sprites[1], PaletteEntity, EntityType::DoorEntity}, 
+        entity_map.GetSpriteSize()
+    );
 
-        // Draw Selected Tile
-        auto selected_tile_sprite = tile_palette_view.GetSelectedTile().icon;
-        int half_tile_size = tile_map.GetSpriteSize() / 2;
-        selected_tile_sprite.setPosition(
-            (current_mouse_grid_position.x * tile_map.GetSpriteSize()) + half_tile_size,
-            (current_mouse_grid_position.y * tile_map.GetSpriteSize()) + half_tile_size
-        );
-        selected_tile_sprite.setColor(sf::Color(255, 255, 255, 170));
-        selected_tile_sprite.setOrigin(tile_map.GetSize() / 2, tile_map.GetSize() / 2);
-        selected_tile_sprite.rotate(current_rotation);
+    auto left_toolbar_width = offset * 2 + tile_map.GetSpriteSize();
+    auto total_height = (state.editor_state.tile_palette_tiles.size() * (tile_map.GetSpriteSize() + offset)) + offset;
 
-        house_render_texture.draw(selected_tile_sprite);
-        house_render_texture.display();
+    reducer.SetTilePaletteBounds(left_toolbar_width, window_height, total_height);
+    state.editor_state.tile_palette_background = sf::RectangleShape(
+        sf::Vector2f(left_toolbar_width, total_height)
+    );
+    state.editor_state.tile_palette_background.setFillColor(sf::Color(60,60,60, 255));
+
+    state.editor_state.tile_palette_view = sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
+
+    reducer.InitSelectionRectangle(tile_map.GetSpriteSize());
+
+    std::vector<AnimationFrame> idle_frames;
+    for (auto col = 0; col < 10; col++) {
+        idle_frames.push_back(AnimationFrame{col, 0});
     }
 
+    player_animations->insert(
+        {EntityState::Idle, Animation(player_sprite_sheet, idle_frames, 32, 32, 8)}
+    );
 
-    sf::Sprite house_render_sprite(house_render_texture.getTexture());
-    target.draw(house_render_sprite);
-
-    if (editor_enabled) {
-        //Draw Tile Palette
-        tile_palette_view.Draw(target);
+    std::vector<AnimationFrame> throw_frames;
+    for (auto col = 0; col < 10; col++) {
+        throw_frames.push_back(AnimationFrame{col, 1});
     }
 
+    player_animations->insert(
+        {EntityState::Throwing, Animation(player_sprite_sheet, throw_frames, 32, 32, 8) }
+    );
+
+    std::vector<AnimationFrame> walk_frames;
+    for (auto col = 0; col < 10; col++) {
+        walk_frames.push_back(AnimationFrame{col, 2});
+    }
+
+    player_animations->insert(
+        {EntityState::Walking, Animation(player_sprite_sheet, walk_frames, 32, 32, 8) }
+    );
+
+    std::vector<AnimationFrame> attack_frames;
+    for (auto col = 0; col < 10; col++) {
+        attack_frames.push_back(AnimationFrame{col, 3});
+    }
+
+    player_animations->insert(
+        {EntityState::Attacking, Animation(player_sprite_sheet, attack_frames, 32, 32, 8) }
+    );
+
+    std::vector<AnimationFrame> die_frames;
+    for (auto col = 0; col < 10; col++) {
+        die_frames.push_back(AnimationFrame{col, 4});
+    }
+
+    player_animations->insert(
+        {EntityState::Dying, Animation(player_sprite_sheet, die_frames, 32, 32, 8) }
+    );
+
+    // Here now we know we have a valid state we execute an action to load the map. Note here that
+    // if we ever intend to dispatch these actions more than once they should be added to a controller
+    reducer.AddEntity(
+        Entity(
+            EntityType::PlayerEntity, 
+            500.f, 
+            .01f, 
+            0, 
+            0, 
+            player_animations
+        )
+    );
+
+    controllers.push_back(std::unique_ptr<EditorController>{ new EditorController(
+        entity_map.GetSpriteSize(),  
+        tile_palette_view_layer.GetRenderTexture(),
+        house_map_view_layer.GetRenderTexture(),
+        map
+    )});
+ 
+    controllers.push_back(std::make_unique<PlayerController>());
+
+    tile_palette_view_layer.AddView(
+        std::unique_ptr<TilePaletteView>{new TilePaletteView(
+            tile_map, 
+            entity_map, 
+            window_height,
+            left_toolbar_width
+        )}
+    );
+
+    house_map_view_layer.AddView(
+        std::unique_ptr<GridView>{new GridView(tile_map.GetSpriteSize())}
+    );
+
+    house_map_view_layer.AddView(
+        std::unique_ptr<SelectedTileView>{new SelectedTileView(tile_map)}
+    );
+
+    house_map_view_layer.AddView(
+        std::unique_ptr<TileBackgroundView>{new TileBackgroundView(tile_map)}
+    );
+
+    house_map_view_layer.AddView(
+        std::unique_ptr<EntityView>{new EntityView(entity_map, player_animations)}
+    );
 }
+
+void HouseScene::HandleInput(EventWithMouse event) {
+    for(auto& controller : controllers)
+        controller->HandleInput(event, reducer);
+}
+
+void HouseScene::Update() {
+    for(auto& controller : controllers)
+        controller->Update(reducer);
+
+    for(auto& entity : state.entities)
+        entity.Update();
+
+    for(auto& player_animation : *player_animations)
+        player_animation.second.Update();
+}
+
+void HouseScene::Draw(sf::RenderTarget& render_target) {
+    house_map_view_layer.Draw(render_target, state.house_view, state);
+    tile_palette_view_layer.Draw(render_target, state.editor_state.tile_palette_view, state);
+}
+
