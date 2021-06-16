@@ -10,6 +10,7 @@
 #include "HouseSceneReducer.h"
 #include "SelectedTileView.h"
 #include "BoxSelectionView.h"
+#include "GridSelectionView.h"
 
 HouseScene::HouseScene(int window_width, int window_height, int offset, sf::IntRect map_bounds) :
 offset(offset),
@@ -162,6 +163,10 @@ void HouseScene::Init(int window_width, int window_height) {
 
     house_map_view_layer.AddView(
         std::make_unique<BoxSelectionView>()
+    );
+
+    house_map_view_layer.AddView(
+        std::make_unique<GridSelectionView>(tile_map.GetSpriteSize())
     );
 }
 

@@ -201,6 +201,6 @@ void EditorController::HandleInputBoxSelection (
 
     if (event_with_mouse.event.type == sf::Event::MouseButtonReleased &&
         event_with_mouse.event.mouseButton.button == sf::Mouse::Left) {
-        reducer.MouseReleased();
+        reducer.MouseReleased(window_target_coords, tile_map_sprite_size);
     } 
 }

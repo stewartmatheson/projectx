@@ -22,6 +22,7 @@ struct HouseSceneEditorState {
     bool mouse_dragging = false;
     sf::Vector2f mouse_down_at;
     sf::Vector2f current_mouse_position;
+    sf::IntRect map_selection;
 };
 
 struct HouseSceneState {

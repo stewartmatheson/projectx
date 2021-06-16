@@ -32,6 +32,7 @@ add_executable(ProjectX
   headers/ViewLayer.h
   headers/SelectedTileView.h
   headers/BoxSelectionView.h
+  headers/GridSelectionView.h
   src/Animation.cpp
   src/HouseScene.cpp
   src/Map.cpp
@@ -48,6 +49,7 @@ add_executable(ProjectX
   src/ViewLayer.cpp
   src/SelectedTileView.cpp
   src/BoxSelectionView.cpp
+  src/GridSelectionView.cpp
 )
 
 target_include_directories(ProjectX
@@ -57,9 +59,9 @@ target_link_directories(ProjectX
   PRIVATE /usr/lib/debug/usr/lib
 )
 target_link_libraries(ProjectX
-  sfml-graphics
-  sfml-system
-  sfml-window
+  sfml-graphics-d
+  sfml-system-d
+  sfml-window-d
 )
 
 if(DEFINED SFML_PREFIX)

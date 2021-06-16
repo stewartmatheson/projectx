@@ -1,4 +1,5 @@
 #include "HouseSceneReducer.h"
+#include <math.h>
 
 HouseSceneReducer::HouseSceneReducer(HouseSceneState& state) : state(state) {}
 
@@ -131,10 +132,25 @@ void HouseSceneReducer::MousePressedAt() {
     state.editor_state.mouse_down = true; 
 }
 
-void HouseSceneReducer::MouseReleased() {
+void HouseSceneReducer::MouseReleased(sf::Vector2f release_mouse_position, int sprite_size) {
+    if (state.editor_state.mouse_dragging) {
+        auto delta = sf::Vector2f(
+            (state.editor_state.mouse_down_at.x - release_mouse_position.x) * -1,
+            (state.editor_state.mouse_down_at.y - release_mouse_position.y) * -1
+        );
+
+        state.editor_state.map_selection = sf::IntRect(
+            round(state.editor_state.mouse_down_at.x / sprite_size),
+            round(state.editor_state.mouse_down_at.y / sprite_size),
+            round(delta.x / sprite_size),
+            round(delta.y / sprite_size)
+        );
+    }
+
     state.editor_state.mouse_down = false; 
     state.editor_state.mouse_dragging = false;
 }
+
 
 void HouseSceneReducer::UpdateMousePosition(sf::Vector2f current_mouse_position) {
     if (state.editor_state.mouse_down) {

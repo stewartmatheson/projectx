@@ -30,6 +30,6 @@ public:
     void SetEntityTransform(sf::Vector2f);
     void SetEntityVelocity(sf::Vector2f);
     void MousePressedAt();
-    void MouseReleased();
+    void MouseReleased(sf::Vector2f, int);
     void UpdateMousePosition(sf::Vector2f);
 };
