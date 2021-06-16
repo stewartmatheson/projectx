@@ -125,43 +125,43 @@ void HouseScene::Init(int window_width, int window_height) {
         )
     );
 
-    controllers.push_back(std::unique_ptr<EditorController>{ new EditorController(
+    controllers.push_back(std::make_unique<EditorController>(
         entity_map.GetSpriteSize(),  
         tile_palette_view_layer.GetRenderTexture(),
         house_map_view_layer.GetRenderTexture(),
         map
-    )});
+    ));
  
     controllers.push_back(std::make_unique<PlayerController>());
 
     tile_palette_view_layer.AddView(
-        std::unique_ptr<TilePaletteView>{new TilePaletteView(
+        std::make_unique<TilePaletteView>(
             tile_map, 
             entity_map, 
             window_height,
             left_toolbar_width
-        )}
+        )
     );
 
     house_map_view_layer.AddView(
-        std::unique_ptr<SelectedTileView>{new SelectedTileView(tile_map)}
+        std::make_unique<SelectedTileView>(tile_map)
     );
 
 
     house_map_view_layer.AddView(
-        std::unique_ptr<TileBackgroundView>{new TileBackgroundView(tile_map)}
+        std::make_unique<TileBackgroundView>(tile_map)
     );
 
     house_map_view_layer.AddView(
-        std::unique_ptr<GridView>{new GridView(tile_map.GetSpriteSize())}
+        std::make_unique<GridView>(tile_map.GetSpriteSize())
     );
 
     house_map_view_layer.AddView(
-        std::unique_ptr<EntityView>{new EntityView(entity_map, player_animations)}
+        std::make_unique<EntityView>(entity_map, player_animations)
     );
 
     house_map_view_layer.AddView(
-        std::unique_ptr<BoxSelectionView>{new BoxSelectionView()}
+        std::make_unique<BoxSelectionView>()
     );
 }
 
