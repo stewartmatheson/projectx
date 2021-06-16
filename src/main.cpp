@@ -8,8 +8,8 @@ int main(int argc, char** argv) {
     window.setFramerateLimit(60);
 
     std::unique_ptr<HouseScene> current_scene = argc == 2 
-        ? std::make_unique<HouseScene>(window_width, window_height, 20, argv[1])
-        : std::make_unique<HouseScene>(window_width, window_height, 20, sf::IntRect(0, 0, 20, 20));
+        ? std::make_unique<HouseScene>(window_width, window_height, 20, 60, argv[1])
+        : std::make_unique<HouseScene>(window_width, window_height, 20, 60, sf::IntRect(0, 0, 20, 20));
     
     while(window.isOpen()) {
         sf::Event event;

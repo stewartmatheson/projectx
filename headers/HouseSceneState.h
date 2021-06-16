@@ -16,6 +16,7 @@ struct HouseSceneEditorState {
     sf::RectangleShape tile_palette_background;
     sf::RectangleShape tile_palette_selection_rectangle;
     sf::View tile_palette_view;
+    sf::View toolbar_view;
     std::vector<TilePaletteTile> tile_palette_tiles;
     sf::Vector2i selected_editor_square;
     bool mouse_down = false;
