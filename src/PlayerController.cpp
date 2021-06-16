@@ -2,7 +2,7 @@
 
 PlayerController::PlayerController() {}
 
-void PlayerController::HandleInput (EventWithMouse event_with_mouse, HouseSceneReducer &state) {
+void PlayerController::HandleInput (const EventWithMouse &event_with_mouse, HouseSceneReducer &state) {
 
     if (event_with_mouse.event.type == sf::Event::KeyPressed && event_with_mouse.event.key.code == sf::Keyboard::Left) {
         current_input = sf::Vector2f(-1, 0);

@@ -13,11 +13,11 @@ class EditorController : public Controller<HouseSceneReducer> {
     sf::Vector2i last_mouse_position;
     Map& map;
 
-    void HandleInputBoxSelection(EventWithMouse, HouseSceneReducer&);
+    void HandleInputBoxSelection(const EventWithMouse &, HouseSceneReducer&);
 public:
     EditorController(int, sf::RenderTexture&, sf::RenderTexture&, Map&);
     void Update(HouseSceneReducer&);
-    void HandleInput(EventWithMouse, HouseSceneReducer&);
+    void HandleInput(const EventWithMouse &, HouseSceneReducer&);
 };
 
 

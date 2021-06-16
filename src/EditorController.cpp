@@ -26,7 +26,7 @@ void EditorController::Update (HouseSceneReducer& reducer) {
 
 }
 
-void EditorController::HandleInput (const EventWithMouse event_with_mouse, HouseSceneReducer& reducer) {
+void EditorController::HandleInput (const EventWithMouse &event_with_mouse, HouseSceneReducer& reducer) {
    
     if (event_with_mouse.event.type == sf::Event::KeyPressed && 
         event_with_mouse.event.key.code == sf::Keyboard::E) {
@@ -182,7 +182,7 @@ void EditorController::HandleInput (const EventWithMouse event_with_mouse, House
 }
 
 void EditorController::HandleInputBoxSelection (
-    EventWithMouse event_with_mouse, 
+    const EventWithMouse &event_with_mouse, 
     HouseSceneReducer& reducer
 ) {
         

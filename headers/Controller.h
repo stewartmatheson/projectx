@@ -8,6 +8,6 @@ class Controller {
 public:
     virtual ~Controller() = default;
     virtual void Update(T&) = 0;
-    virtual void HandleInput(const EventWithMouse, T&) = 0;
+    virtual void HandleInput(const EventWithMouse &, T&) = 0;
 };
 
