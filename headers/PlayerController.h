@@ -10,7 +10,7 @@ class PlayerController : public Controller<HouseSceneReducer> {
 public:
     PlayerController();
     void Update(HouseSceneReducer&);
-    void HandleInput(EventWithMouse, HouseSceneReducer&);
+    void HandleInput(const EventWithMouse &, HouseSceneReducer&);
     void Reset();
 };
 
