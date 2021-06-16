@@ -65,9 +65,9 @@ void EditorController::HandleInput (const EventWithMouse &event_with_mouse, Hous
     }
 
     if (event_with_mouse.event.type == sf::Event::MouseWheelMoved && 
-        event_with_mouse.event.mouseButton.x < reducer.GetState().editor_state.tile_palette_bounds.getSize().x
+        event_with_mouse.event.mouseButton.x < reducer.GetState().editor_state.tile_palette_bounds.width
     ) {
-        int upper_scroll_center = reducer.GetState().editor_state.tile_palette_bounds.getSize().y / 2;
+        int upper_scroll_center = reducer.GetState().editor_state.tile_palette_bounds.height / 2;
 
         int lower_scroll_center = 
             reducer.GetState().editor_state.tile_palette_background_total_height - 
