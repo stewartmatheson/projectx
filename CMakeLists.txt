@@ -60,10 +60,13 @@ target_include_directories(ProjectX
 target_link_directories(ProjectX
   PRIVATE /usr/lib/debug/usr/lib
 )
+if(NOT DEFINED SFML_LIBRARY_SUFFIX)
+  set(SFML_LIBRARY_SUFFIX -d)
+endif()
 target_link_libraries(ProjectX
-  sfml-graphics-d
-  sfml-system-d
-  sfml-window-d
+  sfml-graphics${SFML_LIBRARY_SUFFIX}
+  sfml-system${SFML_LIBRARY_SUFFIX}
+  sfml-window${SFML_LIBRARY_SUFFIX}
 )
 
 if(DEFINED SFML_PREFIX)
