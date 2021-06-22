@@ -19,9 +19,9 @@ entity_map(4, 16),
 player_sprite_sheet("./assets/NightThief.png", 4, 320, 1, 1),
 tile_palette_offset(tile_palette_offset),
 toolbar_offset(toolbar_offset),
-house_map_view_layer(window_height, window_width),
-tile_palette_view_layer(window_height, tile_palette_offset * 2 + tile_map.GetSpriteSize()),
-toolbar_view_layer(60, window_width),
+house_map_view_layer(window_width, window_height),
+tile_palette_view_layer(tile_palette_offset * 2 + tile_map.GetSpriteSize(), window_height),
+toolbar_view_layer(window_width, 60),
 reducer(state),
 map(reducer) {
     Init(window_width, window_height);
@@ -34,9 +34,9 @@ entity_map(4, 16),
 player_sprite_sheet("./assets/NightThief.png", 4, 320, 1, 1),
 tile_palette_offset(tile_palette_offset),
 toolbar_offset(toolbar_offset),
-house_map_view_layer(window_height, window_width),
-tile_palette_view_layer(window_height, tile_palette_offset * 2 + tile_map.GetSpriteSize()),
-toolbar_view_layer(60, window_width),
+house_map_view_layer(window_width, window_height),
+tile_palette_view_layer(tile_palette_offset * 2 + tile_map.GetSpriteSize(), window_height),
+toolbar_view_layer(window_width, 60),
 reducer(state),
 map(reducer, map_file_name) {
     Init(window_width, window_height);
@@ -71,6 +71,7 @@ void HouseScene::Init(int window_width, int window_height) {
     state.editor_state.tile_palette_background.setFillColor(sf::Color(60,60,60, 255));
     state.editor_state.tile_palette_view = sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
     state.editor_state.toolbar_view = sf::View(sf::FloatRect(0, 0, window_width, toolbar_offset));
+    state.house_view = sf::View(sf::FloatRect(0, 0, window_width, window_height));
 
     reducer.InitSelectionRectangle(tile_map.GetSpriteSize());
 

@@ -1,6 +1,6 @@
 #include "ViewLayer.h"
 
-ViewLayer::ViewLayer(int view_height, int view_width) { 
+ViewLayer::ViewLayer(int view_width, int view_height) { 
     render_texture.create(view_width, view_height);
 }
 
