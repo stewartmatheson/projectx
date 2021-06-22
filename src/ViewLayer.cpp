@@ -24,6 +24,6 @@ sf::RenderTexture& ViewLayer::GetRenderTexture() {
     return render_texture;
 }
 
-void ViewLayer::AddView(std::shared_ptr<View<HouseSceneState>> view) {
-    views.push_back(view);
+void ViewLayer::AddView(std::unique_ptr<View<HouseSceneState>> &&view) {
+    views.push_back(std::move(view));
 }
