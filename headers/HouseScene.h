@@ -11,10 +11,11 @@
 
 
 class HouseScene {
+    HouseSceneState state;
     SpriteSheet tile_map;
     SpriteSheet entity_map;
     SpriteSheet player_sprite_sheet;
-    HouseSceneState state;
+    SpriteSheet toolbar_sprite_sheet;
     int tile_palette_offset;
     int toolbar_offset;
     std::vector<std::unique_ptr<Controller<HouseSceneReducer>>> controllers;
@@ -26,6 +27,9 @@ class HouseScene {
     void Init(int, int);
     void InitAnimations();
     void InitHouseMapView();
+    void InitToolbarMap();
+    void InitTools();
+    void InitEntityMap();
     Map map;
 
 public:

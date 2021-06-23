@@ -4,6 +4,15 @@
 #include "TilePaletteTile.h"
 #include "TileLayer.h"
 
+enum class ToolType {
+    Room
+};
+
+struct Tool {
+    ToolType type;
+    int sprite_map_index;
+};
+
 struct HouseSceneEditorState {
     bool editor_enabled = false;
     bool panning = false;
@@ -24,6 +33,10 @@ struct HouseSceneEditorState {
     sf::Vector2f mouse_down_at;
     sf::Vector2f current_mouse_position;
     sf::IntRect map_selection;
+    std::vector<Tool> tools;
+    int toolbar_icon_size = 15;
+    int toolbar_icon_padding = 10;
+    int left_toolbar_width;
 };
 
 struct HouseSceneState {
@@ -32,4 +45,7 @@ struct HouseSceneState {
     sf::IntRect map_bounds;
     sf::View house_view;
     HouseSceneEditorState editor_state;
+    int window_width;
+    int window_height;
+    int scale = 4;
 };

@@ -175,3 +175,16 @@ void HouseSceneReducer::UpdateMousePosition(sf::Vector2f current_mouse_position)
     state.editor_state.current_mouse_position = current_mouse_position;
 
 }
+
+void HouseSceneReducer::AddTool(Tool tool) {
+    state.editor_state.tools.push_back(tool);
+}
+
+void HouseSceneReducer::SetWindowSize(int width, int height) {
+    state.window_width = width;
+    state.window_height = height;
+}
+
+void HouseSceneReducer::SetLeftToolbarWidth(int new_width) {
+    state.editor_state.left_toolbar_width = new_width;
+}

@@ -12,16 +12,18 @@
 #include "BoxSelectionView.h"
 #include "GridSelectionView.h"
 #include "ToolbarToolsView.h"
+#include "ToolbarController.h"
 
 HouseScene::HouseScene(int window_width, int window_height, int tile_palette_offset, int toolbar_offset, sf::IntRect map_bounds) :
-tile_map("./assets/house.png", 4, 16, 5, 7),
-entity_map(4, 16),
-player_sprite_sheet("./assets/NightThief.png", 4, 320, 1, 1),
+tile_map("./assets/house.png", state.scale, 16, 5, 7),
+entity_map(state.scale, 16),
+player_sprite_sheet("./assets/NightThief.png", state.scale, 320, 1, 1),
+toolbar_sprite_sheet(state.scale, 8),
 tile_palette_offset(tile_palette_offset),
 toolbar_offset(toolbar_offset),
-house_map_view_layer(window_width, window_height),
-tile_palette_view_layer(tile_palette_offset * 2 + tile_map.GetSpriteSize(), window_height),
-toolbar_view_layer(window_width, 60),
+house_map_view_layer(sf::IntRect(0, 0,window_width, window_height)),
+tile_palette_view_layer(sf::IntRect(0, 0, tile_palette_offset * 2 + tile_map.GetSpriteSize(), window_height)),
+toolbar_view_layer(sf::IntRect(tile_palette_offset * 2 + tile_map.GetSpriteSize(), 0, window_width, 60)),
 reducer(state),
 map(reducer) {
     Init(window_width, window_height);
@@ -29,25 +31,36 @@ map(reducer) {
 }
 
 HouseScene::HouseScene(int window_width, int window_height, int tile_palette_offset, int toolbar_offset, std::string map_file_name) :
-tile_map("./assets/house.png", 4, 16, 5, 7),
-entity_map(4, 16),
-player_sprite_sheet("./assets/NightThief.png", 4, 320, 1, 1),
+tile_map("./assets/house.png", state.scale, 16, 5, 7),
+entity_map(state.scale, 16),
+player_sprite_sheet("./assets/NightThief.png", state.scale, 320, 1, 1),
+toolbar_sprite_sheet(state.scale, state.editor_state.toolbar_icon_size),
 tile_palette_offset(tile_palette_offset),
 toolbar_offset(toolbar_offset),
-house_map_view_layer(window_width, window_height),
-tile_palette_view_layer(tile_palette_offset * 2 + tile_map.GetSpriteSize(), window_height),
-toolbar_view_layer(window_width, 60),
+house_map_view_layer(sf::IntRect(0, 0,window_width, window_height)),
+tile_palette_view_layer(sf::IntRect(0, 0, tile_palette_offset * 2 + tile_map.GetSpriteSize(), window_height)),
+toolbar_view_layer(sf::IntRect(tile_palette_offset * 2 + tile_map.GetSpriteSize(), 0, window_width, 60)),
 reducer(state),
 map(reducer, map_file_name) {
     Init(window_width, window_height);
 }
 
 void HouseScene::Init(int window_width, int window_height) {
+    // TODO : When we have to build a graphics settings page we will need to move this.
+    reducer.SetWindowSize(window_width, window_height);
+
+    // TODO : Not sure we even want this here. We really need to rethink where all this init code will live
+    reducer.SetLeftToolbarWidth(tile_palette_offset * 2 + tile_map.GetSpriteSize());
+
     player_animations = std::make_shared<std::unordered_map<EntityState, Animation>>();
     auto tile_sprites = tile_map.GetSprites();
     std::for_each(tile_sprites.begin(), tile_sprites.end(), [this](const auto &sprite){ 
         reducer.AddTilePaletteTile(TilePaletteTile{sprite, PaletteTile}, tile_map.GetSpriteSize());
     });
+
+    InitEntityMap();
+    InitToolbarMap();
+    InitTools();
 
     auto entity_sprites = entity_map.GetSprites();
     reducer.AddTilePaletteTile(
@@ -60,16 +73,17 @@ void HouseScene::Init(int window_width, int window_height) {
         entity_map.GetSpriteSize()
     );
 
-    auto left_toolbar_width = tile_palette_offset * 2 + tile_map.GetSpriteSize();
     auto total_height = (state.editor_state.tile_palette_tiles.size() * (tile_map.GetSpriteSize() + tile_palette_offset)) + tile_palette_offset;
 
-    reducer.SetTilePaletteBounds(left_toolbar_width, window_height, total_height);
+    reducer.SetTilePaletteBounds(state.editor_state.left_toolbar_width, window_height, total_height);
     state.editor_state.tile_palette_background = sf::RectangleShape(
-        sf::Vector2f(left_toolbar_width, total_height)
+        sf::Vector2f(state.editor_state.left_toolbar_width, total_height)
     );
 
     state.editor_state.tile_palette_background.setFillColor(sf::Color(60,60,60, 255));
-    state.editor_state.tile_palette_view = sf::View(sf::FloatRect(0, 0, left_toolbar_width, window_height));
+    state.editor_state.tile_palette_view = sf::View(
+        sf::FloatRect(0, 0, state.editor_state.left_toolbar_width, window_height)
+    );
     state.editor_state.toolbar_view = sf::View(sf::FloatRect(0, 0, window_width, toolbar_offset));
     state.house_view = sf::View(sf::FloatRect(0, 0, window_width, window_height));
 
@@ -97,28 +111,35 @@ void HouseScene::Init(int window_width, int window_height) {
         map
     ));
  
+    controllers.push_back(std::make_unique<ToolbarController>());
     controllers.push_back(std::make_unique<PlayerController>());
+
 
     tile_palette_view_layer.AddView(
         std::make_unique<TilePaletteView>(
             tile_map, 
             entity_map, 
             window_height,
-            left_toolbar_width
+            state.editor_state.left_toolbar_width
         )
     );
 
-    toolbar_view_layer.AddView(
-        std::make_unique<ToolbarToolsView>(
-            tile_palette_offset, 
-            window_width, 
-            toolbar_offset
-        )
-    );
+    toolbar_view_layer.AddView(std::make_unique<ToolbarToolsView>(toolbar_sprite_sheet));
     
-
     InitHouseMapView();
-    
+}
+
+void HouseScene::InitTools() {
+    reducer.AddTool(Tool{ToolType::Room, 0});
+}
+
+void HouseScene::InitEntityMap() {
+    entity_map.CreateIconSprite(sf::Color::Red, 0);
+    entity_map.CreateIconSprite(sf::Color::Green, 1);
+}
+
+void HouseScene::InitToolbarMap() {
+    toolbar_sprite_sheet.CreateIconSprite(sf::Color::Blue, 0);
 }
 
 void HouseScene::InitAnimations() {

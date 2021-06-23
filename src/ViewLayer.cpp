@@ -1,7 +1,7 @@
 #include "ViewLayer.h"
 
-ViewLayer::ViewLayer(int view_width, int view_height) { 
-    render_texture.create(view_width, view_height);
+ViewLayer::ViewLayer(sf::IntRect view_size) : view_size(view_size) { 
+    render_texture.create(view_size.width, view_size.height);
 }
 
 void ViewLayer::Draw(
@@ -17,6 +17,7 @@ void ViewLayer::Draw(
     
     render_texture.display();
     sf::Sprite texture_sprite(render_texture.getTexture());
+    texture_sprite.setPosition(view_size.left, view_size.top);
     render_target.draw(texture_sprite);
 }
 

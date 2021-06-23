@@ -5,10 +5,9 @@
 #include "HouseSceneState.h"
 
 class ToolbarToolsView : public View<HouseSceneState> {
-    int tile_palette_offset;
     int window_width;
-    int toolbar_offset;
+    const SpriteSheet& tool_map;
 public:
-    ToolbarToolsView(int, int, int);
+    ToolbarToolsView(SpriteSheet&);
     void Draw(sf::RenderTarget&, const HouseSceneState&) const;
 };

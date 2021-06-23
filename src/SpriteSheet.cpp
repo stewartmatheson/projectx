@@ -17,15 +17,11 @@ SpriteSheet::SpriteSheet (std::string texture_path, int scale, int size, int col
 
 // For now we will assume that this is a entity sprite sheet drawn with code
 SpriteSheet::SpriteSheet (int scale, int size) : sprites(), scale(scale), size(size), texture() {
+    // TODO : This will never allow us to create more than two sprites
     icon_sprite_render_texture.create(size * 2, size);
-    auto door_palette_sprite_icon = CreateIconSprite(sf::Color::Red, 0);
-    sprites.push_back(door_palette_sprite_icon);
-
-    auto ghost_palette_sprite_icon = CreateIconSprite(sf::Color::Green, 1);
-    sprites.push_back(ghost_palette_sprite_icon);
 };
 
-sf::Sprite SpriteSheet::CreateIconSprite(sf::Color color, int render_offset) {
+void SpriteSheet::CreateIconSprite(sf::Color color, int render_offset) {
     auto icon_rect = sf::RectangleShape(sf::Vector2f(size, size));
     icon_rect.setFillColor(color);
     icon_rect.setPosition(size * render_offset, 0);
@@ -37,7 +33,7 @@ sf::Sprite SpriteSheet::CreateIconSprite(sf::Color color, int render_offset) {
         sf::IntRect(size * render_offset, 0, size, size)
     );
 	sprite.setScale(scale, scale);
-    return sprite;
+    sprites.push_back(sprite);
 }
 
 sf::Sprite SpriteSheet::CreateTileSprite(int tile_map_x, int tile_map_y, int scale, int size) {

@@ -1,11 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include "ToolbarToolsView.h"
 
-ToolbarToolsView::ToolbarToolsView(int tile_palette_offset, int window_width, int toolbar_offset) : 
-tile_palette_offset(tile_palette_offset), 
-window_width(window_width), 
-toolbar_offset(toolbar_offset) {}
-
+ToolbarToolsView::ToolbarToolsView(
+    SpriteSheet& tool_map
+) : tool_map(tool_map) {}
 
 void ToolbarToolsView::Draw(sf::RenderTarget& render_target, const HouseSceneState& state) const {
     if(!state.editor_state.editor_enabled) {
@@ -13,8 +11,24 @@ void ToolbarToolsView::Draw(sf::RenderTarget& render_target, const HouseSceneSta
     }
 
     sf::RectangleShape background;
-    background.setPosition(tile_palette_offset, 0);
-    background.setSize(sf::Vector2f(window_width, toolbar_offset));
+    background.setPosition(0, 0);
+    background.setSize(
+        sf::Vector2f(
+            state.window_width, 
+            (state.editor_state.toolbar_icon_padding * 2) + tool_map.GetSpriteSize()
+        )
+    );
     background.setFillColor(sf::Color(60,60,60, 255));
     render_target.draw(background);
+
+    int current_tool_count = 0;
+    for(auto& tool : state.editor_state.tools) {
+        sf::Sprite sprite_to_draw(tool_map.GetSprites()[tool.sprite_map_index]);
+        sprite_to_draw.setPosition(
+            state.editor_state.toolbar_icon_padding + (current_tool_count), 
+            state.editor_state.toolbar_icon_padding
+        );
+        render_target.draw(sprite_to_draw);
+        current_tool_count++;
+    }
 }

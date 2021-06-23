@@ -32,4 +32,7 @@ public:
     void MousePressedAt();
     void MouseReleased(sf::Vector2f, int);
     void UpdateMousePosition(sf::Vector2f);
+    void AddTool(Tool);
+    void SetWindowSize(int, int);
+    void SetLeftToolbarWidth(int);
 };
