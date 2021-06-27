@@ -1,23 +1,13 @@
 #pragma once
 
+#include "Animation.h"
+#include <SFML/Graphics.hpp>
 #include <memory>
 #include <unordered_map>
-#include <SFML/Graphics.hpp>
-#include "Animation.h"
 
-enum class EntityType { 
-    GhostEntity = 0, 
-    DoorEntity = 1, 
-    PlayerEntity = 2
-};
+enum class EntityType { GhostEntity = 0, DoorEntity = 1, PlayerEntity = 2 };
 
-enum class EntityState {
-    Idle,
-    Throwing,
-    Walking,
-    Attacking,
-    Dying
-};
+enum class EntityState { Idle, Throwing, Walking, Attacking, Dying };
 
 class Entity {
     float acceleration;
@@ -30,30 +20,21 @@ class Entity {
     EntityState state;
     std::weak_ptr<std::unordered_map<EntityState, Animation>> animations;
 
-public:
-    Entity(
-        EntityType, 
-        float, 
-        float, 
-        float, 
-        float, 
-        std::weak_ptr<std::unordered_map<EntityState, Animation>>
-    );
+  public:
+    Entity(EntityType, float, float, float, float,
+           std::weak_ptr<std::unordered_map<EntityState, Animation>>);
     void Update();
 
-    const sf::Vector2f& GetTransform() const; 
-    const sf::Vector2f& GetVelocity() const; 
-    const float GetAcceleration() const; 
-    const int GetTileMapIndex() const; 
-    const int GetRotation() const; 
-    const EntityType GetEntityType () const; 
-    const EntityState GetEntityState () const; 
-    const bool GetFacingLeft () const; 
-    const float GetSpeed () const; 
+    const sf::Vector2f &GetTransform() const;
+    const sf::Vector2f &GetVelocity() const;
+    const float GetAcceleration() const;
+    const int GetTileMapIndex() const;
+    const int GetRotation() const;
+    const EntityType GetEntityType() const;
+    const EntityState GetEntityState() const;
+    const bool GetFacingLeft() const;
+    const float GetSpeed() const;
 
-    void SetVelocity (sf::Vector2f);
-    void SetTransform (sf::Vector2f);
+    void SetVelocity(sf::Vector2f);
+    void SetTransform(sf::Vector2f);
 };
-
-
-
