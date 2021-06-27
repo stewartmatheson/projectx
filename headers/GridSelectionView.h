@@ -1,11 +1,12 @@
 #pragma once
 
-#include "View.h"
 #include "HouseSceneState.h"
+#include "View.h"
 
 class GridSelectionView : public View<HouseSceneState> {
     int sprite_size;
-public:
+
+  public:
     GridSelectionView(int sprite_size);
-    void Draw(sf::RenderTarget&, const HouseSceneState&) const;
+    void Draw(sf::RenderTarget &, const HouseSceneState &) const;
 };

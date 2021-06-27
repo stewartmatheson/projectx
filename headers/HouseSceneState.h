@@ -1,12 +1,10 @@
 #pragma once
 
 #include "Entity.h"
-#include "TilePaletteTile.h"
 #include "TileLayer.h"
+#include "TilePaletteTile.h"
 
-enum class ToolType {
-    Room
-};
+enum class ToolType { Room };
 
 struct Tool {
     ToolType type;

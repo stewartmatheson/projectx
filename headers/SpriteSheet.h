@@ -5,19 +5,19 @@
 
 class SpriteSheet {
     sf::Sprite CreateTileSprite(int, int, int, int);
-	std::vector<sf::Sprite> sprites;
-	int scale;
-	int size;
-	sf::Texture texture;
+    std::vector<sf::Sprite> sprites;
+    int scale;
+    int size;
+    sf::Texture texture;
     sf::RenderTexture icon_sprite_render_texture;
-public:
+
+  public:
     void CreateIconSprite(sf::Color, int);
-	SpriteSheet(std::string, int, int, int, int);
-	SpriteSheet(int, int);
-	const int GetSpriteSize() const;
-    const std::vector<sf::Sprite>& GetSprites() const;
-    const sf::Texture& GetTexture() const;
+    SpriteSheet(std::string, int, int, int, int);
+    SpriteSheet(int, int);
+    const int GetSpriteSize() const;
+    const std::vector<sf::Sprite> &GetSprites() const;
+    const sf::Texture &GetTexture() const;
     const int GetScale() const;
     const int GetSize() const;
 };
-

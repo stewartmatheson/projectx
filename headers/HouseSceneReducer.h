@@ -4,10 +4,11 @@
 #include "HouseSceneState.h"
 
 class HouseSceneReducer {
-    HouseSceneState& state;
-public:
-    HouseSceneReducer(HouseSceneState&);
-    const HouseSceneState& GetState();
+    HouseSceneState &state;
+
+  public:
+    HouseSceneReducer(HouseSceneState &);
+    const HouseSceneState &GetState();
     void ToggleEditorEnabled();
     void ResetPlayer();
     void UpdateSelectedTileIndex(int);

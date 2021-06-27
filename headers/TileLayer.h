@@ -13,4 +13,3 @@ struct TileLayer {
     int layer_index;
     std::vector<MapTile> tiles;
 };
-

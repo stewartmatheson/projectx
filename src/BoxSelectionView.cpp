@@ -1,18 +1,21 @@
-#include <SFML/Graphics.hpp>
 #include "BoxSelectionView.h"
+#include <SFML/Graphics.hpp>
 
-void BoxSelectionView::Draw(sf::RenderTarget &render_target, const HouseSceneState & state) const {
+void BoxSelectionView::Draw(sf::RenderTarget &render_target,
+                            const HouseSceneState &state) const {
     if (!state.editor_state.mouse_dragging) {
         return;
     }
 
-    auto delta = sf::Vector2f(
-        (state.editor_state.mouse_down_at.x - state.editor_state.current_mouse_position.x) * -1,
-        (state.editor_state.mouse_down_at.y - state.editor_state.current_mouse_position.y) * -1
-    );
+    auto delta = sf::Vector2f((state.editor_state.mouse_down_at.x -
+                               state.editor_state.current_mouse_position.x) *
+                                  -1,
+                              (state.editor_state.mouse_down_at.y -
+                               state.editor_state.current_mouse_position.y) *
+                                  -1);
 
     sf::RectangleShape rect;
-    rect.setFillColor(sf::Color(0,0,0,0));
+    rect.setFillColor(sf::Color(0, 0, 0, 0));
     rect.setOutlineColor(sf::Color::Green);
     rect.setOutlineThickness(1);
     rect.setSize(delta);

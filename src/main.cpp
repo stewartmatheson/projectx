@@ -1,22 +1,27 @@
-#include <SFML/Graphics.hpp>
 #include "HouseScene.h"
+#include <SFML/Graphics.hpp>
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
     int window_width = 1920;
     int window_height = 1080;
-    sf::RenderWindow window(sf::VideoMode(window_width, window_height), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(window_width, window_height),
+                            "SFML works!");
     window.setFramerateLimit(60);
 
-    std::unique_ptr<HouseScene> current_scene = argc == 2 
-        ? std::make_unique<HouseScene>(window_width, window_height, 20, 60, argv[1])
-        : std::make_unique<HouseScene>(window_width, window_height, 20, 60, sf::IntRect(0, 0, 20, 20));
-    
-    while(window.isOpen()) {
+    std::unique_ptr<HouseScene> current_scene =
+        argc == 2
+            ? std::make_unique<HouseScene>(window_width, window_height, 20, 60,
+                                           argv[1])
+            : std::make_unique<HouseScene>(window_width, window_height, 20, 60,
+                                           sf::IntRect(0, 0, 20, 20));
+
+    while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
 
-            if(event.type == sf::Event::Resized) {
-                sf::FloatRect visibleArea(0, 0, event.size.width, event.size.height);
+            if (event.type == sf::Event::Resized) {
+                sf::FloatRect visibleArea(0, 0, event.size.width,
+                                          event.size.height);
                 window.setView(sf::View(visibleArea));
             }
 
@@ -30,7 +35,8 @@ int main(int argc, char** argv) {
                 }
             }
 
-            current_scene->HandleInput(EventWithMouse{ event, sf::Mouse::getPosition(window) });
+            current_scene->HandleInput(
+                EventWithMouse{event, sf::Mouse::getPosition(window)});
         }
         current_scene->Update();
         window.clear();
@@ -40,4 +46,3 @@ int main(int argc, char** argv) {
 
     return 0;
 }
-
