@@ -1,9 +1,9 @@
 #include "HouseSceneReducer.h"
 #include <math.h>
 
-HouseSceneReducer::HouseSceneReducer(HouseSceneState& state) : state(state) {}
+HouseSceneReducer::HouseSceneReducer(HouseSceneState &state) : state(state) {}
 
-const HouseSceneState& HouseSceneReducer::GetState()  { return state; }
+const HouseSceneState &HouseSceneReducer::GetState() { return state; }
 
 void HouseSceneReducer::MoveTilePaletteView(int x, int y) {
     state.editor_state.tile_palette_view.move(x, y);
@@ -18,12 +18,8 @@ void HouseSceneReducer::AddTileLayer(TileLayer tile_layer) {
 }
 
 void HouseSceneReducer::AddTile(int x, int y) {
-    auto tile = MapTile { 
-        x,
-        y,
-        state.editor_state.selected_tile_rotation,
-        state.editor_state.selected_tile_index
-    };
+    auto tile = MapTile{x, y, state.editor_state.selected_tile_rotation,
+                        state.editor_state.selected_tile_index};
 
     if (state.tile_layers.size() == 0) {
         state.tile_layers.push_back(TileLayer{0, std::vector<MapTile>()});
@@ -33,19 +29,14 @@ void HouseSceneReducer::AddTile(int x, int y) {
 }
 
 void HouseSceneReducer::AddEntity(int x, int y) {
-    auto entity_type = state
-        .editor_state
-        .tile_palette_tiles[state.editor_state.selected_tile_index]
-        .entity_type;
-    
-    auto entity = Entity(
-        entity_type, 
-        0, 
-        0, 
-        x, 
-        y,
-        std::weak_ptr<std::unordered_map<EntityState, Animation>>()
-    );
+    auto entity_type =
+        state.editor_state
+            .tile_palette_tiles[state.editor_state.selected_tile_index]
+            .entity_type;
+
+    auto entity =
+        Entity(entity_type, 0, 0, x, y,
+               std::weak_ptr<std::unordered_map<EntityState, Animation>>());
     state.entities.push_back(entity);
 }
 
@@ -54,15 +45,15 @@ void HouseSceneReducer::AddEntity(Entity entity) {
 }
 
 void HouseSceneReducer::SetPanning(bool new_panning_value) {
-    state.editor_state.panning = new_panning_value; 
+    state.editor_state.panning = new_panning_value;
 }
 
 void HouseSceneReducer::SetRotation(int new_selected_rotation) {
-    state.editor_state.selected_tile_rotation = new_selected_rotation; 
+    state.editor_state.selected_tile_rotation = new_selected_rotation;
 }
 
 void HouseSceneReducer::UpdateSelectedTileIndex(int new_index) {
-    state.editor_state.selected_tile_index = new_index; 
+    state.editor_state.selected_tile_index = new_index;
 }
 
 void HouseSceneReducer::ToggleEditorEnabled() {
@@ -75,20 +66,21 @@ void HouseSceneReducer::SetMapBounds(sf::IntRect new_map_bounds) {
 
 void HouseSceneReducer::ResetPlayer() {
     auto found_player = std::find_if(
-        state.entities.begin(), 
-        state.entities.end(),
-        [](const auto &entity) { return entity.GetEntityType() == EntityType::PlayerEntity; }
-    );
+        state.entities.begin(), state.entities.end(), [](const auto &entity) {
+            return entity.GetEntityType() == EntityType::PlayerEntity;
+        });
 
     if (found_player != state.entities.end()) {
-        found_player->SetVelocity(sf::Vector2f(0,0));
+        found_player->SetVelocity(sf::Vector2f(0, 0));
     }
 }
 
-void HouseSceneReducer::AddTilePaletteTile(TilePaletteTile tile_to_add, int sprite_size) {
+void HouseSceneReducer::AddTilePaletteTile(TilePaletteTile tile_to_add,
+                                           int sprite_size) {
     auto offset = 20;
     auto current_tile_index = state.editor_state.tile_palette_tiles.size();
-    auto y = (current_tile_index * sprite_size) + (offset * current_tile_index) + offset;
+    auto y = (current_tile_index * sprite_size) +
+             (offset * current_tile_index) + offset;
     tile_to_add.icon.setPosition(offset, y);
     state.editor_state.tile_palette_tiles.push_back(tile_to_add);
 }
@@ -99,24 +91,27 @@ void HouseSceneReducer::SetTilePaletteBounds(int x, int y, int total_height) {
 }
 
 void HouseSceneReducer::InitSelectionRectangle(int sprite_size) {
-    state.editor_state.tile_palette_selection_rectangle.setSize(sf::Vector2f(sprite_size, sprite_size));
-    state.editor_state.tile_palette_selection_rectangle.setOutlineColor(sf::Color::Blue);
+    state.editor_state.tile_palette_selection_rectangle.setSize(
+        sf::Vector2f(sprite_size, sprite_size));
+    state.editor_state.tile_palette_selection_rectangle.setOutlineColor(
+        sf::Color::Blue);
     state.editor_state.tile_palette_selection_rectangle.setOutlineThickness(2);
-    state.editor_state.tile_palette_selection_rectangle.setFillColor(sf::Color::Transparent);
+    state.editor_state.tile_palette_selection_rectangle.setFillColor(
+        sf::Color::Transparent);
 }
 
-void HouseSceneReducer::SetSelectionRectanglePosition(sf::Vector2f new_position) {
-    state
-        .editor_state
-        .tile_palette_selection_rectangle
-        .setPosition(new_position);
+void HouseSceneReducer::SetSelectionRectanglePosition(
+    sf::Vector2f new_position) {
+    state.editor_state.tile_palette_selection_rectangle.setPosition(
+        new_position);
 }
 
 void HouseSceneReducer::SetHouseViewCenter(sf::Vector2f new_position) {
     state.house_view.setCenter(new_position);
 }
 
-void HouseSceneReducer::UpdateSelectedEditorSquare(sf::Vector2i updated_mouse_position) {
+void HouseSceneReducer::UpdateSelectedEditorSquare(
+    sf::Vector2i updated_mouse_position) {
     state.editor_state.selected_editor_square = updated_mouse_position;
 }
 
@@ -129,41 +124,41 @@ void HouseSceneReducer::SetEntityVelocity(sf::Vector2f new_velocity) {
 }
 
 void HouseSceneReducer::MousePressedAt() {
-    state.editor_state.mouse_down = true; 
+    state.editor_state.mouse_down = true;
 }
 
-void HouseSceneReducer::MouseReleased(sf::Vector2f release_mouse_position, int sprite_size) {
+void HouseSceneReducer::MouseReleased(sf::Vector2f release_mouse_position,
+                                      int sprite_size) {
     if (state.editor_state.mouse_dragging) {
         auto delta = sf::Vector2f(
-            (state.editor_state.mouse_down_at.x - release_mouse_position.x) * -1,
-            (state.editor_state.mouse_down_at.y - release_mouse_position.y) * -1
-        );
+            (state.editor_state.mouse_down_at.x - release_mouse_position.x) *
+                -1,
+            (state.editor_state.mouse_down_at.y - release_mouse_position.y) *
+                -1);
 
         state.editor_state.map_selection = sf::IntRect(
             round(state.editor_state.mouse_down_at.x / sprite_size),
             round(state.editor_state.mouse_down_at.y / sprite_size),
-            round(delta.x / sprite_size),
-            round(delta.y / sprite_size)
-        );
+            round(delta.x / sprite_size), round(delta.y / sprite_size));
     }
 
-    state.editor_state.mouse_down = false; 
+    state.editor_state.mouse_down = false;
     state.editor_state.mouse_dragging = false;
 }
 
-
-void HouseSceneReducer::UpdateMousePosition(sf::Vector2f current_mouse_position) {
+void HouseSceneReducer::UpdateMousePosition(
+    sf::Vector2f current_mouse_position) {
     if (state.editor_state.mouse_down) {
-        auto delta = sf::Vector2f(
-            (state.editor_state.mouse_down_at.x - state.editor_state.current_mouse_position.x) * -1,
-            (state.editor_state.mouse_down_at.y - state.editor_state.current_mouse_position.y) * -1
-        );
+        auto delta =
+            sf::Vector2f((state.editor_state.mouse_down_at.x -
+                          state.editor_state.current_mouse_position.x) *
+                             -1,
+                         (state.editor_state.mouse_down_at.y -
+                          state.editor_state.current_mouse_position.y) *
+                             -1);
 
-        if (
-            (delta.x < 5 && delta.x > 0) || 
-            (delta.x > -5 && delta.x < 0) || 
-            (delta.y < 5 && delta.y > 0) || 
-            (delta.y > -5 && delta.y < 0)) {
+        if ((delta.x < 5 && delta.x > 0) || (delta.x > -5 && delta.x < 0) ||
+            (delta.y < 5 && delta.y > 0) || (delta.y > -5 && delta.y < 0)) {
             state.editor_state.mouse_dragging = false;
         } else {
             state.editor_state.mouse_dragging = true;
@@ -173,7 +168,6 @@ void HouseSceneReducer::UpdateMousePosition(sf::Vector2f current_mouse_position)
     }
 
     state.editor_state.current_mouse_position = current_mouse_position;
-
 }
 
 void HouseSceneReducer::AddTool(Tool tool) {

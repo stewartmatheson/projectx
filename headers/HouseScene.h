@@ -1,14 +1,13 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-#include "SpriteSheet.h"
 #include "Controller.h"
 #include "EventWithMouse.h"
 #include "HouseSceneReducer.h"
 #include "HouseSceneState.h"
 #include "Map.h"
+#include "SpriteSheet.h"
 #include "ViewLayer.h"
-
+#include <SFML/Graphics.hpp>
 
 class HouseScene {
     HouseSceneState state;
@@ -22,7 +21,8 @@ class HouseScene {
     ViewLayer house_map_view_layer;
     ViewLayer tile_palette_view_layer;
     ViewLayer toolbar_view_layer;
-    std::shared_ptr<std::unordered_map<EntityState, Animation>> player_animations;
+    std::shared_ptr<std::unordered_map<EntityState, Animation>>
+        player_animations;
     HouseSceneReducer reducer;
     void Init(int, int);
     void InitAnimations();
@@ -32,11 +32,10 @@ class HouseScene {
     void InitEntityMap();
     Map map;
 
-public:
+  public:
     HouseScene(int, int, int, int, sf::IntRect);
     HouseScene(int, int, int, int, std::string);
-    void HandleInput(const EventWithMouse&);
+    void HandleInput(const EventWithMouse &);
     void Update();
-    void Draw(sf::RenderTarget& window);
+    void Draw(sf::RenderTarget &window);
 };
-
