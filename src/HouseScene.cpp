@@ -110,15 +110,15 @@ void HouseScene::Init(int window_width, int window_height) {
     // Here now we know we have a valid state we execute an action to load the
     // map. Note here that if we ever intend to dispatch these actions more than
     // once they should be added to a controller
-    reducer.AddEntity(
-        Entity(EntityType::PlayerEntity, 500.f, .01f, 0, 0, player_animations));
+    reducer.AddEntity(Entity(EntityType::PlayerEntity, 500.f, .01f, 0, 0));
 
     controllers.push_back(std::make_unique<EditorController>(
         entity_map.GetSpriteSize(), tile_palette_view_layer.GetRenderTexture(),
         house_map_view_layer.GetRenderTexture(), map));
 
     controllers.push_back(std::make_unique<ToolbarController>());
-    controllers.push_back(std::make_unique<PlayerController>());
+    controllers.push_back(
+        std::make_unique<PlayerController>(player_animations));
 
     tile_palette_view_layer.AddView(std::make_unique<TilePaletteView>(
         tile_map, entity_map, window_height,

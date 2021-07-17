@@ -34,9 +34,7 @@ void HouseSceneReducer::AddEntity(int x, int y) {
             .tile_palette_tiles[state.editor_state.selected_tile_index]
             .entity_type;
 
-    auto entity =
-        Entity(entity_type, 0, 0, x, y,
-               std::weak_ptr<std::unordered_map<EntityState, Animation>>());
+    auto entity = Entity(entity_type, 0, 0, x, y);
     state.entities.push_back(entity);
 }
 
@@ -181,4 +179,15 @@ void HouseSceneReducer::SetWindowSize(int width, int height) {
 
 void HouseSceneReducer::SetLeftToolbarWidth(int new_width) {
     state.editor_state.left_toolbar_width = new_width;
+}
+
+void HouseSceneReducer::SetPlayerState(EntityState new_player_state) {
+    auto found_player = std::find_if(
+        state.entities.begin(), state.entities.end(), [](const auto &entity) {
+            return entity.GetEntityType() == EntityType::PlayerEntity;
+        });
+
+    if (found_player != state.entities.end()) {
+        found_player->SetPlayerState(new_player_state);
+    }
 }

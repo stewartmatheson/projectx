@@ -9,6 +9,7 @@ class HouseSceneReducer {
   public:
     HouseSceneReducer(HouseSceneState &);
     const HouseSceneState &GetState();
+
     void ToggleEditorEnabled();
     void ResetPlayer();
     void UpdateSelectedTileIndex(int);
@@ -36,4 +37,5 @@ class HouseSceneReducer {
     void AddTool(Tool);
     void SetWindowSize(int, int);
     void SetLeftToolbarWidth(int);
+    void SetPlayerState(EntityState);
 };

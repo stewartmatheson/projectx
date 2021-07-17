@@ -1,42 +1,11 @@
 #include "Entity.h"
 
-Entity::Entity(
-    EntityType type, float speed, float acceleration, float x, float y,
-    std::weak_ptr<std::unordered_map<EntityState, Animation>> animations)
+Entity::Entity(EntityType type, float speed, float acceleration, float x,
+               float y)
     : acceleration(acceleration), facing_left(true), speed(speed),
-      transform(sf::Vector2f(x, y)), type(type), state(EntityState::Idle),
-      animations(animations) {}
+      transform(sf::Vector2f(x, y)), type(type), state(EntityState::Idle) {}
 
-void Entity::Update() {
-    if (velocity.x != 0 || velocity.y != 0) {
-        state = EntityState::Walking;
-    } else {
-        state = EntityState::Idle;
-    }
-
-    if (facing_left && velocity.x > 0) {
-        facing_left = false;
-    }
-
-    if (!facing_left && velocity.x < 0) {
-        facing_left = true;
-    }
-
-    // TODO : This most likely won't work as different entities will move the
-    // animations around before they are drawn
-    if (auto shared_animations = animations.lock()) {
-        auto current_animation = shared_animations->find(GetEntityState());
-
-        if (facing_left) {
-            current_animation->second.sprite.setScale(
-                -4, current_animation->second.sprite.getScale().y);
-        } else {
-            current_animation->second.sprite.setScale(
-                4, current_animation->second.sprite.getScale().y);
-        }
-        current_animation->second.sprite.setPosition(GetTransform());
-    }
-}
+void Entity::Update() {}
 
 const sf::Vector2f &Entity::GetTransform() const { return transform; }
 
@@ -57,6 +26,10 @@ void Entity::SetVelocity(sf::Vector2f new_velocity) { velocity = new_velocity; }
 
 void Entity::SetTransform(sf::Vector2f new_transform) {
     transform = new_transform;
+}
+
+void Entity::SetPlayerState(EntityState new_player_state) {
+    state = new_player_state;
 }
 
 const float Entity::GetSpeed() const { return speed; }

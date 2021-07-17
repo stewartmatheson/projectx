@@ -18,11 +18,9 @@ class Entity {
     sf::Vector2f velocity;
     EntityType type;
     EntityState state;
-    std::weak_ptr<std::unordered_map<EntityState, Animation>> animations;
 
   public:
-    Entity(EntityType, float, float, float, float,
-           std::weak_ptr<std::unordered_map<EntityState, Animation>>);
+    Entity(EntityType, float, float, float, float);
     void Update();
 
     const sf::Vector2f &GetTransform() const;
@@ -37,4 +35,5 @@ class Entity {
 
     void SetVelocity(sf::Vector2f);
     void SetTransform(sf::Vector2f);
+    void SetPlayerState(EntityState);
 };

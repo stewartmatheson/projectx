@@ -1,6 +1,8 @@
 #include "PlayerController.h"
 
-PlayerController::PlayerController() {}
+PlayerController::PlayerController(
+    std::weak_ptr<std::unordered_map<EntityState, Animation>> animations)
+    : animations(animations) {}
 
 void PlayerController::HandleInput(const EventWithMouse &event_with_mouse,
                                    HouseSceneReducer &state) {
@@ -56,6 +58,51 @@ void PlayerController::Update(HouseSceneReducer &reducer) {
 
     if (!reducer.GetState().editor_state.editor_enabled) {
         reducer.SetHouseViewCenter(found_player->GetTransform());
+    }
+
+    if (new_velocity.x != 0 || new_velocity.y != 0) {
+        reducer.SetPlayerState(EntityState::Walking);
+    } else {
+        reducer.SetPlayerState(EntityState::Idle);
+    }
+
+    /*
+    if (facing_left && new_velocity.x > 0) {
+        facing_left = false;
+    }
+
+    if (!facing_left && new_velocity.x < 0) {
+        facing_left = true;
+    }
+    */
+
+    // TODO : This most likely won't work as different entities will move the
+    // animations around before they are drawn
+    if (auto shared_animations = animations.lock()) {
+
+        auto state = reducer.GetState();
+        auto found_player = std::find_if(
+            state.entities.begin(), state.entities.end(),
+            [](const auto &entity) {
+                return entity.GetEntityType() == EntityType::PlayerEntity;
+            });
+
+        if (found_player != state.entities.end()) {
+            auto current_animation =
+                shared_animations->find(found_player->GetEntityState());
+            current_animation->second.sprite.setPosition(
+                found_player->GetTransform());
+        }
+
+        /*
+        if (facing_left) {
+            current_animation->second.sprite.setScale(
+                -4, current_animation->second.sprite.getScale().y);
+        } else {
+            current_animation->second.sprite.setScale(
+                4, current_animation->second.sprite.getScale().y);
+        }
+        */
     }
 }
 

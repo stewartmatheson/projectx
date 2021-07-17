@@ -65,10 +65,7 @@ Map::Map(HouseSceneReducer &reducer, std::string file_name) : reducer(reducer) {
         rf.read(reinterpret_cast<char *>(&y), sizeof(y));
 
         std::unordered_map<EntityState, Animation> animations = {};
-
-        reducer.AddEntity(Entity(
-            type, 0, 0, x, y,
-            std::weak_ptr<std::unordered_map<EntityState, Animation>>()));
+        reducer.AddEntity(Entity(type, 0, 0, x, y));
     }
 }
 
