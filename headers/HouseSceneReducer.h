@@ -38,4 +38,5 @@ class HouseSceneReducer {
     void SetWindowSize(int, int);
     void SetLeftToolbarWidth(int);
     void SetPlayerState(EntityState);
+    void SetPlayerDirection(sf::Vector2f);
 };

@@ -14,8 +14,7 @@ struct Entity {
     float speed;
     float acceleration;
     sf::Vector2f transform;
-    sf::Vector2f direction;
-    bool facing_left;
+    sf::Vector2f direction = sf::Vector2f(1, 1);
     sf::Vector2f velocity;
     EntityState state;
     int rotation;

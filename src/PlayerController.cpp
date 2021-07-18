@@ -66,15 +66,7 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
         reducer.SetPlayerState(EntityState::Idle);
     }
 
-    /*
-    if (facing_left && new_velocity.x > 0) {
-        facing_left = false;
-    }
-
-    if (!facing_left && new_velocity.x < 0) {
-        facing_left = true;
-    }
-    */
+    reducer.SetPlayerDirection(current_input);
 
     // TODO : This most likely won't work as different entities will move the
     // animations around before they are drawn
@@ -92,17 +84,11 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
                 shared_animations->find(found_player->state);
             current_animation->second.sprite.setPosition(
                 found_player->transform);
-        }
 
-        /*
-        if (facing_left) {
             current_animation->second.sprite.setScale(
-                -4, current_animation->second.sprite.getScale().y);
-        } else {
-            current_animation->second.sprite.setScale(
-                4, current_animation->second.sprite.getScale().y);
+                4 * found_player->direction.x,
+                current_animation->second.sprite.getScale().y);
         }
-        */
     }
 }
 

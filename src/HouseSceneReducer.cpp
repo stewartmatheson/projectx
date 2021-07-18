@@ -191,3 +191,16 @@ void HouseSceneReducer::SetPlayerState(EntityState new_player_state) {
         found_player->state = new_player_state;
     }
 }
+
+void HouseSceneReducer::SetPlayerDirection(sf::Vector2f new_direction) {
+    auto found_player = std::find_if(
+        state.entities.begin(), state.entities.end(), [](const auto &entity) {
+            return entity.type == EntityType::PlayerEntity;
+        });
+
+    if (found_player != state.entities.end()) {
+        if (new_direction.x != 0) {
+            found_player->direction = new_direction;
+        }
+    }
+}
