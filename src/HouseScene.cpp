@@ -111,7 +111,7 @@ void HouseScene::Init(int window_width, int window_height) {
     // map. Note here that if we ever intend to dispatch these actions more than
     // once they should be added to a controller
     reducer.AddEntity(
-        Entity{EntityType::PlayerEntity, 500.f, .01f, sf::Vector2f(0, 0)});
+        Entity{EntityType::PlayerEntity, 500.f, 30.f, sf::Vector2f(0, 0)});
 
     timed_controllers.push_back(TimedController{
         sf::Clock(), std::make_unique<EditorController>(
