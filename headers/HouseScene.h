@@ -9,6 +9,11 @@
 #include "ViewLayer.h"
 #include <SFML/Graphics.hpp>
 
+struct TimedController {
+    sf::Clock timer;
+    std::unique_ptr<Controller<HouseSceneReducer>> controller;
+};
+
 class HouseScene {
     HouseSceneState state;
     SpriteSheet tile_map;
@@ -17,7 +22,7 @@ class HouseScene {
     SpriteSheet toolbar_sprite_sheet;
     int tile_palette_offset;
     int toolbar_offset;
-    std::vector<std::unique_ptr<Controller<HouseSceneReducer>>> controllers;
+    std::vector<TimedController> timed_controllers;
     ViewLayer house_map_view_layer;
     ViewLayer tile_palette_view_layer;
     ViewLayer toolbar_view_layer;

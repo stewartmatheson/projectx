@@ -32,7 +32,7 @@ void PlayerController::HandleInput(const EventWithMouse &event_with_mouse,
     }
 }
 
-void PlayerController::Update(HouseSceneReducer &reducer) {
+void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
     auto entities = reducer.GetState().entities;
 
     // TODO : There has to be a better way of doing this. It might get very slow

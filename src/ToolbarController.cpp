@@ -1,6 +1,6 @@
 #include "ToolbarController.h"
 
-void ToolbarController::Update(HouseSceneReducer &) {}
+void ToolbarController::Update(HouseSceneReducer &, sf::Time delta_time) {}
 
 void ToolbarController::HandleInput(const EventWithMouse &event_with_mouse,
                                     HouseSceneReducer &reducer) {

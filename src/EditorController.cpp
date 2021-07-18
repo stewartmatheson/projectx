@@ -9,7 +9,7 @@ EditorController::EditorController(
       tile_palette_render_texture(tile_palette_render_texture),
       house_render_texture(house_render_texture), map(map) {}
 
-void EditorController::Update(HouseSceneReducer &reducer) {
+void EditorController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
     auto state = reducer.GetState();
 
     auto selected_tile_position =
