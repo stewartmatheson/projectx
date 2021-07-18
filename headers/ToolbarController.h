@@ -5,6 +5,6 @@
 
 class ToolbarController : public Controller<HouseSceneReducer> {
   public:
-    void Update(HouseSceneReducer &);
+    void Update(HouseSceneReducer &, sf::Time);
     void HandleInput(const EventWithMouse &, HouseSceneReducer &);
 };

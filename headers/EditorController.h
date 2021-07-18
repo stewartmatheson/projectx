@@ -17,6 +17,6 @@ class EditorController : public Controller<HouseSceneReducer> {
 
   public:
     EditorController(int, sf::RenderTexture &, sf::RenderTexture &, Map &);
-    void Update(HouseSceneReducer &);
+    void Update(HouseSceneReducer &, sf::Time);
     void HandleInput(const EventWithMouse &, HouseSceneReducer &);
 };

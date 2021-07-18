@@ -7,10 +7,11 @@
 
 class PlayerController : public Controller<HouseSceneReducer> {
     sf::Vector2f current_input;
+    std::weak_ptr<std::unordered_map<EntityState, Animation>> animations;
 
   public:
-    PlayerController();
-    void Update(HouseSceneReducer &);
+    PlayerController(std::weak_ptr<std::unordered_map<EntityState, Animation>>);
+    void Update(HouseSceneReducer &, sf::Time);
     void HandleInput(const EventWithMouse &, HouseSceneReducer &);
     void Reset();
 };

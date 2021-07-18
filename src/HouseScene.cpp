@@ -111,14 +111,19 @@ void HouseScene::Init(int window_width, int window_height) {
     // map. Note here that if we ever intend to dispatch these actions more than
     // once they should be added to a controller
     reducer.AddEntity(
-        Entity(EntityType::PlayerEntity, 500.f, .01f, 0, 0, player_animations));
+        Entity{EntityType::PlayerEntity, 500.f, 30.f, sf::Vector2f(0, 0)});
 
-    controllers.push_back(std::make_unique<EditorController>(
-        entity_map.GetSpriteSize(), tile_palette_view_layer.GetRenderTexture(),
-        house_map_view_layer.GetRenderTexture(), map));
+    timed_controllers.push_back(TimedController{
+        sf::Clock(), std::make_unique<EditorController>(
+                         entity_map.GetSpriteSize(),
+                         tile_palette_view_layer.GetRenderTexture(),
+                         house_map_view_layer.GetRenderTexture(), map)});
 
-    controllers.push_back(std::make_unique<ToolbarController>());
-    controllers.push_back(std::make_unique<PlayerController>());
+    timed_controllers.push_back(
+        TimedController{sf::Clock(), std::make_unique<ToolbarController>()});
+
+    timed_controllers.push_back(TimedController{
+        sf::Clock(), std::make_unique<PlayerController>(player_animations)});
 
     tile_palette_view_layer.AddView(std::make_unique<TilePaletteView>(
         tile_map, entity_map, window_height,
@@ -207,16 +212,14 @@ void HouseScene::InitHouseMapView() {
 }
 
 void HouseScene::HandleInput(const EventWithMouse &event) {
-    for (auto &controller : controllers)
-        controller->HandleInput(event, reducer);
+    for (auto &timed_controller : timed_controllers)
+        timed_controller.controller->HandleInput(event, reducer);
 }
 
 void HouseScene::Update() {
-    for (auto &controller : controllers)
-        controller->Update(reducer);
-
-    for (auto &entity : state.entities)
-        entity.Update();
+    for (auto &timed_controller : timed_controllers)
+        timed_controller.controller->Update(reducer,
+                                            timed_controller.timer.restart());
 
     for (auto &player_animation : *player_animations)
         player_animation.second.Update();

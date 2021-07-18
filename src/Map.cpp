@@ -65,10 +65,7 @@ Map::Map(HouseSceneReducer &reducer, std::string file_name) : reducer(reducer) {
         rf.read(reinterpret_cast<char *>(&y), sizeof(y));
 
         std::unordered_map<EntityState, Animation> animations = {};
-
-        reducer.AddEntity(Entity(
-            type, 0, 0, x, y,
-            std::weak_ptr<std::unordered_map<EntityState, Animation>>()));
+        reducer.AddEntity(Entity{type, 0, 0, sf::Vector2f(x, y)});
     }
 }
 
@@ -118,16 +115,16 @@ void Map::WriteToFile(std::string file_name) const {
     wf.write(reinterpret_cast<const char *>(&entity_size), sizeof(entity_size));
 
     std::for_each(entities.begin(), entities.end(), [&wf](Entity entity) {
-        EntityType type = entity.GetEntityType();
+        EntityType type = entity.type;
         // typedef std::underlying_type<EntityType>::type utype;
         // int i = static_cast<utype>(type);
 
         wf.write(reinterpret_cast<const char *>(&type), sizeof(type));
 
-        int x = entity.GetTransform().x;
+        int x = entity.transform.x;
         wf.write(reinterpret_cast<const char *>(&x), sizeof(x));
 
-        int y = entity.GetTransform().y;
+        int y = entity.transform.y;
         wf.write(reinterpret_cast<const char *>(&y), sizeof(y));
     });
 }

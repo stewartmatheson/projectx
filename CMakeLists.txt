@@ -39,7 +39,6 @@ add_executable(ProjectX
   src/HouseScene.cpp
   src/Map.cpp
   src/SpriteSheet.cpp
-  src/Entity.cpp
   src/main.cpp
   src/TilePaletteView.cpp
   src/EditorController.cpp
