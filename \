@@ -110,8 +110,7 @@ void HouseScene::Init(int window_width, int window_height) {
     // Here now we know we have a valid state we execute an action to load the
     // map. Note here that if we ever intend to dispatch these actions more than
     // once they should be added to a controller
-    reducer.AddEntity(
-        Entity{EntityType::PlayerEntity, 500.f, .01f, sf::Vector2f(0, 0)});
+    reducer.AddEntity(Entity{EntityType::PlayerEntity, 500.f, .01f, 0, 0});
 
     timed_controllers.push_back(TimedController{
         sf::Clock(), std::make_unique<EditorController>(
@@ -220,6 +219,9 @@ void HouseScene::Update() {
     for (auto &timed_controller : timed_controllers)
         timed_controller.controller->Update(reducer,
                                             timed_controller.timer.restart());
+
+    for (auto &entity : state.entities)
+        entity.Update();
 
     for (auto &player_animation : *player_animations)
         player_animation.second.Update();

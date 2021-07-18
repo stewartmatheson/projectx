@@ -1,6 +1,8 @@
 #include "EntityView.h"
 #include "Animation.h"
 
+typedef std::underlying_type<EntityType>::type utype;
+
 EntityView::EntityView(
     const SpriteSheet &entity_sprite_sheet,
     const std::weak_ptr<std::unordered_map<EntityState, Animation>> animations)
@@ -13,7 +15,7 @@ void EntityView::Draw(sf::RenderTarget &target,
     // to have to search all entites all the time.
     auto found_player =
         std::find_if(entities.begin(), entities.end(), [](const auto &entity) {
-            return entity.GetEntityType() == EntityType::PlayerEntity;
+            return entity.type == EntityType::PlayerEntity;
         });
 
     if (found_player == entities.end()) {
@@ -22,12 +24,11 @@ void EntityView::Draw(sf::RenderTarget &target,
 
     if (auto shared_animation = animations.lock()) {
 
-        auto current_animation =
-            shared_animation->find(found_player->GetEntityState());
+        auto current_animation = shared_animation->find(found_player->state);
         if (current_animation == shared_animation->end()) {
             // TODO : We might not want to do this each draw call.
             sf::RectangleShape no_sprite(sf::Vector2f(50, 80));
-            no_sprite.setPosition(found_player->GetTransform());
+            no_sprite.setPosition(found_player->transform);
             target.draw(no_sprite);
             return;
         }
@@ -37,19 +38,19 @@ void EntityView::Draw(sf::RenderTarget &target,
 
     std::for_each(
         entities.begin(), entities.end(), [&target, this](const auto &entity) {
-            if (entity.GetEntityType() == EntityType::PlayerEntity) {
+            if (entity.type == EntityType::PlayerEntity) {
                 return;
             }
             sf::Sprite sprite_to_draw(
-                entity_sprite_sheet.GetSprites()[entity.GetTileMapIndex()]);
-            sprite_to_draw.setRotation(entity.GetRotation());
+                entity_sprite_sheet
+                    .GetSprites()[static_cast<utype>(entity.type)]);
+            sprite_to_draw.setRotation(entity.rotation);
             int half_tile_size = entity_sprite_sheet.GetSpriteSize() / 2;
-            sprite_to_draw.setPosition((entity.GetTransform().x *
-                                        entity_sprite_sheet.GetSpriteSize()) +
-                                           half_tile_size,
-                                       (entity.GetTransform().y *
-                                        entity_sprite_sheet.GetSpriteSize()) +
-                                           half_tile_size);
+            sprite_to_draw.setPosition(
+                (entity.transform.x * entity_sprite_sheet.GetSpriteSize()) +
+                    half_tile_size,
+                (entity.transform.y * entity_sprite_sheet.GetSpriteSize()) +
+                    half_tile_size);
             sprite_to_draw.setOrigin(entity_sprite_sheet.GetSize() / 2,
                                      entity_sprite_sheet.GetSize() / 2);
             target.draw(sprite_to_draw);

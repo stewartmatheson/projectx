@@ -39,25 +39,25 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
     // to have to search all entites all the time.
     auto found_player =
         std::find_if(entities.begin(), entities.end(), [](const auto &entity) {
-            return entity.GetEntityType() == EntityType::PlayerEntity;
+            return entity.type == EntityType::PlayerEntity;
         });
 
     if (found_player == entities.end()) {
         return;
     }
 
-    auto acceleration = found_player->GetAcceleration();
-    auto player_velocity = found_player->GetVelocity();
-    auto speed = found_player->GetSpeed();
+    auto acceleration = found_player->acceleration;
+    auto player_velocity = found_player->velocity;
+    auto speed = found_player->speed;
     auto new_velocity = sf::Vector2f(
         ((current_input.x * speed) - player_velocity.x) * acceleration,
         ((current_input.y * speed) - player_velocity.y) * acceleration);
 
     reducer.SetEntityVelocity(new_velocity);
-    reducer.SetEntityTransform(found_player->GetTransform() + new_velocity);
+    reducer.SetEntityTransform(found_player->transform + new_velocity);
 
     if (!reducer.GetState().editor_state.editor_enabled) {
-        reducer.SetHouseViewCenter(found_player->GetTransform());
+        reducer.SetHouseViewCenter(found_player->transform);
     }
 
     if (new_velocity.x != 0 || new_velocity.y != 0) {
@@ -81,17 +81,17 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
     if (auto shared_animations = animations.lock()) {
 
         auto state = reducer.GetState();
-        auto found_player = std::find_if(
-            state.entities.begin(), state.entities.end(),
-            [](const auto &entity) {
-                return entity.GetEntityType() == EntityType::PlayerEntity;
-            });
+        auto found_player =
+            std::find_if(state.entities.begin(), state.entities.end(),
+                         [](const auto &entity) {
+                             return entity.type == EntityType::PlayerEntity;
+                         });
 
         if (found_player != state.entities.end()) {
             auto current_animation =
-                shared_animations->find(found_player->GetEntityState());
+                shared_animations->find(found_player->state);
             current_animation->second.sprite.setPosition(
-                found_player->GetTransform());
+                found_player->transform);
         }
 
         /*
