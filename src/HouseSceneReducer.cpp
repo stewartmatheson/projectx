@@ -204,3 +204,7 @@ void HouseSceneReducer::SetPlayerDirection(sf::Vector2f new_direction) {
         }
     }
 }
+
+void HouseSceneReducer::AddRoom(sf::IntRect new_room) {
+    state.rooms.push_back(new_room);
+}
