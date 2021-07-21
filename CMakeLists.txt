@@ -35,6 +35,7 @@ add_executable(ProjectX
   headers/GridSelectionView.h
   headers/ToolbarToolsView.h
   headers/ToolbarController.h
+  headers/CreatedRoomSelectionView.h
   src/Animation.cpp
   src/HouseScene.cpp
   src/Map.cpp
@@ -53,6 +54,7 @@ add_executable(ProjectX
   src/GridSelectionView.cpp
   src/ToolbarToolsView.cpp
   src/ToolbarController.cpp
+  src/CreatedRoomSelectionView.cpp
 )
 
 target_include_directories(ProjectX

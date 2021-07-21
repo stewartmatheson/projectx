@@ -46,4 +46,5 @@ struct HouseSceneState {
     int window_width;
     int window_height;
     int scale = 4;
+    std::vector<sf::IntRect> rooms;
 };

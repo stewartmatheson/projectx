@@ -16,7 +16,13 @@ void ToolbarController::HandleInput(const EventWithMouse &event_with_mouse,
 
         if (first_button.contains(event_with_mouse.event.mouseButton.x,
                                   event_with_mouse.event.mouseButton.y)) {
-            std::cout << "First toolbar button clicked" << std::endl;
+            CreateRoom(reducer);
         }
     }
+}
+
+void ToolbarController::CreateRoom(HouseSceneReducer &reducer) {
+    auto const current_state = reducer.GetState();
+    reducer.AddRoom(current_state.editor_state.map_selection);
+    reducer.ClearEditorSelection();
 }
