@@ -1,6 +1,7 @@
 #include "HouseScene.h"
 #include "Animation.h"
 #include "BoxSelectionView.h"
+#include "CreatedRoomSelectionView.h"
 #include "EditorController.h"
 #include "Entity.h"
 #include "EntityView.h"
@@ -143,7 +144,7 @@ void HouseScene::InitEntityMap() {
 }
 
 void HouseScene::InitToolbarMap() {
-    toolbar_sprite_sheet.CreateIconSprite(sf::Color::Blue, 0);
+    toolbar_sprite_sheet.CreateIconSprite(sf::Color::Yellow, 0);
 }
 
 void HouseScene::InitAnimations() {
@@ -206,6 +207,7 @@ void HouseScene::InitHouseMapView() {
         std::make_unique<EntityView>(entity_map, player_animations));
 
     house_map_view_layer.AddView(std::make_unique<BoxSelectionView>());
+    house_map_view_layer.AddView(std::make_unique<CreatedRoomSelectionView>());
 
     house_map_view_layer.AddView(
         std::make_unique<GridSelectionView>(tile_map.GetSpriteSize()));

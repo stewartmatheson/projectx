@@ -24,4 +24,5 @@ void ToolbarController::HandleInput(const EventWithMouse &event_with_mouse,
 void ToolbarController::CreateRoom(HouseSceneReducer &reducer) {
     auto const current_state = reducer.GetState();
     reducer.AddRoom(current_state.editor_state.map_selection);
+    reducer.ClearEditorSelection();
 }

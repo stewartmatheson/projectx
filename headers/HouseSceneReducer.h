@@ -40,4 +40,5 @@ class HouseSceneReducer {
     void SetPlayerState(EntityState);
     void SetPlayerDirection(sf::Vector2f);
     void AddRoom(sf::IntRect);
+    void ClearEditorSelection();
 };

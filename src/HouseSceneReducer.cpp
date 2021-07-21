@@ -155,8 +155,7 @@ void HouseSceneReducer::UpdateMousePosition(
                           state.editor_state.current_mouse_position.y) *
                              -1);
 
-        if ((delta.x < 5 && delta.x > 0) || (delta.x > -5 && delta.x < 0) ||
-            (delta.y < 5 && delta.y > 0) || (delta.y > -5 && delta.y < 0)) {
+        if ((delta.x < 5 && delta.x > -5) || (delta.y < 5 && delta.y > -5)) {
             state.editor_state.mouse_dragging = false;
         } else {
             state.editor_state.mouse_dragging = true;
@@ -207,4 +206,8 @@ void HouseSceneReducer::SetPlayerDirection(sf::Vector2f new_direction) {
 
 void HouseSceneReducer::AddRoom(sf::IntRect new_room) {
     state.rooms.push_back(new_room);
+}
+
+void HouseSceneReducer::ClearEditorSelection() {
+    state.editor_state.map_selection = sf::IntRect();
 }
