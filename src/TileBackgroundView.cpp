@@ -21,3 +21,5 @@ void TileBackgroundView::Draw(sf::RenderTarget &render_target,
         }
     }
 }
+
+void TileBackgroundView::Update() {}

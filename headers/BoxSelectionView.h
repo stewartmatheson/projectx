@@ -7,4 +7,5 @@
 class BoxSelectionView : public View<HouseSceneState> {
   public:
     void Draw(sf::RenderTarget &, const HouseSceneState &) const;
+    void Update();
 };

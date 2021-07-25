@@ -10,6 +10,7 @@
 #include "HouseSceneReducer.h"
 #include "PlayerController.h"
 #include "SelectedTileView.h"
+#include "ShadowView.h"
 #include "TileBackgroundView.h"
 #include "TilePaletteView.h"
 #include "ToolbarController.h"
@@ -31,8 +32,8 @@ HouseScene::HouseScene(int window_width, int window_height,
           sf::IntRect(tile_palette_offset * 2 + tile_map.GetSpriteSize(), 0,
                       window_width, 60)),
       reducer(state), map(reducer) {
-    Init(window_width, window_height);
     reducer.SetMapBounds(map_bounds);
+    Init(window_width, window_height);
 }
 
 HouseScene::HouseScene(int window_width, int window_height,
@@ -211,6 +212,11 @@ void HouseScene::InitHouseMapView() {
 
     house_map_view_layer.AddView(
         std::make_unique<GridSelectionView>(tile_map.GetSpriteSize()));
+    std::cout << std::endl << state.map_bounds.height << std::endl;
+    std::cout << std::endl << state.map_bounds.width << std::endl;
+    house_map_view_layer.AddView(std::make_unique<ShadowView>(
+        sf::IntRect(0, 0, tile_map.GetSpriteSize() * state.map_bounds.width,
+                    tile_map.GetSpriteSize() * state.map_bounds.height)));
 }
 
 void HouseScene::HandleInput(const EventWithMouse &event) {
@@ -225,6 +231,15 @@ void HouseScene::Update() {
 
     for (auto &player_animation : *player_animations)
         player_animation.second.Update();
+
+    for (auto &view : house_map_view_layer.GetViews())
+        view->Update();
+
+    for (auto &view : toolbar_view_layer.GetViews())
+        view->Update();
+
+    for (auto &view : tile_palette_view_layer.GetViews())
+        view->Update();
 }
 
 void HouseScene::Draw(sf::RenderTarget &render_target) {

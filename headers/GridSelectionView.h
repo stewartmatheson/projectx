@@ -9,4 +9,5 @@ class GridSelectionView : public View<HouseSceneState> {
   public:
     GridSelectionView(int sprite_size);
     void Draw(sf::RenderTarget &, const HouseSceneState &) const;
+    void Update();
 };

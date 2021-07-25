@@ -56,3 +56,5 @@ void EntityView::Draw(sf::RenderTarget &target,
             target.draw(sprite_to_draw);
         });
 }
+
+void EntityView::Update() {}

@@ -28,3 +28,5 @@ void ToolbarToolsView::Draw(sf::RenderTarget &render_target,
         current_tool_count++;
     }
 }
+
+void ToolbarToolsView::Update() {}

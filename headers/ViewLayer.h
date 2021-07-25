@@ -14,4 +14,5 @@ class ViewLayer {
     void Draw(sf::RenderTarget &, const sf::View &, const HouseSceneState &);
     void AddView(std::unique_ptr<View<HouseSceneState>> &&view);
     sf::RenderTexture &GetRenderTexture();
+    std::vector<std::unique_ptr<View<HouseSceneState>>> &GetViews();
 };

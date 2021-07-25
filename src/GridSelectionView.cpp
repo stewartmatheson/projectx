@@ -24,3 +24,5 @@ void GridSelectionView::Draw(sf::RenderTarget &render_target,
                      state.editor_state.map_selection.top * sprite_size);
     render_target.draw(rect);
 }
+
+void GridSelectionView::Update() {}

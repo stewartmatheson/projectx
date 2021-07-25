@@ -10,4 +10,5 @@ class TilePaletteView : public View<HouseSceneState> {
   public:
     TilePaletteView(SpriteSheet &, SpriteSheet &, int, int);
     void Draw(sf::RenderTarget &, const HouseSceneState &) const;
+    void Update();
 };

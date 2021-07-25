@@ -29,3 +29,5 @@ void SelectedTileView::Draw(sf::RenderTarget &render_target,
 
     render_target.draw(selected_tile_sprite);
 }
+
+void SelectedTileView::Update() {}

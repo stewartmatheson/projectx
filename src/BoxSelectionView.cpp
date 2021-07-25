@@ -22,3 +22,5 @@ void BoxSelectionView::Draw(sf::RenderTarget &render_target,
     rect.setPosition(state.editor_state.mouse_down_at);
     render_target.draw(rect);
 }
+
+void BoxSelectionView::Update() {}

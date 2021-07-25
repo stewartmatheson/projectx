@@ -9,4 +9,5 @@ class TileBackgroundView : public View<HouseSceneState> {
   public:
     TileBackgroundView(const SpriteSheet &);
     void Draw(sf::RenderTarget &, const HouseSceneState &) const;
+    void Update();
 };

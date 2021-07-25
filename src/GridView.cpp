@@ -30,3 +30,5 @@ void GridView::Draw(sf::RenderTarget &target,
         target.draw(line, 2, sf::Lines);
     }
 }
+
+void GridView::Update() {}

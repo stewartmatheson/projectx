@@ -21,3 +21,5 @@ void CreatedRoomSelectionView::Draw(sf::RenderTarget &render_target,
         render_target.draw(rect);
     }
 }
+
+void CreatedRoomSelectionView::Update() {}
