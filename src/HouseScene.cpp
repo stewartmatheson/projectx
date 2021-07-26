@@ -212,8 +212,6 @@ void HouseScene::InitHouseMapView() {
 
     house_map_view_layer.AddView(
         std::make_unique<GridSelectionView>(tile_map.GetSpriteSize()));
-    std::cout << std::endl << state.map_bounds.height << std::endl;
-    std::cout << std::endl << state.map_bounds.width << std::endl;
     house_map_view_layer.AddView(std::make_unique<ShadowView>(
         sf::IntRect(0, 0, tile_map.GetSpriteSize() * state.map_bounds.width,
                     tile_map.GetSpriteSize() * state.map_bounds.height)));

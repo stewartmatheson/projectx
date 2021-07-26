@@ -20,6 +20,9 @@ void ShadowView::Update() { render_texture.display(); }
 
 void ShadowView::Draw(sf::RenderTarget &render_target,
                       const HouseSceneState &state) const {
+    if (state.editor_state.editor_enabled) {
+        return;
+    }
     sf::Sprite texture_sprite(render_texture.getTexture());
     texture_sprite.setPosition(sf::Vector2f(0, 0));
     render_target.draw(texture_sprite, &frag_shader);
