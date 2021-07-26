@@ -23,3 +23,7 @@ sf::RenderTexture &ViewLayer::GetRenderTexture() { return render_texture; }
 void ViewLayer::AddView(std::unique_ptr<View<HouseSceneState>> &&view) {
     views.push_back(std::move(view));
 }
+
+std::vector<std::unique_ptr<View<HouseSceneState>>> &ViewLayer::GetViews() {
+    return views;
+}

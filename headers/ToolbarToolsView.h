@@ -11,4 +11,5 @@ class ToolbarToolsView : public View<HouseSceneState> {
   public:
     ToolbarToolsView(SpriteSheet &);
     void Draw(sf::RenderTarget &, const HouseSceneState &) const;
+    void Update();
 };

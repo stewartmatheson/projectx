@@ -8,4 +8,5 @@ class SelectedTileView : public View<HouseSceneState> {
   public:
     SelectedTileView(const SpriteSheet &);
     void Draw(sf::RenderTarget &, const HouseSceneState &) const;
+    void Update();
 };

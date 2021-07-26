@@ -16,3 +16,5 @@ void TilePaletteView::Draw(sf::RenderTarget &target,
     }
     target.draw(state.editor_state.tile_palette_selection_rectangle);
 }
+
+void TilePaletteView::Update() {}
