@@ -33,6 +33,7 @@ class HouseScene {
     void InitAnimations();
     void InitHouseMapView();
     void InitToolbarMap();
+    void InitPlayer();
     void InitTools();
     void InitEntityMap();
     Map map;

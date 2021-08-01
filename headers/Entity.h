@@ -18,4 +18,5 @@ struct Entity {
     sf::Vector2f velocity;
     EntityState state;
     int rotation;
+    std::vector<sf::FloatRect> hitboxes;
 };
