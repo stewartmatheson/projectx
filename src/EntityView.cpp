@@ -36,25 +36,42 @@ void EntityView::Draw(sf::RenderTarget &target,
         target.draw(current_animation->second.sprite);
     }
 
-    std::for_each(
-        entities.begin(), entities.end(), [&target, this](const auto &entity) {
-            if (entity.type == EntityType::PlayerEntity) {
-                return;
-            }
-            sf::Sprite sprite_to_draw(
-                entity_sprite_sheet
-                    .GetSprites()[static_cast<utype>(entity.type)]);
-            sprite_to_draw.setRotation(entity.rotation);
-            int half_tile_size = entity_sprite_sheet.GetSpriteSize() / 2;
-            sprite_to_draw.setPosition(
-                (entity.transform.x * entity_sprite_sheet.GetSpriteSize()) +
-                    half_tile_size,
-                (entity.transform.y * entity_sprite_sheet.GetSpriteSize()) +
-                    half_tile_size);
-            sprite_to_draw.setOrigin(entity_sprite_sheet.GetSize() / 2,
-                                     entity_sprite_sheet.GetSize() / 2);
-            target.draw(sprite_to_draw);
-        });
+    if (state.editor_state.editor_enabled) {
+        DrawHitBoxes(*found_player, target);
+    }
+
+    for (auto entity : entities) {
+        if (entity.type == EntityType::PlayerEntity) {
+            return;
+        }
+        sf::Sprite sprite_to_draw(
+            entity_sprite_sheet.GetSprites()[static_cast<utype>(entity.type)]);
+        sprite_to_draw.setRotation(entity.rotation);
+        int half_tile_size = entity_sprite_sheet.GetSpriteSize() / 2;
+        sprite_to_draw.setPosition(
+            (entity.transform.x * entity_sprite_sheet.GetSpriteSize()) +
+                half_tile_size,
+            (entity.transform.y * entity_sprite_sheet.GetSpriteSize()) +
+                half_tile_size);
+        sprite_to_draw.setOrigin(entity_sprite_sheet.GetSize() / 2,
+                                 entity_sprite_sheet.GetSize() / 2);
+        target.draw(sprite_to_draw);
+        if (state.editor_state.editor_enabled) {
+            DrawHitBoxes(entity, target);
+        }
+    }
+
+}
+
+void EntityView::DrawHitBoxes(Entity &entity, sf::RenderTarget &target) const {
+    for (auto hitbox : entity.hitboxes) {
+        auto shape = sf::RectangleShape();
+        shape.setSize(sf::Vector2f(hitbox.width, hitbox.height));
+        shape.setPosition(sf::Vector2f(hitbox.top, hitbox.left) +
+                          entity.transform);
+        shape.setFillColor(sf::Color(0, 255, 0, 128));
+        target.draw(shape);
+    }
 }
 
 void EntityView::Update() {}
