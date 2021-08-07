@@ -60,7 +60,35 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
 
     new_velocity += new_damping;
     reducer.SetEntityVelocity(new_velocity);
-    reducer.SetEntityTransform(found_player->transform + new_velocity);
+
+    auto rooms = reducer.GetState().rooms;
+    // TODO : Remove Magic number
+    auto sprite_size = reducer.GetState().scale * 16;
+
+    auto room_the_player_is_in = std::find_if(rooms.begin(), rooms.end(), [found_player, sprite_size](const auto &room) { 
+        return sf::FloatRect(
+            room.left * sprite_size,
+            room.top * sprite_size,
+            room.width * sprite_size,
+            room.height * sprite_size
+        ).contains(found_player->transform);
+    });
+
+    if (room_the_player_is_in == rooms.end()) {
+        reducer.SetEntityTransform(found_player->transform + new_velocity);
+    } else {
+        auto scaled_room =
+            sf::IntRect(room_the_player_is_in->left * sprite_size,
+                          room_the_player_is_in->top * sprite_size,
+                          room_the_player_is_in->width * sprite_size,
+                          room_the_player_is_in->height * sprite_size);
+        reducer.SetEntityTransform(ClampToRoom(
+            found_player->hitboxes[0], // TODO : Not sure what to do when we have more than one hitbox
+            scaled_room,
+            found_player->transform,
+            found_player->transform + new_velocity
+        ));
+    }
 
     if (new_velocity.x > 0.01f || new_velocity.x < -0.01f ||
         new_velocity.y > 0.01f || new_velocity.y < -0.01f) {
@@ -88,6 +116,7 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
         if (found_player != state.entities.end()) {
             auto current_animation =
                 shared_animations->find(found_player->state);
+            
             current_animation->second.sprite.setPosition(
                 found_player->transform);
 
@@ -101,4 +130,39 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
 void PlayerController::Reset() {
     std::cout << "PlayerController::Reset not implemented yet" << std::endl;
     // entity.SetVelocity(sf::Vector2f(0, 0));
+}
+
+sf::Vector2f PlayerController::ClampToRoom(
+    sf::FloatRect player_hitbox, 
+    sf::IntRect room, 
+    sf::Vector2f original_position,
+    sf::Vector2f new_position) {
+
+    auto offset_hitbox = sf::FloatRect(new_position.x + (player_hitbox.left / 2),
+                                       new_position.y + (player_hitbox.top / 2),
+                                       player_hitbox.width,
+                                       player_hitbox.height
+    );
+
+    // clamp left
+    if (offset_hitbox.left < room.left) {
+        new_position.x = original_position.x; 
+    }
+
+    //clamp right
+    if (offset_hitbox.left + offset_hitbox.width > room.left + room.width) {
+        new_position.x = original_position.x; 
+    }
+
+    // clamp top
+    if (offset_hitbox.top < room.top) {
+        new_position.y = original_position.y; 
+    }
+
+    // clamp bottom
+    if (offset_hitbox.top + offset_hitbox.height > room.top + room.height) {
+        new_position.y = original_position.y; 
+    }
+
+    return new_position;
 }
