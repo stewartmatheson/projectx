@@ -12,9 +12,9 @@ class SpriteSheet {
     sf::RenderTexture icon_sprite_render_texture;
 
   public:
-    void CreateIconSprite(sf::Color, int);
     SpriteSheet(std::string, int, int, int, int);
     SpriteSheet(int, int);
+    void CreateIconSprite(sf::Color, int);
     const int GetSpriteSize() const;
     const std::vector<sf::Sprite> &GetSprites() const;
     const sf::Texture &GetTexture() const;

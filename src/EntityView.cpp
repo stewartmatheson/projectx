@@ -38,6 +38,7 @@ void EntityView::Draw(sf::RenderTarget &target,
 
     if (state.editor_state.editor_enabled) {
         DrawHitBoxes(*found_player, target);
+        DrawPoint(found_player->transform, target);
     }
 
     for (auto entity : entities) {
@@ -47,17 +48,13 @@ void EntityView::Draw(sf::RenderTarget &target,
         sf::Sprite sprite_to_draw(
             entity_sprite_sheet.GetSprites()[static_cast<utype>(entity.type)]);
         sprite_to_draw.setRotation(entity.rotation);
-        int half_tile_size = entity_sprite_sheet.GetSpriteSize() / 2;
         sprite_to_draw.setPosition(
-            (entity.transform.x * entity_sprite_sheet.GetSpriteSize()) +
-                half_tile_size,
-            (entity.transform.y * entity_sprite_sheet.GetSpriteSize()) +
-                half_tile_size);
-        sprite_to_draw.setOrigin(entity_sprite_sheet.GetSize() / 2,
-                                 entity_sprite_sheet.GetSize() / 2);
+            (entity.transform.x * entity_sprite_sheet.GetSpriteSize()),
+            (entity.transform.y * entity_sprite_sheet.GetSpriteSize()));
         target.draw(sprite_to_draw);
         if (state.editor_state.editor_enabled) {
             DrawHitBoxes(entity, target);
+            DrawPoint(entity.transform, target);
         }
     }
 
@@ -72,6 +69,13 @@ void EntityView::DrawHitBoxes(Entity &entity, sf::RenderTarget &target) const {
         shape.setFillColor(sf::Color(0, 255, 0, 128));
         target.draw(shape);
     }
+}
+
+void EntityView::DrawPoint(sf::Vector2f& position, sf::RenderTarget& target) const {
+    auto circle_shape = sf::CircleShape(5);
+    circle_shape.setFillColor(sf::Color::Red);
+    circle_shape.setPosition(position - sf::Vector2f(2.5f, 2.5f));
+    target.draw(circle_shape);
 }
 
 void EntityView::Update() {}
