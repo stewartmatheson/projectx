@@ -64,8 +64,7 @@ void EntityView::DrawHitBoxes(Entity &entity, sf::RenderTarget &target) const {
     for (auto hitbox : entity.hitboxes) {
         auto shape = sf::RectangleShape();
         shape.setSize(sf::Vector2f(hitbox.width, hitbox.height));
-        shape.setPosition(sf::Vector2f(hitbox.top, hitbox.left) +
-                          entity.transform);
+        shape.setPosition(entity.transform - sf::Vector2f(hitbox.width / 2, hitbox.height /2));
         shape.setFillColor(sf::Color(0, 255, 0, 128));
         target.draw(shape);
     }

@@ -138,8 +138,8 @@ sf::Vector2f PlayerController::ClampToRoom(
     sf::Vector2f original_position,
     sf::Vector2f new_position) {
 
-    auto offset_hitbox = sf::FloatRect(new_position.x + (player_hitbox.left / 2),
-                                       new_position.y + (player_hitbox.top / 2),
+    auto offset_hitbox = sf::FloatRect(new_position.x - player_hitbox.width / 2,
+                                       new_position.y - player_hitbox.height / 2,
                                        player_hitbox.width,
                                        player_hitbox.height
     );
@@ -150,7 +150,7 @@ sf::Vector2f PlayerController::ClampToRoom(
     }
 
     //clamp right
-    if (offset_hitbox.left + offset_hitbox.width > room.left + room.width) {
+    if (offset_hitbox.left + player_hitbox.width > room.left + room.width) {
         new_position.x = original_position.x; 
     }
 
