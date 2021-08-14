@@ -8,7 +8,7 @@ class TilePaletteView : public View<HouseSceneState> {
     sf::RenderTexture tile_palette_render_texture;
 
   public:
-    TilePaletteView(SpriteSheet &, SpriteSheet &, int, int);
+    TilePaletteView(int, int);
     void Draw(sf::RenderTarget &, const HouseSceneState &) const;
     void Update();
 };

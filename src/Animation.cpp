@@ -1,14 +1,14 @@
 #include "Animation.h"
 #include <vector>
 
-Animation::Animation(const SpriteSheet &sprite_sheet,
+Animation::Animation(const std::shared_ptr<SpriteSheet> sprite_sheet,
                      std::vector<AnimationFrame> animation_frames,
                      int frame_width, int frame_height, int speed)
     : animation_frames(animation_frames), current_frame_counter(0),
       frame_height(frame_height), frame_width(frame_width), speed(speed),
       sprite_sheet(sprite_sheet) {
-    sprite.setTexture(sprite_sheet.GetTexture());
-    sprite.setScale(sprite_sheet.GetScale(), sprite_sheet.GetScale());
+    sprite.setTexture(sprite_sheet->GetTexture());
+    sprite.setScale(sprite_sheet->GetScale(), sprite_sheet->GetScale());
     sprite.setOrigin(frame_width / 2, frame_height / 2);
 }
 

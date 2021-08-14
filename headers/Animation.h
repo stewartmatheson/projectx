@@ -13,10 +13,10 @@ class Animation {
     int frame_height;
     int frame_width;
     int speed;
-    const SpriteSheet &sprite_sheet;
+    const std::shared_ptr<SpriteSheet> sprite_sheet;
 
   public:
     sf::Sprite sprite;
-    Animation(const SpriteSheet &, std::vector<AnimationFrame>, int, int, int);
+    Animation(const std::shared_ptr<SpriteSheet>, std::vector<AnimationFrame>, int, int, int);
     void Update();
 };

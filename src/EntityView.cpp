@@ -4,7 +4,7 @@
 typedef std::underlying_type<EntityType>::type utype;
 
 EntityView::EntityView(
-    const SpriteSheet &entity_sprite_sheet,
+    const std::shared_ptr<SpriteSheet> entity_sprite_sheet,
     const std::weak_ptr<std::unordered_map<EntityState, Animation>> animations)
     : animations(animations), entity_sprite_sheet(entity_sprite_sheet) {}
 
@@ -46,11 +46,11 @@ void EntityView::Draw(sf::RenderTarget &target,
             return;
         }
         sf::Sprite sprite_to_draw(
-            entity_sprite_sheet.GetSprites()[static_cast<utype>(entity.type)]);
+            entity_sprite_sheet->GetSprites()[static_cast<utype>(entity.type)]);
         sprite_to_draw.setRotation(entity.rotation);
         sprite_to_draw.setPosition(
-            (entity.transform.x * entity_sprite_sheet.GetSpriteSize()),
-            (entity.transform.y * entity_sprite_sheet.GetSpriteSize()));
+            (entity.transform.x * entity_sprite_sheet->GetSpriteSize()),
+            (entity.transform.y * entity_sprite_sheet->GetSpriteSize()));
         target.draw(sprite_to_draw);
         if (state.editor_state.editor_enabled) {
             DrawHitBoxes(entity, target);

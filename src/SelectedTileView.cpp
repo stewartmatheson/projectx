@@ -1,6 +1,6 @@
 #include "SelectedTileView.h"
 
-SelectedTileView::SelectedTileView(const SpriteSheet &sprite_sheet)
+SelectedTileView::SelectedTileView(std::shared_ptr<SpriteSheet> sprite_sheet)
     : sprite_sheet(sprite_sheet) {}
 
 void SelectedTileView::Draw(sf::RenderTarget &render_target,
@@ -16,15 +16,15 @@ void SelectedTileView::Draw(sf::RenderTarget &render_target,
         state.editor_state
             .tile_palette_tiles[state.editor_state.selected_tile_index]
             .icon;
-    auto half_tile_size = sprite_sheet.GetSpriteSize() / 2;
+    auto half_tile_size = sprite_sheet->GetSpriteSize() / 2;
     selected_tile_sprite.setPosition(
-        (current_mouse_grid_position.x * sprite_sheet.GetSpriteSize()) +
+        (current_mouse_grid_position.x * sprite_sheet->GetSpriteSize()) +
             half_tile_size,
-        (current_mouse_grid_position.y * sprite_sheet.GetSpriteSize()) +
+        (current_mouse_grid_position.y * sprite_sheet->GetSpriteSize()) +
             half_tile_size);
     selected_tile_sprite.setColor(sf::Color(255, 255, 255, 170));
-    selected_tile_sprite.setOrigin(sprite_sheet.GetSize() / 2,
-                                   sprite_sheet.GetSize() / 2);
+    selected_tile_sprite.setOrigin(sprite_sheet->GetSize() / 2,
+                                   sprite_sheet->GetSize() / 2);
     selected_tile_sprite.rotate(state.editor_state.selected_tile_rotation);
 
     render_target.draw(selected_tile_sprite);

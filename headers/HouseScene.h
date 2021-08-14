@@ -7,6 +7,7 @@
 #include "Map.h"
 #include "SpriteSheet.h"
 #include "ViewLayer.h"
+#include "AssetWatcher.h"
 #include <SFML/Graphics.hpp>
 
 struct TimedController {
@@ -16,10 +17,7 @@ struct TimedController {
 
 class HouseScene {
     HouseSceneState state;
-    SpriteSheet tile_map;
-    SpriteSheet entity_map;
-    SpriteSheet player_sprite_sheet;
-    SpriteSheet toolbar_sprite_sheet;
+    AssetWatcher asset_watcher;
     int tile_palette_offset;
     int toolbar_offset;
     std::vector<TimedController> timed_controllers;
@@ -37,7 +35,6 @@ class HouseScene {
     void InitTools();
     void InitEntityMap();
     Map map;
-
   public:
     HouseScene(int, int, int, int, sf::IntRect);
     HouseScene(int, int, int, int, std::string);
