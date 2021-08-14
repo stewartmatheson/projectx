@@ -13,7 +13,6 @@ add_executable(ProjectX
   headers/HouseSceneReducer.h
   headers/TileLayer.h
   headers/Animation.h
-  headers/Tile.h
   headers/HouseScene.h
   headers/Map.h
   headers/SpriteSheet.h
@@ -38,6 +37,7 @@ add_executable(ProjectX
   headers/CreatedRoomSelectionView.h
   headers/ShadowView.h
   headers/AssetWatcher.h
+  headers/EntityFactory.h
   src/Animation.cpp
   src/HouseScene.cpp
   src/Map.cpp
@@ -59,6 +59,7 @@ add_executable(ProjectX
   src/CreatedRoomSelectionView.cpp
   src/ShadowView.cpp
   src/AssetWatcher.cpp
+  src/EntityFactory.cpp
 )
 
 target_include_directories(ProjectX

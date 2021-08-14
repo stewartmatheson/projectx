@@ -74,7 +74,7 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
         ).contains(found_player->transform);
     });
 
-    if (room_the_player_is_in == rooms.end()) {
+    if (room_the_player_is_in == rooms.end() || found_player->hitboxes.size() < 1) {
         reducer.SetEntityTransform(found_player->transform + new_velocity);
     } else {
         auto scaled_room =
@@ -82,12 +82,13 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
                           room_the_player_is_in->top * sprite_size,
                           room_the_player_is_in->width * sprite_size,
                           room_the_player_is_in->height * sprite_size);
-        reducer.SetEntityTransform(ClampToRoom(
-            found_player->hitboxes[0], // TODO : Not sure what to do when we have more than one hitbox
-            scaled_room,
-            found_player->transform,
-            found_player->transform + new_velocity
-        ));
+
+		reducer.SetEntityTransform(ClampToRoom(
+			found_player->hitboxes[0], // TODO : Not sure what to do when we have more than one hitbox
+			scaled_room,
+			found_player->transform,
+			found_player->transform + new_velocity
+		));
     }
 
     if (new_velocity.x > 0.01f || new_velocity.x < -0.01f ||

@@ -1,5 +1,8 @@
-#include "Map.h"
 #include <fstream>
+#include <unordered_map>
+
+#include "Map.h"
+#include "EntityFactory.h"
 
 Map::Map(HouseSceneReducer &reducer) : reducer(reducer) {
     // TODO : Figure out where this goes
@@ -54,6 +57,26 @@ Map::Map(HouseSceneReducer &reducer, std::string file_name) : reducer(reducer) {
     int entity_count;
     rf.read(reinterpret_cast<char *>(&entity_count), sizeof(entity_count));
     for (auto k = 0; k < entity_count; k++) {
+
+        EntityType type;
+        rf.read(reinterpret_cast<char *>(&type), sizeof(type));
+
+        int x;
+        rf.read(reinterpret_cast<char *>(&x), sizeof(x));
+
+        int y;
+        rf.read(reinterpret_cast<char *>(&y), sizeof(y));
+
+        if (type == EntityType::PlayerEntity) {
+            reducer.AddEntity(EntityFactory::Player(sf::Vector2f(x, y)));
+        } else {
+            reducer.AddEntity(Entity{type, 0, 0, sf::Vector2f(x, y)});
+        }
+    }
+
+    int room_count;
+    rf.read(reinterpret_cast<char *>(&room_count), sizeof(room_count));
+    for (auto k = 0; k < room_count; k++) {
 
         EntityType type;
         rf.read(reinterpret_cast<char *>(&type), sizeof(type));
@@ -127,4 +150,14 @@ void Map::WriteToFile(std::string file_name) const {
         int y = entity.transform.y;
         wf.write(reinterpret_cast<const char *>(&y), sizeof(y));
     });
+
+    auto rooms = reducer.GetState().rooms;
+    int room_size = rooms.size();
+    wf.write(reinterpret_cast<const char *>(&room_size), sizeof(room_size));
+    for (auto room : reducer.GetState().rooms) {
+        wf.write(reinterpret_cast<const char *>(&room.left), sizeof(room.left));
+        wf.write(reinterpret_cast<const char *>(&room.top), sizeof(room.top));
+        wf.write(reinterpret_cast<const char *>(&room.height), sizeof(room.height));
+        wf.write(reinterpret_cast<const char *>(&room.width), sizeof(room.width));
+    }
 }

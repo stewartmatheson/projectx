@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <windows.h>
 
@@ -58,7 +57,7 @@ void AssetWatcher::StartWatching() {
 		);
 
 		if (directory_watch_wait_status == WAIT_OBJECT_0) {
-            Sleep(1); // TODO : I think there is a race conidition here and the file is still locked
+            Sleep(10); // TODO : I think there is a race conidition here and the file is still locked
             required_reload = true;
 		}
     }

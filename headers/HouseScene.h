@@ -9,6 +9,7 @@
 #include "ViewLayer.h"
 #include "AssetWatcher.h"
 #include <SFML/Graphics.hpp>
+#include <unordered_map>
 
 struct TimedController {
     sf::Clock timer;
@@ -31,7 +32,6 @@ class HouseScene {
     void InitAnimations();
     void InitHouseMapView();
     void InitToolbarMap();
-    void InitPlayer();
     void InitTools();
     void InitEntityMap();
     Map map;

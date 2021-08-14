@@ -2,8 +2,6 @@
 
 #include "Animation.h"
 #include <SFML/Graphics.hpp>
-#include <memory>
-#include <unordered_map>
 
 enum class EntityType { GhostEntity = 0, DoorEntity = 1, PlayerEntity = 2 };
 
