@@ -3,17 +3,15 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-#include "AssetWatcher.h"
-
 class SpriteSheet {
+    std::string texture_path;
     sf::Sprite CreateTileSprite(int, int, int, int);
     std::vector<sf::Sprite> sprites;
     int scale;
     int size;
     sf::Texture texture;
     sf::RenderTexture icon_sprite_render_texture;
-    void LoadFromFile(std::string);
-    std::unique_ptr<AssetWatcher> asset_watcher;
+    void LoadFromFile();
 
   public:
     SpriteSheet(std::string, int, int, int, int);
@@ -24,4 +22,5 @@ class SpriteSheet {
     const sf::Texture &GetTexture() const;
     const int GetScale() const;
     const int GetSize() const;
+    void Reload();
 };

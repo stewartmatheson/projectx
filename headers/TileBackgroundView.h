@@ -4,10 +4,10 @@
 #include "View.h"
 
 class TileBackgroundView : public View<HouseSceneState> {
-    const SpriteSheet &tile_map;
+    const std::shared_ptr<SpriteSheet> tile_map;
 
   public:
-    TileBackgroundView(const SpriteSheet &);
+    TileBackgroundView(std::shared_ptr<SpriteSheet>);
     void Draw(sf::RenderTarget &, const HouseSceneState &) const;
     void Update();
 };

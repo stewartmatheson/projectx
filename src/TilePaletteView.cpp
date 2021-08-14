@@ -1,7 +1,6 @@
 #include "TilePaletteView.h"
 
-TilePaletteView::TilePaletteView(SpriteSheet &tile_map, SpriteSheet &entity_map,
-                                 int width, int height) {
+TilePaletteView::TilePaletteView(int width, int height) {
     tile_palette_render_texture.create(width, height);
 }
 

@@ -19,17 +19,16 @@
 HouseScene::HouseScene(int window_width, int window_height,
                        int tile_palette_offset, int toolbar_offset,
                        sf::IntRect map_bounds)
-    : tile_map("./assets/house.png", state.scale, 16, 5, 7),
-      entity_map(state.scale, 16),
-      player_sprite_sheet("./assets/NightThief.png", state.scale, 320, 1, 1),
-      toolbar_sprite_sheet(state.scale, 8),
+    : asset_watcher(state.scale),
       tile_palette_offset(tile_palette_offset), toolbar_offset(toolbar_offset),
       house_map_view_layer(sf::IntRect(0, 0, window_width, window_height)),
-      tile_palette_view_layer(
-          sf::IntRect(0, 0, tile_palette_offset * 2 + tile_map.GetSpriteSize(),
+      tile_palette_view_layer(sf::IntRect(
+          0, 0,
+          tile_palette_offset * 2 +
+              asset_watcher.GetSpriteSheet("tile_map")->GetSpriteSize(),
                       window_height)),
       toolbar_view_layer(
-          sf::IntRect(tile_palette_offset * 2 + tile_map.GetSpriteSize(), 0,
+          sf::IntRect(tile_palette_offset * 2 + asset_watcher.GetSpriteSheet("tile_map")->GetSpriteSize(), 0,
                       window_width, 60)),
       reducer(state), map(reducer) {
     reducer.SetMapBounds(map_bounds);
@@ -39,17 +38,14 @@ HouseScene::HouseScene(int window_width, int window_height,
 HouseScene::HouseScene(int window_width, int window_height,
                        int tile_palette_offset, int toolbar_offset,
                        std::string map_file_name)
-    : tile_map("./assets/house.png", state.scale, 16, 5, 7),
-      entity_map(state.scale, 16),
-      player_sprite_sheet("./assets/NightThief.png", state.scale, 320, 1, 1),
-      toolbar_sprite_sheet(state.scale, state.editor_state.toolbar_icon_size),
+    : asset_watcher(state.scale),
       tile_palette_offset(tile_palette_offset), toolbar_offset(toolbar_offset),
       house_map_view_layer(sf::IntRect(0, 0, window_width, window_height)),
       tile_palette_view_layer(
-          sf::IntRect(0, 0, tile_palette_offset * 2 + tile_map.GetSpriteSize(),
+          sf::IntRect(0, 0, tile_palette_offset * 2 + asset_watcher.GetSpriteSheet("tile_map")->GetSpriteSize(),
                       window_height)),
       toolbar_view_layer(
-          sf::IntRect(tile_palette_offset * 2 + tile_map.GetSpriteSize(), 0,
+          sf::IntRect(tile_palette_offset * 2 + asset_watcher.GetSpriteSheet("tile_map")->GetSpriteSize(), 0,
                       window_width, 60)),
       reducer(state), map(reducer, map_file_name) {
     Init(window_width, window_height);
@@ -63,32 +59,32 @@ void HouseScene::Init(int window_width, int window_height) {
     // TODO : Not sure we even want this here. We really need to rethink where
     // all this init code will live
     reducer.SetLeftToolbarWidth(tile_palette_offset * 2 +
-                                tile_map.GetSpriteSize());
+                                asset_watcher.GetSpriteSheet("tile_map")->GetSpriteSize());
 
     player_animations =
         std::make_shared<std::unordered_map<EntityState, Animation>>();
-    auto tile_sprites = tile_map.GetSprites();
+    auto tile_sprites = asset_watcher.GetSpriteSheet("tile_map")->GetSprites();
     std::for_each(
         tile_sprites.begin(), tile_sprites.end(), [this](const auto &sprite) {
             reducer.AddTilePaletteTile(TilePaletteTile{sprite, PaletteTile},
-                                       tile_map.GetSpriteSize());
+                                       asset_watcher.GetSpriteSheet("tile_map")->GetSpriteSize());
         });
 
     InitEntityMap();
     InitToolbarMap();
     InitTools();
 
-    auto entity_sprites = entity_map.GetSprites();
+    auto entity_sprites = asset_watcher.GetSpriteSheet("entity_map")->GetSprites();
     reducer.AddTilePaletteTile(TilePaletteTile{entity_sprites[0], PaletteEntity,
                                                EntityType::GhostEntity},
-                               entity_map.GetSpriteSize());
+                               asset_watcher.GetSpriteSheet("entity_map")->GetSpriteSize());
 
     reducer.AddTilePaletteTile(TilePaletteTile{entity_sprites[1], PaletteEntity,
                                                EntityType::DoorEntity},
-                               entity_map.GetSpriteSize());
+                               asset_watcher.GetSpriteSheet("entity_map")->GetSpriteSize());
 
     auto total_height = (state.editor_state.tile_palette_tiles.size() *
-                         (tile_map.GetSpriteSize() + tile_palette_offset)) +
+                         (asset_watcher.GetSpriteSheet("tile_map")->GetSpriteSize() + tile_palette_offset)) +
                         tile_palette_offset;
 
     reducer.SetTilePaletteBounds(state.editor_state.left_toolbar_width,
@@ -105,14 +101,14 @@ void HouseScene::Init(int window_width, int window_height) {
     state.house_view =
         sf::View(sf::FloatRect(0, 0, window_width, window_height));
 
-    reducer.InitSelectionRectangle(tile_map.GetSpriteSize());
+    reducer.InitSelectionRectangle(asset_watcher.GetSpriteSheet("tile_map")->GetSpriteSize());
 
     InitAnimations();
     InitPlayer();
 
     timed_controllers.push_back(TimedController{
         sf::Clock(), std::make_unique<EditorController>(
-                         entity_map.GetSpriteSize(),
+                         asset_watcher.GetSpriteSheet("entity_map")->GetSpriteSize(),
                          tile_palette_view_layer.GetRenderTexture(),
                          house_map_view_layer.GetRenderTexture(), map)});
 
@@ -123,11 +119,11 @@ void HouseScene::Init(int window_width, int window_height) {
         sf::Clock(), std::make_unique<PlayerController>(player_animations)});
 
     tile_palette_view_layer.AddView(std::make_unique<TilePaletteView>(
-        tile_map, entity_map, window_height,
+        window_height,
         state.editor_state.left_toolbar_width));
 
     toolbar_view_layer.AddView(
-        std::make_unique<ToolbarToolsView>(toolbar_sprite_sheet));
+        std::make_unique<ToolbarToolsView>(asset_watcher.GetSpriteSheet("toolbar_sprite_sheet")));
 
     InitHouseMapView();
 }
@@ -156,12 +152,13 @@ void HouseScene::InitPlayer() {
 void HouseScene::InitTools() { reducer.AddTool(Tool{ToolType::Room, 0}); }
 
 void HouseScene::InitEntityMap() {
-    entity_map.CreateIconSprite(sf::Color::Red, 0);
-    entity_map.CreateIconSprite(sf::Color::Green, 1);
+
+    asset_watcher.GetSpriteSheet("entity_map")->CreateIconSprite(sf::Color::Red, 0);
+    asset_watcher.GetSpriteSheet("entity_map")->CreateIconSprite(sf::Color::Green, 1);
 }
 
 void HouseScene::InitToolbarMap() {
-    toolbar_sprite_sheet.CreateIconSprite(sf::Color::Yellow, 0);
+    asset_watcher.GetSpriteSheet("toolbar_sprite_sheet")->CreateIconSprite(sf::Color::Yellow, 0);
 }
 
 void HouseScene::InitAnimations() {
@@ -172,7 +169,7 @@ void HouseScene::InitAnimations() {
 
     player_animations->insert(
         {EntityState::Idle,
-         Animation(player_sprite_sheet, idle_frames, 32, 32, 8)});
+         Animation(asset_watcher.GetSpriteSheet("player_sprite_sheet"), idle_frames, 32, 32, 8)});
 
     std::vector<AnimationFrame> throw_frames;
     for (auto col = 0; col < 10; col++) {
@@ -181,7 +178,7 @@ void HouseScene::InitAnimations() {
 
     player_animations->insert(
         {EntityState::Throwing,
-         Animation(player_sprite_sheet, throw_frames, 32, 32, 8)});
+         Animation(asset_watcher.GetSpriteSheet("player_sprite_sheet"), throw_frames, 32, 32, 8)});
 
     std::vector<AnimationFrame> walk_frames;
     for (auto col = 0; col < 10; col++) {
@@ -190,7 +187,7 @@ void HouseScene::InitAnimations() {
 
     player_animations->insert(
         {EntityState::Walking,
-         Animation(player_sprite_sheet, walk_frames, 32, 32, 8)});
+         Animation(asset_watcher.GetSpriteSheet("player_sprite_sheet"), walk_frames, 32, 32, 8)});
 
     std::vector<AnimationFrame> attack_frames;
     for (auto col = 0; col < 10; col++) {
@@ -199,7 +196,7 @@ void HouseScene::InitAnimations() {
 
     player_animations->insert(
         {EntityState::Attacking,
-         Animation(player_sprite_sheet, attack_frames, 32, 32, 8)});
+         Animation(asset_watcher.GetSpriteSheet("player_sprite_sheet"), attack_frames, 32, 32, 8)});
 
     std::vector<AnimationFrame> die_frames;
     for (auto col = 0; col < 10; col++) {
@@ -208,29 +205,29 @@ void HouseScene::InitAnimations() {
 
     player_animations->insert(
         {EntityState::Dying,
-         Animation(player_sprite_sheet, die_frames, 32, 32, 8)});
+         Animation(asset_watcher.GetSpriteSheet("player_sprite_sheet"), die_frames, 32, 32, 8)});
 }
 
 void HouseScene::InitHouseMapView() {
-    house_map_view_layer.AddView(std::make_unique<SelectedTileView>(tile_map));
+    house_map_view_layer.AddView(std::make_unique<SelectedTileView>(asset_watcher.GetSpriteSheet("tile_map")));
 
     house_map_view_layer.AddView(
-        std::make_unique<TileBackgroundView>(tile_map));
+        std::make_unique<TileBackgroundView>(asset_watcher.GetSpriteSheet("tile_map")));
 
     house_map_view_layer.AddView(
-        std::make_unique<GridView>(tile_map.GetSpriteSize()));
+        std::make_unique<GridView>(asset_watcher.GetSpriteSheet("tile_map")->GetSpriteSize()));
 
     house_map_view_layer.AddView(
-        std::make_unique<EntityView>(entity_map, player_animations));
+        std::make_unique<EntityView>(asset_watcher.GetSpriteSheet("entity_map"), player_animations));
 
     house_map_view_layer.AddView(std::make_unique<BoxSelectionView>());
     house_map_view_layer.AddView(std::make_unique<CreatedRoomSelectionView>());
 
     house_map_view_layer.AddView(
-        std::make_unique<GridSelectionView>(tile_map.GetSpriteSize()));
+        std::make_unique<GridSelectionView>(asset_watcher.GetSpriteSheet("tile_map")->GetSpriteSize()));
     house_map_view_layer.AddView(std::make_unique<ShadowView>(
-        sf::IntRect(0, 0, tile_map.GetSpriteSize() * state.map_bounds.width,
-                    tile_map.GetSpriteSize() * state.map_bounds.height)));
+        sf::IntRect(0, 0, asset_watcher.GetSpriteSheet("tile_map")->GetSpriteSize() * state.map_bounds.width,
+                    asset_watcher.GetSpriteSheet("tile_map")->GetSpriteSize() * state.map_bounds.height)));
 }
 
 void HouseScene::HandleInput(const EventWithMouse &event) {
@@ -239,6 +236,9 @@ void HouseScene::HandleInput(const EventWithMouse &event) {
 }
 
 void HouseScene::Update() {
+
+    asset_watcher.ReloadIfRequired();
+
     for (auto &timed_controller : timed_controllers)
         timed_controller.controller->Update(reducer,
                                             timed_controller.timer.restart());

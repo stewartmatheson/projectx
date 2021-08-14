@@ -4,10 +4,9 @@
 // texture file
 SpriteSheet::SpriteSheet(std::string texture_path, int scale, int size,
                          int cols, int rows)
-    : sprites(), scale(scale), size(size), texture() {
+    : texture_path(texture_path), sprites(), scale(scale), size(size), texture() {
 
-    LoadFromFile(texture_path);
-    asset_watcher = std::make_unique<AssetWatcher>(texture_path);
+    LoadFromFile();
     for (auto y = 0; y < cols; y++) {
         for (auto x = 0; x < rows; x++) {
             sprites.push_back(CreateTileSprite(x, y, scale, size));
@@ -56,9 +55,18 @@ const std::vector<sf::Sprite> &SpriteSheet::GetSprites() const {
     return sprites;
 }
 
-void SpriteSheet::LoadFromFile(std::string texture_path) {
+void SpriteSheet::LoadFromFile() {
+    // Some textures may not have a file. This is a noop
+    if (texture_path == "") {
+        return;
+    }
+
     if (!texture.loadFromFile(texture_path)) {
         std::cout << "Can't laod file" << std::endl;
         exit(1);
     }
+}
+
+void SpriteSheet::Reload() {
+    LoadFromFile();
 }
