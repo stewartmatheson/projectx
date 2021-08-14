@@ -37,6 +37,7 @@ add_executable(ProjectX
   headers/ToolbarController.h
   headers/CreatedRoomSelectionView.h
   headers/ShadowView.h
+  headers/AssetWatcher.h
   src/Animation.cpp
   src/HouseScene.cpp
   src/Map.cpp
@@ -57,6 +58,7 @@ add_executable(ProjectX
   src/ToolbarController.cpp
   src/CreatedRoomSelectionView.cpp
   src/ShadowView.cpp
+  src/AssetWatcher.cpp
 )
 
 target_include_directories(ProjectX
