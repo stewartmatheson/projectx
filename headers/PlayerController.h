@@ -4,6 +4,7 @@
 #include "Controller.h"
 #include "EventWithMouse.h"
 #include "HouseSceneReducer.h"
+#include <unordered_map>
 
 class PlayerController : public Controller<HouseSceneReducer> {
     sf::Vector2f current_input;

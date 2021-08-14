@@ -1,3 +1,6 @@
+#include <memory>
+#include <unordered_map>
+
 #include "HouseScene.h"
 #include "Animation.h"
 #include "BoxSelectionView.h"
@@ -15,6 +18,7 @@
 #include "TilePaletteView.h"
 #include "ToolbarController.h"
 #include "ToolbarToolsView.h"
+#include "EntityFactory.h"
 
 HouseScene::HouseScene(int window_width, int window_height,
                        int tile_palette_offset, int toolbar_offset,
@@ -104,7 +108,7 @@ void HouseScene::Init(int window_width, int window_height) {
     reducer.InitSelectionRectangle(asset_watcher.GetSpriteSheet("tile_map")->GetSpriteSize());
 
     InitAnimations();
-    InitPlayer();
+    reducer.AddEntity(EntityFactory::Player(sf::Vector2f(0,0)));
 
     timed_controllers.push_back(TimedController{
         sf::Clock(), std::make_unique<EditorController>(
@@ -127,27 +131,6 @@ void HouseScene::Init(int window_width, int window_height) {
 
     InitHouseMapView();
 }
-
-void HouseScene::InitPlayer() {
-    // Here now we know we have a valid state we execute an action to load the
-    // map. Note here that if we ever intend to dispatch these actions more than
-    // once they should be added to a controller
-    //auto player_hitbox = sf::FloatRect(-55, -25, 50, 120);
-    auto player_hitbox = sf::FloatRect(0, 0, 50, 120);
-    reducer.AddEntity(
-        Entity{
-            EntityType::PlayerEntity, 
-            500.f, 
-            30.f, 
-            sf::Vector2f(0, 0),
-            sf::Vector2f(0, 0),
-            sf::Vector2f(0, 0),
-            EntityState::Idle,
-            0,
-            { player_hitbox }
-        }
-    );
-} 
 
 void HouseScene::InitTools() { reducer.AddTool(Tool{ToolType::Room, 0}); }
 
