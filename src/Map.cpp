@@ -78,17 +78,19 @@ Map::Map(HouseSceneReducer &reducer, std::string file_name) : reducer(reducer) {
     rf.read(reinterpret_cast<char *>(&room_count), sizeof(room_count));
     for (auto k = 0; k < room_count; k++) {
 
-        EntityType type;
-        rf.read(reinterpret_cast<char *>(&type), sizeof(type));
+        int left;
+        rf.read(reinterpret_cast<char *>(&left), sizeof(left));
 
-        int x;
-        rf.read(reinterpret_cast<char *>(&x), sizeof(x));
+        int top;
+        rf.read(reinterpret_cast<char *>(&top), sizeof(top));
 
-        int y;
-        rf.read(reinterpret_cast<char *>(&y), sizeof(y));
+        int height;
+        rf.read(reinterpret_cast<char *>(&height), sizeof(height));
 
-        std::unordered_map<EntityState, Animation> animations = {};
-        reducer.AddEntity(Entity{type, 0, 0, sf::Vector2f(x, y)});
+        int width;
+        rf.read(reinterpret_cast<char *>(&width), sizeof(width));
+
+        reducer.AddRoom(sf::IntRect(left, top, width, height));
     }
 }
 
