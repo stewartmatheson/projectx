@@ -7,7 +7,7 @@ AssetWatcher::AssetWatcher(int scale)
     : watcher(&AssetWatcher::StartWatching, this), required_reload(false) {
 	
 	sprite_sheets["tile_map"] =
-        std::make_shared<SpriteSheet>("./assets/house.png", scale, 16, 5, 7);
+        std::make_shared<SpriteSheet>("./assets/house.png", scale, 16, 20, 20);
 
     sprite_sheets["entity_map"] = std::make_shared<SpriteSheet>(scale, 16);
 
