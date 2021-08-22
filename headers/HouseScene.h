@@ -1,5 +1,9 @@
 #pragma once
 
+
+#include <SFML/Graphics.hpp>
+#include <unordered_map>
+
 #include "Controller.h"
 #include "EventWithMouse.h"
 #include "HouseSceneReducer.h"
@@ -8,8 +12,7 @@
 #include "SpriteSheet.h"
 #include "ViewLayer.h"
 #include "AssetWatcher.h"
-#include <SFML/Graphics.hpp>
-#include <unordered_map>
+#include "ControllerScheme.h"
 
 struct TimedController {
     sf::Clock timer;
@@ -28,7 +31,7 @@ class HouseScene {
     std::shared_ptr<std::unordered_map<EntityState, Animation>>
         player_animations;
     HouseSceneReducer reducer;
-    void Init(int, int);
+    void Init(int, int, std::shared_ptr<ControllerScheme>);
     void InitAnimations();
     void InitHouseMapView();
     void InitToolbarMap();
@@ -36,8 +39,8 @@ class HouseScene {
     void InitEntityMap();
     Map map;
   public:
-    HouseScene(int, int, int, int, sf::IntRect);
-    HouseScene(int, int, int, int, std::string);
+    HouseScene(int, int, int, int, sf::IntRect, std::shared_ptr<ControllerScheme>);
+    HouseScene(int, int, int, int, std::string, std::shared_ptr<ControllerScheme>);
     void HandleInput(const EventWithMouse &);
     void Update();
     void Draw(sf::RenderTarget &window);

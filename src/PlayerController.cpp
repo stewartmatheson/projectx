@@ -1,35 +1,13 @@
 #include "PlayerController.h"
 
 PlayerController::PlayerController(
-    std::weak_ptr<std::unordered_map<EntityState, Animation>> animations)
-    : animations(animations) {}
+    std::weak_ptr<std::unordered_map<EntityState, Animation>> animations, 
+    std::shared_ptr<ControllerScheme> controller_scheme)
+    : animations(animations), controller_scheme(controller_scheme) {}
 
 void PlayerController::HandleInput(const EventWithMouse &event_with_mouse,
                                    HouseSceneReducer &state) {
-
-    if (event_with_mouse.event.type == sf::Event::KeyPressed &&
-        event_with_mouse.event.key.code == sf::Keyboard::Left) {
-        current_input = sf::Vector2f(-1, 0);
-    }
-
-    if (event_with_mouse.event.type == sf::Event::KeyPressed &&
-        event_with_mouse.event.key.code == sf::Keyboard::Right) {
-        current_input = sf::Vector2f(1, 0);
-    }
-
-    if (event_with_mouse.event.type == sf::Event::KeyPressed &&
-        event_with_mouse.event.key.code == sf::Keyboard::Up) {
-        current_input = sf::Vector2f(0, -1);
-    }
-
-    if (event_with_mouse.event.type == sf::Event::KeyPressed &&
-        event_with_mouse.event.key.code == sf::Keyboard::Down) {
-        current_input = sf::Vector2f(0, 1);
-    }
-
-    if (event_with_mouse.event.type == sf::Event::KeyReleased) {
-        current_input = sf::Vector2f(0, 0);
-    }
+    current_input = controller_scheme->GetInput(event_with_mouse);
 }
 
 void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
