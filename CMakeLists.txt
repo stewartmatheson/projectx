@@ -38,6 +38,9 @@ add_executable(ProjectX
   headers/ShadowView.h
   headers/AssetWatcher.h
   headers/EntityFactory.h
+  headers/ControllerScheme.h
+  headers/KeyboardControllerScheme.h
+  headers/GamepadControllerScheme.h
   src/Animation.cpp
   src/HouseScene.cpp
   src/Map.cpp
@@ -60,6 +63,8 @@ add_executable(ProjectX
   src/ShadowView.cpp
   src/AssetWatcher.cpp
   src/EntityFactory.cpp
+  src/KeyboardControllerScheme.cpp
+  src/GamepadControllerScheme.cpp
 )
 
 target_include_directories(ProjectX
