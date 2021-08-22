@@ -22,7 +22,7 @@
 
 HouseScene::HouseScene(int window_width, int window_height,
                        int tile_palette_offset, int toolbar_offset,
-                       sf::IntRect map_bounds)
+                       sf::IntRect map_bounds, std::shared_ptr<ControllerScheme> controller_scheme)
     : asset_watcher(state.scale),
       tile_palette_offset(tile_palette_offset), toolbar_offset(toolbar_offset),
       house_map_view_layer(sf::IntRect(0, 0, window_width, window_height)),
@@ -36,12 +36,12 @@ HouseScene::HouseScene(int window_width, int window_height,
                       window_width, 60)),
       reducer(state), map(reducer) {
     reducer.SetMapBounds(map_bounds);
-    Init(window_width, window_height);
+    Init(window_width, window_height, controller_scheme);
 }
 
 HouseScene::HouseScene(int window_width, int window_height,
                        int tile_palette_offset, int toolbar_offset,
-                       std::string map_file_name)
+                       std::string map_file_name, std::shared_ptr<ControllerScheme> controller_scheme)
     : asset_watcher(state.scale),
       tile_palette_offset(tile_palette_offset), toolbar_offset(toolbar_offset),
       house_map_view_layer(sf::IntRect(0, 0, window_width, window_height)),
@@ -52,10 +52,10 @@ HouseScene::HouseScene(int window_width, int window_height,
           sf::IntRect(tile_palette_offset * 2 + asset_watcher.GetSpriteSheet("tile_map")->GetSpriteSize(), 0,
                       window_width, 60)),
       reducer(state), map(reducer, map_file_name) {
-    Init(window_width, window_height);
+    Init(window_width, window_height, controller_scheme);
 }
 
-void HouseScene::Init(int window_width, int window_height) {
+void HouseScene::Init(int window_width, int window_height, std::shared_ptr<ControllerScheme> controller_scheme) {
     // TODO : When we have to build a graphics settings page we will need to
     // move this.
     reducer.SetWindowSize(window_width, window_height);
@@ -120,7 +120,7 @@ void HouseScene::Init(int window_width, int window_height) {
         TimedController{sf::Clock(), std::make_unique<ToolbarController>()});
 
     timed_controllers.push_back(TimedController{
-        sf::Clock(), std::make_unique<PlayerController>(player_animations)});
+        sf::Clock(), std::make_unique<PlayerController>(player_animations, controller_scheme)});
 
     tile_palette_view_layer.AddView(std::make_unique<TilePaletteView>(
         window_height,
