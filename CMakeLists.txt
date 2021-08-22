@@ -5,7 +5,7 @@ project(ProjectX VERSION 1.0)
 set(CMAKE_CXX_EXTENSIONS OFF)
 #set(CMAKE_CXX_FLAGS_DEBUG "-Wall -g -fsanitize=address -fno-omit-frame-pointer")
 set(CMAKE_CXX_FLAGS_RELEASE "-Wall")
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -38,6 +38,7 @@ add_executable(ProjectX
   headers/ShadowView.h
   headers/AssetWatcher.h
   headers/EntityFactory.h
+  headers/EnemyController.h
   src/Animation.cpp
   src/HouseScene.cpp
   src/Map.cpp
@@ -60,6 +61,7 @@ add_executable(ProjectX
   src/ShadowView.cpp
   src/AssetWatcher.cpp
   src/EntityFactory.cpp
+  src/EnemyController.cpp
 )
 
 target_include_directories(ProjectX
