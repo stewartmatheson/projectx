@@ -1,3 +1,5 @@
+
+#include <cmath>
 #include "PlayerController.h"
 
 PlayerController::PlayerController(
@@ -40,6 +42,7 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
     reducer.SetEntityVelocity(new_velocity);
 
     auto rooms = reducer.GetState().rooms;
+
     // TODO : Remove Magic number
     auto sprite_size = reducer.GetState().scale * 16;
 
@@ -80,10 +83,21 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
         reducer.SetHouseViewCenter(found_player->transform);
     }
 
-    reducer.SetPlayerDirection(current_input);
+    // Not sure if this should go in the reducer but we can put it here for now
+    auto input_mag =
+        std::sqrt(std::pow(current_input.x, 2) + std::pow(current_input.y, 2));
+    auto norm_vector =
+        sf::Vector2f(std::round(current_input.x / input_mag), std::round(current_input.y / input_mag));
 
-    // TODO : This most likely won't work as different entities will move the
-    // animations around before they are drawn
+    if (!std::isnan(norm_vector.x) || !std::isnan(norm_vector.y)) {
+        reducer.SetPlayerDirection(norm_vector);
+    }
+
+    /*
+    TODO : This most likely won't work as different entities will move the
+    animations around before they are drawn. We need to also figure out where
+    this should end up living
+    */
     if (auto shared_animations = animations.lock()) {
         auto state = reducer.GetState();
         auto found_player =
