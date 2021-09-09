@@ -17,4 +17,5 @@ struct Entity {
     EntityState state;
     int rotation;
     std::vector<sf::FloatRect> hitboxes;
+    double facing;
 };

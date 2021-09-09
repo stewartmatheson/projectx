@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Entity.h"
+#include "Item.h"
 #include "TileLayer.h"
 #include "TilePaletteTile.h"
 
@@ -40,6 +41,7 @@ struct HouseSceneEditorState {
 struct HouseSceneState {
     std::vector<Entity> entities;
     std::vector<TileLayer> tile_layers;
+    std::vector<Item> player_items;
     sf::IntRect map_bounds;
     sf::View house_view;
     HouseSceneEditorState editor_state;

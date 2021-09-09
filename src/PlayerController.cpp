@@ -1,5 +1,5 @@
-
 #include <cmath>
+#include <numbers>
 #include "PlayerController.h"
 
 PlayerController::PlayerController(
@@ -31,7 +31,7 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
         (delta_time.asMilliseconds() * found_player->acceleration) / 1000;
 
     acceleration +=
-        sf::Vector2f(force * current_input.x, force * current_input.y);
+        sf::Vector2f(force * current_input.direction.x, force * current_input.direction.y);
 
     auto new_velocity = found_player->velocity + acceleration;
     // TODO : Note this is a damping const of 0.1. We most likley
@@ -83,20 +83,28 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
         reducer.SetHouseViewCenter(found_player->transform);
     }
 
+    /*
+    
     // Not sure if this should go in the reducer but we can put it here for now
     auto input_mag =
-        std::sqrt(std::pow(current_input.x, 2) + std::pow(current_input.y, 2));
+        std::sqrt(std::pow(current_input.direction.x, 2) + std::pow(current_input.direction.y, 2));
     auto norm_vector =
-        sf::Vector2f(std::round(current_input.x / input_mag), std::round(current_input.y / input_mag));
+        sf::Vector2f(std::round(current_input.direction.x / input_mag), std::round(current_input.direction.y / input_mag));
 
     if (!std::isnan(norm_vector.x) || !std::isnan(norm_vector.y)) {
         reducer.SetPlayerDirection(norm_vector);
     }
+    
+    */
+
+    reducer.SetPlayerDirection(current_input.direction);
+
+    HandleActions(reducer);
 
     /*
     TODO : This most likely won't work as different entities will move the
     animations around before they are drawn. We need to also figure out where
-    this should end up living
+    this should end up living but TBH it feels like it should be in the view
     */
     if (auto shared_animations = animations.lock()) {
         auto state = reducer.GetState();
@@ -113,15 +121,16 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
             current_animation->second.sprite.setPosition(
                 found_player->transform);
 
-            current_animation->second.sprite.setScale(
-                4 * found_player->direction.x,
-                current_animation->second.sprite.getScale().y);
+            current_animation->second.sprite.setRotation(
+                found_player->facing);
         }
     }
 }
 
+void PlayerController::HandleActions(HouseSceneReducer& reducer) {
+}
+
 void PlayerController::Reset() {
-    std::cout << "PlayerController::Reset not implemented yet" << std::endl;
     // entity.SetVelocity(sf::Vector2f(0, 0));
 }
 

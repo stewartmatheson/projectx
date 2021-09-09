@@ -11,6 +11,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_executable(ProjectX
   headers/HouseSceneReducer.h
+  headers/Item.h
   headers/TileLayer.h
   headers/Animation.h
   headers/HouseScene.h

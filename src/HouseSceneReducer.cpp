@@ -202,6 +202,17 @@ void HouseSceneReducer::SetPlayerDirection(sf::Vector2f new_direction) {
             found_player->direction = new_direction;
         }
     }
+
+
+    // First if the player has requested to loot something they are facing and close enough to
+    auto angle = atan2f(new_direction.y, new_direction.x) * 180 / 3.1416;
+
+    if (angle < 0) {
+        angle += 360;
+    }
+    std::cout << angle << std::endl;
+
+    found_player->facing = angle;
 }
 
 void HouseSceneReducer::AddRoom(sf::IntRect new_room) {

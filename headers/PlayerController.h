@@ -8,10 +8,11 @@
 #include <unordered_map>
 
 class PlayerController : public Controller<HouseSceneReducer> {
-    sf::Vector2f current_input;
+    ControllerSchemeState current_input;
     std::weak_ptr<std::unordered_map<EntityState, Animation>> animations;
     sf::Vector2f ClampToRoom(sf::FloatRect, sf::IntRect, sf::Vector2f, sf::Vector2f);
     std::shared_ptr<ControllerScheme> controller_scheme;
+    void HandleActions(HouseSceneReducer &);
 
   public:
     PlayerController(std::weak_ptr<std::unordered_map<EntityState, Animation>>, std::shared_ptr<ControllerScheme>);

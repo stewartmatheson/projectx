@@ -4,5 +4,5 @@
 
 class GamepadControllerScheme : public ControllerScheme {
   public:
-	 sf::Vector2f GetInput(const EventWithMouse&) const;
+	 ControllerSchemeState GetInput(const EventWithMouse&) const;
 };
