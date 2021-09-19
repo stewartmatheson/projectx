@@ -12,6 +12,7 @@ class AssetWatcher {
     std::map<std::string, std::shared_ptr<SpriteSheet>> sprite_sheets;
     void Reload();
     std::atomic<bool> required_reload;
+    std::atomic<bool> shutdown;
 
   public:
     void ReloadIfRequired();

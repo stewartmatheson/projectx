@@ -4,7 +4,8 @@
 #include "AssetWatcher.h"
 
 AssetWatcher::AssetWatcher(int scale)
-    : watcher(&AssetWatcher::StartWatching, this), required_reload(false) {
+    : watcher(&AssetWatcher::StartWatching, this), required_reload(false),
+      shutdown(false) {
 
     sprite_sheets["tile_map"] =
         std::make_shared<SpriteSheet>("./assets/house.png", scale, 16, 20, 20);
@@ -18,7 +19,10 @@ AssetWatcher::AssetWatcher(int scale)
         std::make_shared<SpriteSheet>(scale, 8);
 }
 
-AssetWatcher::~AssetWatcher() { watcher.join(); }
+AssetWatcher::~AssetWatcher() {
+    shutdown = true;
+    watcher.join();
+}
 
 std::shared_ptr<SpriteSheet>
 AssetWatcher::GetSpriteSheet(std::string sprite_sheet_name) {
@@ -39,7 +43,7 @@ void AssetWatcher::StartWatching() {
     DWORD directory_watch_wait_status;
     strcpy(lp_asset_path, asset_path.c_str());
 
-    while (true) {
+    while (!shutdown) {
         directory_watcher_change_handles[0] = FindFirstChangeNotification(
             lp_asset_path, false, FILE_NOTIFY_CHANGE_LAST_WRITE);
 
