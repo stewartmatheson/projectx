@@ -48,7 +48,7 @@ void AssetWatcher::StartWatching() {
         }
 
         directory_watch_wait_status = WaitForMultipleObjects(
-            1, directory_watcher_change_handles, false, INFINITE);
+            1, directory_watcher_change_handles, false, 5000);
 
         if (directory_watch_wait_status == WAIT_OBJECT_0) {
             Sleep(10); // TODO : I think there is a race conidition here and the
