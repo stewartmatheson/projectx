@@ -62,11 +62,23 @@ add_executable(ProjectX
   src/ToolbarController.cpp
   src/CreatedRoomSelectionView.cpp
   src/ShadowView.cpp
-  src/AssetWatcher.cpp
+  src/AssetWatcher.common.cpp
   src/EntityFactory.cpp
   src/KeyboardControllerScheme.cpp
   src/GamepadControllerScheme.cpp
 )
+
+if(WIN32)
+  target_sources(ProjectX
+    PRIVATE
+    src/AssetWatcher.win32.cpp
+  )
+else()
+  target_sources(ProjectX
+    PRIVATE
+    src/AssetWatcher.stub.cpp
+  )
+endif()
 
 target_include_directories(ProjectX
   PRIVATE headers
