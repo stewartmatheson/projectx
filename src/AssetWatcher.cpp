@@ -32,14 +32,11 @@ void AssetWatcher::Reload() {
 }
 
 void AssetWatcher::StartWatching() {
-    std::string asset_path =
-        "C:\\Users\\Stewart\\SourceCode\\projectx\\build\\assets";
-    LPTSTR lp_asset_path = new TCHAR[asset_path.size() + 1];
-    strcpy(lp_asset_path, asset_path.c_str());
+    auto asset_path = "C:\\Users\\Stewart\\SourceCode\\projectx\\build\\assets";
 
     while (true) {
         auto directory_watcher_change_handle = FindFirstChangeNotification(
-            lp_asset_path, false, FILE_NOTIFY_CHANGE_LAST_WRITE);
+            asset_path, false, FILE_NOTIFY_CHANGE_LAST_WRITE);
 
         if (directory_watcher_change_handle == INVALID_HANDLE_VALUE) {
             exit(GetLastError());
@@ -54,8 +51,6 @@ void AssetWatcher::StartWatching() {
             required_reload = true;
         }
     }
-
-    delete[] lp_asset_path;
 }
 
 void AssetWatcher::ReloadIfRequired() {
