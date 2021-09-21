@@ -2,7 +2,7 @@
 
 #include "ControllerScheme.h"
 
-class KeyboardControllerScheme : public ControllerScheme {
+class KeyboardControllerScheme final : public ControllerScheme {
   public:
     ControllerSchemeState GetInput(const EventWithMouse &) const;
 };
