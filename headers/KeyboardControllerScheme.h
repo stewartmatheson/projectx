@@ -4,5 +4,5 @@
 
 class KeyboardControllerScheme : public ControllerScheme {
   public:
-	ControllerSchemeState GetInput(const EventWithMouse&) const;
+    ControllerSchemeState GetInput(const EventWithMouse &) const;
 };
