@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <iostream>
 #include <windows.h>
 
@@ -32,18 +33,14 @@ void AssetWatcher::Reload() {
 }
 
 void AssetWatcher::StartWatching() {
-    char buffer[MAX_PATH];
-    // TODO: consider handling the case where path name greater than length
-    if (GetFullPathName("assets", MAX_PATH, buffer, nullptr) == 0) {
-        exit(GetLastError());
-    }
+    auto asset_path = std::filesystem::absolute("assets");
 
     HANDLE directory_watcher_change_handles[1];
     DWORD directory_watch_wait_status;
 
     while (true) {
         directory_watcher_change_handles[0] = FindFirstChangeNotification(
-            buffer, false, FILE_NOTIFY_CHANGE_LAST_WRITE);
+            asset_path.string().c_str(), false, FILE_NOTIFY_CHANGE_LAST_WRITE);
 
         if (directory_watcher_change_handles[0] == INVALID_HANDLE_VALUE) {
             exit(GetLastError());
