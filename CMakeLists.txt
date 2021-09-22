@@ -73,6 +73,11 @@ if(WIN32)
     PRIVATE
     src/AssetWatcher.win32.cpp
   )
+elseif(APPLE)
+  target_sources(ProjectX
+    PRIVATE
+    src/AssetWatcher.apple.cpp
+  )
 else()
   target_sources(ProjectX
     PRIVATE
