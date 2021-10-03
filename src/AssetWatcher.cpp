@@ -42,12 +42,13 @@ void AssetWatcher::StartWatching() {
         directory_watcher_change_handles[0] = FindFirstChangeNotification(
             asset_path.string().c_str(), false, FILE_NOTIFY_CHANGE_LAST_WRITE);
 
-        if (directory_watcher_change_handles[0] == INVALID_HANDLE_VALUE) {
+
+        if (directory_watcher_change_handle == INVALID_HANDLE_VALUE) {
             exit(GetLastError());
         }
 
-        directory_watch_wait_status = WaitForMultipleObjects(
-            1, directory_watcher_change_handles, false, INFINITE);
+        auto directory_watch_wait_status =
+            WaitForSingleObject(directory_watcher_change_handle, INFINITE);
 
         if (directory_watch_wait_status == WAIT_OBJECT_0) {
             Sleep(10); // TODO : I think there is a race conidition here and the

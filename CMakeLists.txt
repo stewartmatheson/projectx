@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.10)
 project(ProjectX VERSION 1.0)
 
 set(CMAKE_CXX_EXTENSIONS OFF)
-#set(CMAKE_CXX_FLAGS_DEBUG "-Wall -g -fsanitize=address -fno-omit-frame-pointer")
+set(CMAKE_CXX_FLAGS_DEBUG "-Wall -g -fsanitize=address -fno-omit-frame-pointer")
 set(CMAKE_CXX_FLAGS_RELEASE "-Wall")
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -100,3 +100,8 @@ if(DEFINED ENV{SFML_PREFIX})
     PRIVATE $ENV{SFML_PREFIX}/lib
   )
 endif()
+
+find_package(Threads REQUIRED)
+target_link_libraries(ProjectX
+  Threads::Threads
+)

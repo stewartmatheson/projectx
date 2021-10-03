@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "SpriteSheet.h"
 
 struct AnimationFrame {
