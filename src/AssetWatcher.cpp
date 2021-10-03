@@ -52,7 +52,7 @@ void AssetWatcher::StartWatching() {
         }
 
         auto directory_watch_wait_status =
-            WaitForSingleObject(directory_watcher_change_handle, INFINITE);
+            WaitForSingleObject(directory_watcher_change_handle, 5000);
 
         if (directory_watch_wait_status == WAIT_OBJECT_0) {
             Sleep(10); // TODO : I think there is a race conidition here and the
