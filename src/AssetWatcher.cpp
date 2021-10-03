@@ -39,11 +39,8 @@ void AssetWatcher::Reload() {
 void AssetWatcher::StartWatching() {
     auto asset_path = std::filesystem::absolute("assets");
 
-    HANDLE directory_watcher_change_handles[1];
-    DWORD directory_watch_wait_status;
-
     while (!shutdown) {
-        directory_watcher_change_handles[0] = FindFirstChangeNotification(
+        auto directory_watcher_change_handle = FindFirstChangeNotification(
             asset_path.string().c_str(), false, FILE_NOTIFY_CHANGE_LAST_WRITE);
 
 
