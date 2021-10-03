@@ -100,3 +100,8 @@ if(DEFINED ENV{SFML_PREFIX})
     PRIVATE $ENV{SFML_PREFIX}/lib
   )
 endif()
+
+find_package(Threads REQUIRED)
+target_link_libraries(ProjectX
+  Threads::Threads
+)
