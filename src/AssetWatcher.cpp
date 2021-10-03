@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <iostream>
 #include <windows.h>
 
@@ -32,11 +33,15 @@ void AssetWatcher::Reload() {
 }
 
 void AssetWatcher::StartWatching() {
-    auto asset_path = "C:\\Users\\Stewart\\SourceCode\\projectx\\build\\assets";
+    auto asset_path = std::filesystem::absolute("assets");
+
+    HANDLE directory_watcher_change_handles[1];
+    DWORD directory_watch_wait_status;
 
     while (true) {
-        auto directory_watcher_change_handle = FindFirstChangeNotification(
-            asset_path, false, FILE_NOTIFY_CHANGE_LAST_WRITE);
+        directory_watcher_change_handles[0] = FindFirstChangeNotification(
+            asset_path.string().c_str(), false, FILE_NOTIFY_CHANGE_LAST_WRITE);
+
 
         if (directory_watcher_change_handle == INVALID_HANDLE_VALUE) {
             exit(GetLastError());
