@@ -78,6 +78,11 @@ elseif(APPLE)
     PRIVATE
     src/AssetWatcher.apple.cpp
   )
+elseif(CMAKE_SYSTEM_INFO_FILE STREQUAL "Platform/Linux")
+  target_sources(ProjectX
+    PRIVATE
+    src/AssetWatcher.linux.cpp
+  )
 else()
   target_sources(ProjectX
     PRIVATE
