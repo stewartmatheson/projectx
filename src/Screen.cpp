@@ -29,9 +29,9 @@ const sf::IntRect Screen::GetToolbarArea() const {
                        0, window_size.width, 60);
 }
 
-const int Screen::GetToolbarOffset() const { return toolbar_offset; }
-const int Screen::GetTilePaletteOffset() const { return tile_palette_offset; }
+int Screen::GetToolbarOffset() const { return toolbar_offset; }
+int Screen::GetTilePaletteOffset() const { return tile_palette_offset; }
 
-const int Screen::GetScale() const { return scale; }
+int Screen::GetScale() const { return scale; }
 
-const int Screen::GetToolbarIconPadding() const { return toolbar_icon_padding; }
+int Screen::GetToolbarIconPadding() const { return toolbar_icon_padding; }

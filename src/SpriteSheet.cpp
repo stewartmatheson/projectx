@@ -46,13 +46,13 @@ sf::Sprite SpriteSheet::CreateTileSprite(int tile_map_x, int tile_map_y) {
     return sprite;
 }
 
-const int SpriteSheet::GetSpriteSize() const {
+int SpriteSheet::GetSpriteSize() const {
     return screen->GetScale() * frame_tile_size;
 }
 
 // const int SpriteSheet::GetScale() const { return scale; }
 
-const int SpriteSheet::GetFrameTileSize() const { return frame_tile_size; }
+int SpriteSheet::GetFrameTileSize() const { return frame_tile_size; }
 
 const sf::Texture &SpriteSheet::GetTexture() const { return texture; }
 
