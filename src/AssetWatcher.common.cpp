@@ -4,20 +4,7 @@
 #include "AssetWatcher.h"
 
 AssetWatcher::AssetWatcher(int scale)
-    : watcher(&AssetWatcher::StartWatching, this), required_reload(false),
-      shutdown(false) {
-
-    sprite_sheets["tile_map"] =
-        std::make_shared<SpriteSheet>("./assets/house.png", scale, 16, 20, 20);
-
-    sprite_sheets["entity_map"] = std::make_shared<SpriteSheet>(scale, 16);
-
-    sprite_sheets["player_sprite_sheet"] = std::make_shared<SpriteSheet>(
-        "./assets/NightThief.png", scale, 320, 1, 1);
-
-    sprite_sheets["toolbar_sprite_sheet"] =
-        std::make_shared<SpriteSheet>(scale, 8);
-}
+    : watcher(&AssetWatcher::StartWatching, this), required_reload(false) {}
 
 AssetWatcher::~AssetWatcher() {
     shutdown = true;
@@ -25,8 +12,8 @@ AssetWatcher::~AssetWatcher() {
 }
 
 std::shared_ptr<SpriteSheet>
-AssetWatcher::GetSpriteSheet(std::string sprite_sheet_name) {
-    return sprite_sheets[sprite_sheet_name];
+AssetWatcher::GetSpriteSheet(std::string sprite_sheet_name) const {
+    return sprite_sheets.at(sprite_sheet_name);
 }
 
 void AssetWatcher::Reload() {
@@ -40,4 +27,9 @@ void AssetWatcher::ReloadIfRequired() {
         Reload();
         required_reload = false;
     }
+}
+
+void AssetWatcher::RegisterSpriteSheet(
+    std::string sprite_sheet_name, std::shared_ptr<SpriteSheet> sprite_sheet) {
+    sprite_sheets[sprite_sheet_name] = sprite_sheet;
 }
