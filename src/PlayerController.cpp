@@ -11,7 +11,9 @@ PlayerController::PlayerController(
 
 void PlayerController::HandleInput(const EventWithMouse &event_with_mouse,
                                    HouseSceneReducer &) {
-    current_input = controller_scheme->GetInput(event_with_mouse);
+    if (auto input = controller_scheme->GetInput(event_with_mouse)) {
+        current_input = *input;
+    }
 }
 
 void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
