@@ -23,8 +23,8 @@ void SelectedTileView::Draw(sf::RenderTarget &render_target,
         (current_mouse_grid_position.y * sprite_sheet->GetSpriteSize()) +
             half_tile_size);
     selected_tile_sprite.setColor(sf::Color(255, 255, 255, 170));
-    selected_tile_sprite.setOrigin(sprite_sheet->GetSize() / 2,
-                                   sprite_sheet->GetSize() / 2);
+    selected_tile_sprite.setOrigin(sprite_sheet->GetFrameTileSize() / 2,
+                                   sprite_sheet->GetFrameTileSize() / 2);
     selected_tile_sprite.rotate(state.editor_state.selected_tile_rotation);
 
     render_target.draw(selected_tile_sprite);

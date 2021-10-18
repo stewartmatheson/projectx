@@ -4,12 +4,13 @@
 #include "Map.h"
 #include "EntityFactory.h"
 
-Map::Map(HouseSceneReducer &reducer) : reducer(reducer) {
-    // TODO : Figure out where this goes
-    // tile_layers.push_back(TileLayer{0, std::vector<MapTile>()});
-}
+Map::Map(HouseSceneReducer &reducer, std::shared_ptr<Screen> screen, int map_tile_pixel_count,
+         sf::IntRect map_bounds)
+    : reducer(reducer), screen(screen),
+      map_tile_pixel_count(map_tile_pixel_count), map_bounds(map_bounds) {}
 
-Map::Map(HouseSceneReducer &reducer, std::string file_name) : reducer(reducer) {
+Map::Map(HouseSceneReducer &reducer, std::string file_name, std::shared_ptr<Screen> screen, int map_tile_pixel_count)
+    : reducer(reducer), screen(screen), map_tile_pixel_count(map_tile_pixel_count) {
     std::ifstream rf(file_name, std::ios::in | std::ios::binary);
 
     if (!rf) {
@@ -24,7 +25,7 @@ Map::Map(HouseSceneReducer &reducer, std::string file_name) : reducer(reducer) {
     rf.read(reinterpret_cast<char *>(&bounds.width), sizeof(bounds.width));
     rf.read(reinterpret_cast<char *>(&bounds.height), sizeof(bounds.height));
 
-    reducer.SetMapBounds(bounds);
+    map_bounds = bounds;
 
     int layer_count;
     rf.read(reinterpret_cast<char *>(&layer_count), sizeof(layer_count));
@@ -102,14 +103,13 @@ void Map::WriteToFile(std::string file_name) const {
         exit(1);
     }
 
-    auto bounds = reducer.GetState().map_bounds;
 
-    wf.write(reinterpret_cast<const char *>(&bounds.left), sizeof(bounds.left));
-    wf.write(reinterpret_cast<const char *>(&bounds.top), sizeof(bounds.top));
-    wf.write(reinterpret_cast<const char *>(&bounds.width),
-             sizeof(bounds.width));
-    wf.write(reinterpret_cast<const char *>(&bounds.height),
-             sizeof(bounds.height));
+    wf.write(reinterpret_cast<const char *>(&map_bounds.left), sizeof(map_bounds.left));
+    wf.write(reinterpret_cast<const char *>(&map_bounds.top), sizeof(map_bounds.top));
+    wf.write(reinterpret_cast<const char *>(&map_bounds.width),
+             sizeof(map_bounds.width));
+    wf.write(reinterpret_cast<const char *>(&map_bounds.height),
+             sizeof(map_bounds.height));
 
     auto tile_layers = reducer.GetState().tile_layers;
 
@@ -163,3 +163,11 @@ void Map::WriteToFile(std::string file_name) const {
         wf.write(reinterpret_cast<const char *>(&room.width), sizeof(room.width));
     }
 }
+
+const sf::FloatRect Map::RoomGridToWorld(sf::IntRect room) const {
+    auto sprite_size = screen->GetScale() * map_tile_pixel_count;
+    return sf::FloatRect(room.left * sprite_size, room.top * sprite_size,
+                         room.width * sprite_size, room.height * sprite_size);
+}
+
+const sf::IntRect Map::GetBounds() const { return map_bounds; } 

@@ -1,9 +1,6 @@
-#include "HouseScene.h"
-#include "ControllerScheme.h"
-#include "KeyboardControllerScheme.h"
-#include "GamepadControllerScheme.h"
+#include "HouseSceneFactory.h"
 #include <SFML/Graphics.hpp>
-#include <SFML/Window/Joystick.hpp>
+#include <optional>
 
 int main(int argc, char **argv) {
     int window_width = 1920;
@@ -12,19 +9,14 @@ int main(int argc, char **argv) {
                             "SFML works!");
     window.setFramerateLimit(60);
 
-    std::shared_ptr<ControllerScheme> controller_scheme;
-    if (sf::Joystick::isConnected(0)) {
-        controller_scheme = std::make_shared<GamepadControllerScheme>();
-    } else {
-        controller_scheme = std::make_shared<KeyboardControllerScheme>();
-    }
+    std::optional map_path_optional =
+        argc == 2 ? std::optional<std::string>{argv[1]} : std::nullopt;
 
-    std::unique_ptr<HouseScene> current_scene =
-        argc == 2
-            ? std::make_unique<HouseScene>(window_width, window_height, 20, 60,
-                                           argv[1], controller_scheme)
-            : std::make_unique<HouseScene>(window_width, window_height, 20, 60,
-                                           sf::IntRect(0, 0, 20, 50), controller_scheme);
+    auto current_scene = HouseSceneFactory::Init(
+        window_height, 
+        window_width,
+        map_path_optional
+    );
 
     while (window.isOpen()) {
         sf::Event event;
