@@ -4,8 +4,9 @@
 
 EditorController::EditorController(
     int tile_map_sprite_size, sf::RenderTexture &tile_palette_render_texture,
-    sf::RenderTexture &house_render_texture, Map &map, std::shared_ptr<Screen> screen,
-    ViewLayer &house_view_layer, ViewLayer &tile_palette_view)
+    sf::RenderTexture &house_render_texture, Map &map,
+    std::shared_ptr<Screen> screen, ViewLayer &house_view_layer,
+    ViewLayer &tile_palette_view)
     : tile_map_sprite_size(tile_map_sprite_size),
       tile_palette_render_texture(tile_palette_render_texture),
       house_render_texture(house_render_texture), map(map), screen(screen),
@@ -63,8 +64,7 @@ void EditorController::HandleInput(const EventWithMouse &event_with_mouse,
         int upper_scroll_center = tile_palette_bounds.height / 2;
 
         int lower_scroll_center =
-            screen->GetTilePaletteArea().height -
-            upper_scroll_center;
+            screen->GetTilePaletteArea().height - upper_scroll_center;
 
         // TODO : Combile and clean up these if statements
 
@@ -101,9 +101,9 @@ void EditorController::HandleInput(const EventWithMouse &event_with_mouse,
                 sf::Vector2i(event_with_mouse.event.mouseButton.x,
                              event_with_mouse.event.mouseButton.y));
 
-        sf::IntRect pixel_bounds(
-            0, 0, map.GetBounds().width * tile_map_sprite_size,
-            map.GetBounds().height * tile_map_sprite_size);
+        sf::IntRect pixel_bounds(0, 0,
+                                 map.GetBounds().width * tile_map_sprite_size,
+                                 map.GetBounds().height * tile_map_sprite_size);
 
         if (pixel_bounds.contains(event_target_coords.x,
                                   event_target_coords.y) &&
@@ -163,7 +163,7 @@ void EditorController::HandleInput(const EventWithMouse &event_with_mouse,
 
     if (event_with_mouse.event.type == sf::Event::Resized) {
         house_view_layer.MoveView(event_with_mouse.event.size.width,
-                              event_with_mouse.event.size.height);
+                                  event_with_mouse.event.size.height);
 
         /*
         reducer.MoveHouseView(event_with_mouse.event.size.width,
