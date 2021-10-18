@@ -2,9 +2,10 @@
 #include "PlayerController.h"
 
 PlayerController::PlayerController(
-    std::weak_ptr<std::unordered_map<EntityState, Animation>> animations, 
-    std::shared_ptr<ControllerScheme> controller_scheme)
-    : animations(animations), controller_scheme(controller_scheme) {}
+    std::shared_ptr<std::unordered_map<EntityState, Animation>> animations, 
+    std::shared_ptr<ControllerScheme> controller_scheme,
+    std::shared_ptr<Map> map, ViewLayer& house_view)
+    : animations(animations), controller_scheme(controller_scheme), map(map), house_view(house_view) {}
 
 void PlayerController::HandleInput(const EventWithMouse &event_with_mouse,
                                    HouseSceneReducer &state) {
@@ -43,25 +44,34 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
     auto rooms = reducer.GetState().rooms;
 
     // TODO : Remove Magic number
-    auto sprite_size = reducer.GetState().scale * 16;
+    // auto sprite_size = reducer.GetState().scale * 16;
 
-    auto room_the_player_is_in = std::find_if(rooms.begin(), rooms.end(), [found_player, sprite_size](const auto &room) { 
+    auto room_the_player_is_in = std::find_if(rooms.begin(), rooms.end(), [this, found_player](const auto &room) { 
+        return map->RoomGridToWorld(room).contains(found_player->transform);
+        
+        /*
         return sf::FloatRect(
             room.left * sprite_size,
             room.top * sprite_size,
             room.width * sprite_size,
             room.height * sprite_size
         ).contains(found_player->transform);
+        */
     });
 
     if (room_the_player_is_in == rooms.end() || found_player->hitboxes.size() < 1) {
         reducer.SetEntityTransform(found_player->transform + new_velocity);
     } else {
+        /*
+        
         auto scaled_room =
             sf::IntRect(room_the_player_is_in->left * sprite_size,
                           room_the_player_is_in->top * sprite_size,
                           room_the_player_is_in->width * sprite_size,
                           room_the_player_is_in->height * sprite_size);
+        */
+
+        auto scaled_room = map->RoomGridToWorld(*room_the_player_is_in);
 
 		reducer.SetEntityTransform(ClampToRoom(
 			found_player->hitboxes[0], // TODO : Not sure what to do when we have more than one hitbox
@@ -79,7 +89,7 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
     }
 
     if (!reducer.GetState().editor_state.editor_enabled) {
-        reducer.SetHouseViewCenter(found_player->transform);
+        house_view.SetViewCenter(found_player->transform);
     }
 
     /*
@@ -97,7 +107,6 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
     */
 
     reducer.SetPlayerDirection(current_input.direction);
-
     HandleActions(reducer);
 
     /*
@@ -105,25 +114,10 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
     animations around before they are drawn. We need to also figure out where
     this should end up living but TBH it feels like it should be in the view
     */
-    if (auto shared_animations = animations.lock()) {
-        auto state = reducer.GetState();
-        auto found_player =
-            std::find_if(state.entities.begin(), state.entities.end(),
-                         [](const auto &entity) {
-                             return entity.type == EntityType::PlayerEntity;
-                         });
-
-        if (found_player != state.entities.end()) {
-            auto current_animation =
-                shared_animations->find(found_player->state);
-            
-            current_animation->second.sprite.setPosition(
-                found_player->transform);
-
-            current_animation->second.sprite.setRotation(
-                found_player->facing);
-        }
-    }
+    auto state = reducer.GetState();
+	auto current_animation = animations->find(found_player->state);
+	current_animation->second.sprite.setPosition(found_player->transform);
+	current_animation->second.sprite.setRotation(found_player->facing);
 }
 
 void PlayerController::HandleActions(HouseSceneReducer& reducer) {
@@ -135,7 +129,7 @@ void PlayerController::Reset() {
 
 sf::Vector2f PlayerController::ClampToRoom(
     sf::FloatRect player_hitbox, 
-    sf::IntRect room, 
+    sf::FloatRect room, 
     sf::Vector2f original_position,
     sf::Vector2f new_position) {
 

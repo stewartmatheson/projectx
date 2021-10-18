@@ -15,8 +15,8 @@ void TileBackgroundView::Draw(sf::RenderTarget &render_target,
             sprite_to_draw.setPosition(
                 (tile.x * tile_map->GetSpriteSize()) + half_tile_size,
                 (tile.y * tile_map->GetSpriteSize()) + half_tile_size);
-            sprite_to_draw.setOrigin(tile_map->GetSize() / 2,
-                                     tile_map->GetSize() / 2);
+            sprite_to_draw.setOrigin(tile_map->GetFrameTileSize() / 2,
+                                     tile_map->GetFrameTileSize() / 2);
             render_target.draw(sprite_to_draw);
         }
     }

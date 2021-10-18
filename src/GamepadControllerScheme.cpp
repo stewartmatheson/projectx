@@ -12,7 +12,6 @@ ControllerSchemeState GamepadControllerScheme::GetInput(const EventWithMouse &) 
 
     float x = sf::Joystick::getAxisPosition(0, sf::Joystick::X) / 100;
     float y = sf::Joystick::getAxisPosition(0, sf::Joystick::Y) / 100;
-    // std::cout << sf::Joystick::getAxisPosition(0, sf::Joystick::Y) / 100 << std::endl;
     bool loot_action_pressed =
         sf::Joystick::isButtonPressed(PLAYER_ONE_JOYSTICK_ID, LOOT_ACTION_BUTTON_ID);
     

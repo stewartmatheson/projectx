@@ -2,25 +2,28 @@
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "Screen.h"
 
 class SpriteSheet {
     std::string texture_path;
-    sf::Sprite CreateTileSprite(int, int, int, int);
+    sf::Sprite CreateTileSprite(int, int);
     std::vector<sf::Sprite> sprites;
-    int scale;
-    int size;
+    const int frame_tile_size;
     sf::Texture texture;
     sf::RenderTexture icon_sprite_render_texture;
     void LoadFromFile();
+    std::shared_ptr<Screen> screen;
 
   public:
-    SpriteSheet(std::string, int, int, int, int);
-    SpriteSheet(int, int);
+    SpriteSheet(std::string, int, int, int, std::shared_ptr<Screen>);
+    SpriteSheet(int, std::shared_ptr<Screen>);
+
+    // TODO : Not sure if this should be here. We might need another time of sprite sheet to handle this.
     void CreateIconSprite(sf::Color, int);
+
     const int GetSpriteSize() const;
     const std::vector<sf::Sprite> &GetSprites() const;
     const sf::Texture &GetTexture() const;
-    const int GetScale() const;
-    const int GetSize() const;
+    const int GetFrameTileSize() const;
     void Reload();
 };

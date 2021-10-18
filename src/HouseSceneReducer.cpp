@@ -1,17 +1,7 @@
 #include "HouseSceneReducer.h"
 #include <math.h>
 
-HouseSceneReducer::HouseSceneReducer(HouseSceneState &state) : state(state) {}
-
 const HouseSceneState &HouseSceneReducer::GetState() { return state; }
-
-void HouseSceneReducer::MoveTilePaletteView(int x, int y) {
-    state.editor_state.tile_palette_view.move(x, y);
-}
-
-void HouseSceneReducer::MoveHouseView(int x, int y) {
-    state.house_view.move(x, y);
-}
 
 void HouseSceneReducer::AddTileLayer(TileLayer tile_layer) {
     state.tile_layers.push_back(tile_layer);
@@ -58,10 +48,6 @@ void HouseSceneReducer::ToggleEditorEnabled() {
     state.editor_state.editor_enabled = !state.editor_state.editor_enabled;
 }
 
-void HouseSceneReducer::SetMapBounds(sf::IntRect new_map_bounds) {
-    state.map_bounds = new_map_bounds;
-}
-
 void HouseSceneReducer::ResetPlayer() {
     auto found_player = std::find_if(
         state.entities.begin(), state.entities.end(), [](const auto &entity) {
@@ -83,10 +69,13 @@ void HouseSceneReducer::AddTilePaletteTile(TilePaletteTile tile_to_add,
     state.editor_state.tile_palette_tiles.push_back(tile_to_add);
 }
 
+/*
+
 void HouseSceneReducer::SetTilePaletteBounds(int x, int y, int total_height) {
     state.editor_state.tile_palette_bounds = sf::IntRect(0, 0, x, y);
     state.editor_state.tile_palette_background_total_height = total_height;
 }
+*/
 
 void HouseSceneReducer::InitSelectionRectangle(int sprite_size) {
     state.editor_state.tile_palette_selection_rectangle.setSize(
@@ -102,10 +91,6 @@ void HouseSceneReducer::SetSelectionRectanglePosition(
     sf::Vector2f new_position) {
     state.editor_state.tile_palette_selection_rectangle.setPosition(
         new_position);
-}
-
-void HouseSceneReducer::SetHouseViewCenter(sf::Vector2f new_position) {
-    state.house_view.setCenter(new_position);
 }
 
 void HouseSceneReducer::UpdateSelectedEditorSquare(
@@ -171,15 +156,6 @@ void HouseSceneReducer::AddTool(Tool tool) {
     state.editor_state.tools.push_back(tool);
 }
 
-void HouseSceneReducer::SetWindowSize(int width, int height) {
-    state.window_width = width;
-    state.window_height = height;
-}
-
-void HouseSceneReducer::SetLeftToolbarWidth(int new_width) {
-    state.editor_state.left_toolbar_width = new_width;
-}
-
 void HouseSceneReducer::SetPlayerState(EntityState new_player_state) {
     auto found_player = std::find_if(
         state.entities.begin(), state.entities.end(), [](const auto &entity) {
@@ -203,14 +179,12 @@ void HouseSceneReducer::SetPlayerDirection(sf::Vector2f new_direction) {
         }
     }
 
-
     // First if the player has requested to loot something they are facing and close enough to
     auto angle = atan2f(new_direction.y, new_direction.x) * 180 / 3.1416;
 
     if (angle < 0) {
         angle += 360;
     }
-    std::cout << angle << std::endl;
 
     found_player->facing = angle;
 }

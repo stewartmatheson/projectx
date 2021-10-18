@@ -4,10 +4,13 @@
 
 EditorController::EditorController(
     int tile_map_sprite_size, sf::RenderTexture &tile_palette_render_texture,
-    sf::RenderTexture &house_render_texture, Map &map)
+    sf::RenderTexture &house_render_texture, Map &map, std::shared_ptr<Screen> screen,
+    ViewLayer &house_view_layer, ViewLayer &tile_palette_view)
     : tile_map_sprite_size(tile_map_sprite_size),
       tile_palette_render_texture(tile_palette_render_texture),
-      house_render_texture(house_render_texture), map(map) {}
+      house_render_texture(house_render_texture), map(map), screen(screen),
+      house_view_layer(house_view_layer), tile_palette_view(tile_palette_view) {
+}
 
 void EditorController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
     auto state = reducer.GetState();
@@ -54,28 +57,28 @@ void EditorController::HandleInput(const EventWithMouse &event_with_mouse,
         }
     }
 
+    auto tile_palette_bounds = screen->GetTilePaletteArea();
     if (event_with_mouse.event.type == sf::Event::MouseWheelMoved &&
-        event_with_mouse.event.mouseButton.x <
-            reducer.GetState().editor_state.tile_palette_bounds.width) {
-        int upper_scroll_center =
-            reducer.GetState().editor_state.tile_palette_bounds.height / 2;
+        event_with_mouse.event.mouseButton.x < tile_palette_bounds.width) {
+        int upper_scroll_center = tile_palette_bounds.height / 2;
 
         int lower_scroll_center =
-            reducer.GetState()
-                .editor_state.tile_palette_background_total_height -
+            screen->GetTilePaletteArea().height -
             upper_scroll_center;
 
+        // TODO : Combile and clean up these if statements
+
         if (event_with_mouse.event.mouseWheel.delta < 0 &&
-            reducer.GetState().editor_state.tile_palette_view.getCenter().y >
-                upper_scroll_center) {
-            reducer.MoveTilePaletteView(
+            tile_palette_view.GetViewCenter().y > upper_scroll_center) {
+
+            tile_palette_view.MoveView(
                 0, 100 * event_with_mouse.event.mouseWheel.delta);
         }
 
         if (event_with_mouse.event.mouseWheel.delta > 0 &&
-            reducer.GetState().editor_state.tile_palette_view.getCenter().y <
-                lower_scroll_center) {
-            reducer.MoveTilePaletteView(
+            tile_palette_view.GetViewCenter().y < lower_scroll_center) {
+
+            tile_palette_view.MoveView(
                 0, 100 * event_with_mouse.event.mouseWheel.delta);
         }
     }
@@ -99,15 +102,14 @@ void EditorController::HandleInput(const EventWithMouse &event_with_mouse,
                              event_with_mouse.event.mouseButton.y));
 
         sf::IntRect pixel_bounds(
-            0, 0, reducer.GetState().map_bounds.width * tile_map_sprite_size,
-            reducer.GetState().map_bounds.height * tile_map_sprite_size);
+            0, 0, map.GetBounds().width * tile_map_sprite_size,
+            map.GetBounds().height * tile_map_sprite_size);
 
         if (pixel_bounds.contains(event_target_coords.x,
                                   event_target_coords.y) &&
-            !reducer.GetState()
-                 .editor_state.tile_palette_background.getGlobalBounds()
-                 .contains(event_with_mouse.event.mouseButton.x,
-                           event_with_mouse.event.mouseButton.y)) {
+            !screen->GetTilePaletteArea().contains(
+                event_with_mouse.event.mouseButton.x,
+                event_with_mouse.event.mouseButton.y)) {
             auto x = (int)event_target_coords.x / tile_map_sprite_size;
             auto y = (int)event_target_coords.y / tile_map_sprite_size;
 
@@ -115,9 +117,9 @@ void EditorController::HandleInput(const EventWithMouse &event_with_mouse,
                 reducer.GetState().editor_state.tile_palette_tiles
                     [reducer.GetState().editor_state.selected_tile_index];
 
-            if (selected_tile.type == PaletteTile) {
+            if (selected_tile.type == TilePaletteType::PaletteTile) {
                 reducer.AddTile(x, y);
-            } else if (selected_tile.type == PaletteEntity) {
+            } else if (selected_tile.type == TilePaletteType::PaletteEntity) {
                 reducer.AddEntity(x, y);
             } else {
                 std::cout << "Map type not supported" << std::endl;
@@ -153,14 +155,20 @@ void EditorController::HandleInput(const EventWithMouse &event_with_mouse,
     if (reducer.GetState().editor_state.panning) {
         auto mouse_delta =
             event_with_mouse.window_mouse_position - last_mouse_position;
-        reducer.MoveHouseView(mouse_delta.x * -1, mouse_delta.y * -1);
+        house_view_layer.MoveView(mouse_delta.x * -1, mouse_delta.y * -1);
+        // reducer.MoveHouseView(mouse_delta.x * -1, mouse_delta.y * -1);
     }
 
     last_mouse_position = event_with_mouse.window_mouse_position;
 
     if (event_with_mouse.event.type == sf::Event::Resized) {
+        house_view_layer.MoveView(event_with_mouse.event.size.width,
+                              event_with_mouse.event.size.height);
+
+        /*
         reducer.MoveHouseView(event_with_mouse.event.size.width,
                               event_with_mouse.event.size.height);
+        */
         house_render_texture.create(event_with_mouse.event.size.width,
                                     event_with_mouse.event.size.height);
     }

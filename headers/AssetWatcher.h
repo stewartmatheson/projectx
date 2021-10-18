@@ -17,7 +17,8 @@ class AssetWatcher {
 
   public:
     void ReloadIfRequired();
-    std::shared_ptr<SpriteSheet> GetSpriteSheet(std::string);
+    std::shared_ptr<SpriteSheet> GetSpriteSheet(std::string) const;
+    void RegisterSpriteSheet(std::string, std::shared_ptr<SpriteSheet>);
     AssetWatcher(int);
     ~AssetWatcher();
 };

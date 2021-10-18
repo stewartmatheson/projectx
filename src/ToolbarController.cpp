@@ -1,5 +1,8 @@
 #include "ToolbarController.h"
 
+ToolbarController::ToolbarController(std::shared_ptr<Screen> screen)
+    : screen(screen){};
+
 void ToolbarController::Update(HouseSceneReducer &, sf::Time delta_time) {}
 
 void ToolbarController::HandleInput(const EventWithMouse &event_with_mouse,
@@ -7,12 +10,8 @@ void ToolbarController::HandleInput(const EventWithMouse &event_with_mouse,
     if (event_with_mouse.event.type == sf::Event::MouseButtonReleased &&
         event_with_mouse.event.mouseButton.button == sf::Mouse::Left) {
         const auto state = reducer.GetState();
-        auto first_button =
-            sf::IntRect(state.editor_state.left_toolbar_width +
-                            state.editor_state.toolbar_icon_padding,
-                        state.editor_state.toolbar_icon_padding,
-                        state.editor_state.toolbar_icon_size * state.scale,
-                        state.editor_state.toolbar_icon_size * state.scale);
+
+        auto first_button = screen->GetButtonArea();
 
         if (first_button.contains(event_with_mouse.event.mouseButton.x,
                                   event_with_mouse.event.mouseButton.y)) {
