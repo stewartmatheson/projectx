@@ -9,7 +9,7 @@ PlayerController::PlayerController(
       house_view(house_view) {}
 
 void PlayerController::HandleInput(const EventWithMouse &event_with_mouse,
-                                   HouseSceneReducer &state) {
+                                   HouseSceneReducer &) {
     current_input = controller_scheme->GetInput(event_with_mouse);
 }
 
@@ -123,7 +123,7 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
     current_animation->second.sprite.setRotation(found_player->facing);
 }
 
-void PlayerController::HandleActions(HouseSceneReducer &reducer) {}
+void PlayerController::HandleActions(HouseSceneReducer &) {}
 
 void PlayerController::Reset() {
     // entity.SetVelocity(sf::Vector2f(0, 0));

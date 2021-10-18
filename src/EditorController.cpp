@@ -13,7 +13,7 @@ EditorController::EditorController(
       house_view_layer(house_view_layer), tile_palette_view(tile_palette_view) {
 }
 
-void EditorController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
+void EditorController::Update(HouseSceneReducer &reducer, sf::Time) {
     auto state = reducer.GetState();
 
     auto selected_tile_position =
