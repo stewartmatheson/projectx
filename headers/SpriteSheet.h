@@ -1,10 +1,7 @@
 #pragma once
-
 #include <iostream>
 #include <memory>
-
 #include <SFML/Graphics.hpp>
-
 #include "Screen.h"
 
 class SpriteSheet {
@@ -25,9 +22,9 @@ class SpriteSheet {
     // sprite sheet to handle this.
     void CreateIconSprite(sf::Color, int);
 
-    const int GetSpriteSize() const;
+    int GetSpriteSize() const;
     const std::vector<sf::Sprite> &GetSprites() const;
     const sf::Texture &GetTexture() const;
-    const int GetFrameTileSize() const;
+    int GetFrameTileSize() const;
     void Reload();
 };

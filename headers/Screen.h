@@ -16,8 +16,8 @@ class Screen {
     const sf::IntRect GetWindowSize() const;
     const sf::IntRect GetTilePaletteArea() const;
     const sf::IntRect GetToolbarArea() const;
-    const int GetToolbarOffset() const;
-    const int GetTilePaletteOffset() const;
-    const int GetScale() const;
-    const int GetToolbarIconPadding() const;
+    int GetToolbarOffset() const;
+    int GetTilePaletteOffset() const;
+    int GetScale() const;
+    int GetToolbarIconPadding() const;
 };
