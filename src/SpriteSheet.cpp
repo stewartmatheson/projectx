@@ -4,7 +4,8 @@
 // texture file
 SpriteSheet::SpriteSheet(std::string texture_path, int frame_tile_size,
                          int cols, int rows, std::shared_ptr<Screen> screen)
-    : texture_path(texture_path), sprites(),  frame_tile_size(frame_tile_size), texture(), screen(screen) {
+    : texture_path(texture_path), sprites(), frame_tile_size(frame_tile_size),
+      texture(), screen(screen) {
 
     LoadFromFile();
     for (auto y = 0; y < cols; y++) {
@@ -21,33 +22,37 @@ SpriteSheet::SpriteSheet(int frame_tile_size, std::shared_ptr<Screen> screen)
     icon_sprite_render_texture.create(frame_tile_size * 2, frame_tile_size);
 };
 
-
 void SpriteSheet::CreateIconSprite(sf::Color color, int render_offset) {
-    auto icon_rect = sf::RectangleShape(sf::Vector2f(frame_tile_size, frame_tile_size));
+    auto icon_rect =
+        sf::RectangleShape(sf::Vector2f(frame_tile_size, frame_tile_size));
     icon_rect.setFillColor(color);
     icon_rect.setPosition(frame_tile_size * render_offset, 0);
     icon_sprite_render_texture.draw(icon_rect);
     icon_sprite_render_texture.display();
 
     auto sprite = sf::Sprite(icon_sprite_render_texture.getTexture(),
-                             sf::IntRect(frame_tile_size * render_offset, 0, frame_tile_size, frame_tile_size));
+                             sf::IntRect(frame_tile_size * render_offset, 0,
+                                         frame_tile_size, frame_tile_size));
     sprite.setScale(screen->GetScale(), screen->GetScale());
     sprites.push_back(sprite);
 }
 
 sf::Sprite SpriteSheet::CreateTileSprite(int tile_map_x, int tile_map_y) {
-    sf::Sprite sprite(
-        texture, sf::IntRect(frame_tile_size * tile_map_x, frame_tile_size * tile_map_y, frame_tile_size, frame_tile_size));
+    sf::Sprite sprite(texture, sf::IntRect(frame_tile_size * tile_map_x,
+                                           frame_tile_size * tile_map_y,
+                                           frame_tile_size, frame_tile_size));
 
     sprite.setScale(screen->GetScale(), screen->GetScale());
     return sprite;
 }
 
-const int SpriteSheet::GetSpriteSize() const { return screen->GetScale() * frame_tile_size; }
+int SpriteSheet::GetSpriteSize() const {
+    return screen->GetScale() * frame_tile_size;
+}
 
 // const int SpriteSheet::GetScale() const { return scale; }
 
-const int SpriteSheet::GetFrameTileSize () const { return frame_tile_size; }
+int SpriteSheet::GetFrameTileSize() const { return frame_tile_size; }
 
 const sf::Texture &SpriteSheet::GetTexture() const { return texture; }
 
@@ -67,6 +72,4 @@ void SpriteSheet::LoadFromFile() {
     }
 }
 
-void SpriteSheet::Reload() {
-    LoadFromFile();
-}
+void SpriteSheet::Reload() { LoadFromFile(); }

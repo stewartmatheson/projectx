@@ -1,7 +1,9 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
 #include <iostream>
+
+#include <SFML/Graphics.hpp>
+
 #include "Screen.h"
 
 class SpriteSheet {
@@ -18,12 +20,13 @@ class SpriteSheet {
     SpriteSheet(std::string, int, int, int, std::shared_ptr<Screen>);
     SpriteSheet(int, std::shared_ptr<Screen>);
 
-    // TODO : Not sure if this should be here. We might need another time of sprite sheet to handle this.
+    // TODO : Not sure if this should be here. We might need another time of
+    // sprite sheet to handle this.
     void CreateIconSprite(sf::Color, int);
 
-    const int GetSpriteSize() const;
+    int GetSpriteSize() const;
     const std::vector<sf::Sprite> &GetSprites() const;
     const sf::Texture &GetTexture() const;
-    const int GetFrameTileSize() const;
+    int GetFrameTileSize() const;
     void Reload();
 };
