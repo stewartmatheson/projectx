@@ -1,9 +1,7 @@
 #pragma once
-
 #include <iostream>
-
+#include <memory>
 #include <SFML/Graphics.hpp>
-
 #include "Screen.h"
 
 class SpriteSheet {
