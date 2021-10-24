@@ -1,7 +1,9 @@
 #pragma once
 
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Vector2.hpp>
+
 #include "Animation.h"
-#include <SFML/Graphics.hpp>
 
 enum class EntityType { GhostEntity = 0, DoorEntity = 1, PlayerEntity = 2 };
 

@@ -1,9 +1,11 @@
 #pragma once
 
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
+
 #include "HouseSceneState.h"
-#include "View.h"
 #include "Screen.h"
-#include <SFML/Graphics.hpp>
+#include "View.h"
 
 class TilePaletteView : public View<HouseSceneState> {
     sf::RenderTexture tile_palette_render_texture;

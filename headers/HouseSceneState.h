@@ -1,5 +1,9 @@
 #pragma once
 
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Vector2.hpp>
+
 #include "Entity.h"
 #include "Item.h"
 #include "TileLayer.h"
@@ -42,7 +46,7 @@ struct HouseSceneState {
     std::vector<Entity> entities;
     std::vector<TileLayer> tile_layers;
     std::vector<Item> player_items;
-    //sf::IntRect map_bounds;
+    // sf::IntRect map_bounds;
     // sf::View house_view;
     HouseSceneEditorState editor_state;
     // int window_width;

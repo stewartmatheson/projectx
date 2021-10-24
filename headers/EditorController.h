@@ -1,5 +1,9 @@
 #pragma once
 
+#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/System/Time.hpp>
+#include <SFML/System/Vector2.hpp>
+
 #include "Controller.h"
 #include "EventWithMouse.h"
 #include "HouseSceneReducer.h"
@@ -15,8 +19,8 @@ class EditorController : public Controller<HouseSceneReducer> {
     sf::Vector2i last_mouse_position;
     Map &map;
     std::shared_ptr<Screen> screen;
-    ViewLayer& house_view_layer;
-    ViewLayer& tile_palette_view;
+    ViewLayer &house_view_layer;
+    ViewLayer &tile_palette_view;
 
     void HandleInputBoxSelection(const EventWithMouse &, HouseSceneReducer &);
 

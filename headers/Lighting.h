@@ -1,4 +1,10 @@
-#include <HouseScene.h>
+#pragma once
+
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/Shader.hpp>
+
+#include "HouseScene.h"
 
 class LightingView : public View<HouseSceneState> {
     sf::Shader frag_shader;

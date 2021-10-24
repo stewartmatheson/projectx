@@ -1,7 +1,8 @@
 #pragma once
 
+#include <SFML/System/Time.hpp>
+
 #include "EventWithMouse.h"
-#include <SFML/Graphics.hpp>
 
 template <typename T> class Controller {
   public:
