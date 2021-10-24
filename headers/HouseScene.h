@@ -2,7 +2,8 @@
 
 #include <unordered_map>
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/System/Clock.hpp>
 
 #include "AssetWatcher.h"
 #include "Controller.h"

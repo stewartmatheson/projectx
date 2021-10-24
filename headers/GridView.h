@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 #include "HouseScene.h"
 #include "Map.h"
 #include "View.h"

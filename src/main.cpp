@@ -1,6 +1,6 @@
 #include <optional>
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 
 #include "HouseSceneFactory.h"
 

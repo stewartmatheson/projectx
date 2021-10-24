@@ -2,6 +2,8 @@
 
 #include <optional>
 
+#include <SFML/Graphics/Rect.hpp>
+
 #include "AssetWatcher.h"
 #include "ControllerScheme.h"
 #include "HouseScene.h"

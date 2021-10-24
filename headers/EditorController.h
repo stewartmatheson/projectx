@@ -1,5 +1,9 @@
 #pragma once
 
+#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/System/Time.hpp>
+#include <SFML/System/Vector2.hpp>
+
 #include "Controller.h"
 #include "EventWithMouse.h"
 #include "HouseSceneReducer.h"

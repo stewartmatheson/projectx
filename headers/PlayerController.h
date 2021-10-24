@@ -2,6 +2,10 @@
 
 #include <unordered_map>
 
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Time.hpp>
+#include <SFML/System/Vector2.hpp>
+
 #include "Controller.h"
 #include "ControllerScheme.h"
 #include "EventWithMouse.h"

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SFML/System/Time.hpp>
+
 #include "Controller.h"
 #include "HouseSceneReducer.h"
 #include "Screen.h"

@@ -1,5 +1,3 @@
-#include <SFML/Graphics.hpp>
-
 #include "ToolbarToolsView.h"
 
 ToolbarToolsView::ToolbarToolsView(std::shared_ptr<SpriteSheet> tool_map,

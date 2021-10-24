@@ -1,3 +1,5 @@
+#include <SFML/Graphics/CircleShape.hpp>
+
 #include "EntityView.h"
 #include "Animation.h"
 

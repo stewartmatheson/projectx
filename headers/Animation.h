@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include <SFML/Graphics/Sprite.hpp>
+
 #include "Screen.h"
 #include "SpriteSheet.h"
 

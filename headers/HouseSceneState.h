@@ -1,5 +1,9 @@
 #pragma once
 
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/System/Vector2.hpp>
+
 #include "Entity.h"
 #include "Item.h"
 #include "TileLayer.h"
