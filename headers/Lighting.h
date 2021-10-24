@@ -1,4 +1,6 @@
-#include <HouseScene.h>
+#pragma once
+
+#include "HouseScene.h"
 
 class LightingView : public View<HouseSceneState> {
     sf::Shader frag_shader;
