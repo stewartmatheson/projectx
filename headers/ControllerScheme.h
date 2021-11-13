@@ -1,6 +1,9 @@
 #pragma once
 
+#include <optional>
+
 #include <SFML/Graphics.hpp>
+
 #include "EventWithMouse.h"
 
 struct ControllerSchemeState {
@@ -11,6 +14,7 @@ struct ControllerSchemeState {
 
 class ControllerScheme {
 
-public:
-	virtual ControllerSchemeState GetInput(const EventWithMouse&) const = 0;
+  public:
+    virtual std::optional<ControllerSchemeState>
+    GetInput(const EventWithMouse &) const = 0;
 };
