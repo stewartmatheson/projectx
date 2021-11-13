@@ -1,6 +1,6 @@
 #include "GridView.h"
 
-GridView::GridView(int size, Map& map) : size(size), map(map) {}
+GridView::GridView(int size) : size(size) {}
 
 void GridView::Draw(sf::RenderTarget &target,
                     const HouseSceneState &state) const {
@@ -8,12 +8,10 @@ void GridView::Draw(sf::RenderTarget &target,
         return;
     }
 
-    auto grid_height = map.GetBounds().height;
-    auto grid_width = map.GetBounds().width;
-
+    auto grid_height = state.map.bounds.height;
+    auto grid_width = state.map.bounds.width;
     auto total_grid_height = grid_height * size;
     auto total_grid_width = grid_width * size;
-
     auto line_color = sf::Color(255, 255, 255, 50);
 
     for (auto row = 1; row < (grid_height + 1) * size; row = row + size) {

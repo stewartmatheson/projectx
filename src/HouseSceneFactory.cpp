@@ -18,17 +18,14 @@
 #include "TilePaletteView.h"
 #include "ToolbarController.h"
 #include "ToolbarToolsView.h"
+#include "AIController.h"
 #include <vector>
 #include <optional>
 
 std::unique_ptr<HouseScene>
 HouseSceneFactory::Init(const int screen_height, const int screen_width,
                         const std::optional<std::string> map_path_optional) {
-    auto tile_map_sprite_size = 16;
-  
-    auto screen = InitScreen(screen_width, screen_height, tile_map_sprite_size);
-    auto asset_watcher =
-        InitAssetWatcher(screen->GetScale(), tile_map_sprite_size, screen);
+    auto asset_watcher = InitAssetWatcher();
     auto reducer = std::make_shared<HouseSceneReducer>();
 
     // Create Tile Sprites
@@ -62,41 +59,32 @@ HouseSceneFactory::Init(const int screen_height, const int screen_width,
                         EntityType::DoorEntity},
         asset_watcher->GetSpriteSheet("entity_map")->GetSpriteSize());
 
-    /*
+    if (map_path_optional.has_value()) {
+        reducer->UpdateMap(Map::ReadFromFile(map_path_optional.value()));
+    } else {
+        reducer->UpdateMap(Map::New());
+    }
 
-    TODO : Figure out where this code lives
+    auto animations = InitAnimations(asset_watcher);
+    auto tile_pallette_view_layer = InitTilePaletteViewLayer();
+    auto house_map_view_layer = InitHouseMapViewLayer(
+        asset_watcher, 
+        animations, 
+        reducer->GetState().map.bounds
+    );
+    auto view_layers = std::list<std::shared_ptr<ViewLayer>>();
 
-
-    int total_height =
-        (state.editor_state.tile_palette_tiles.size() *
-         (asset_watcher->GetSpriteSheet("tile_map")->GetSpriteSize() +
-          screen.GetTilePaletteOffset())) +
-        screen.GetTilePaletteOffset();
-
-    state.editor_state.tile_palette_background = sf::RectangleShape(
-        sf::Vector2f(screen.GetLeftToolbarWidth(), total_height));
-
-    state.editor_state.tile_palette_background.setFillColor(
-        sf::Color(60, 60, 60, 255));
-
-
-    state.editor_state.tile_palette_view = sf::View(sf::FloatRect(
-        0, 0, screen.GetLeftToolbarWidth(), screen.GetWindowSize().height));
-    state.editor_state.toolbar_view =
-        sf::View(sf::FloatRect(0, 0, screen.GetWindowSize().width,
-    screen.GetToolbarOffset())); state.house_view = sf::View(sf::FloatRect(0, 0,
-    screen.GetWindowSize().width, screen.GetWindowSize().height));
-
-    */
-
-    auto map = InitMap(map_path_optional, *reducer, screen, tile_map_sprite_size);
-
-    auto animations = InitAnimations(asset_watcher, screen);
-    auto view_layers =
-        InitViewLayers(asset_watcher, screen, animations, map->GetBounds(), *map);
+    view_layers.push_back(house_map_view_layer);
+    view_layers.push_back(InitToolbarViewLayer(asset_watcher));
+    view_layers.push_back(tile_pallette_view_layer);
 
     auto controller_list =
-        InitControllers(asset_watcher, animations, screen, map, view_layers);
+        InitControllers(
+                asset_watcher, 
+                animations, 
+                tile_pallette_view_layer,
+                house_map_view_layer
+                );
 
     reducer->InitSelectionRectangle(
         asset_watcher->GetSpriteSheet("tile_map")->GetSpriteSize());
@@ -108,18 +96,6 @@ HouseSceneFactory::Init(const int screen_height, const int screen_width,
                                         view_layers, animations, reducer);
 }
 
-std::shared_ptr<Map>
-HouseSceneFactory::InitMap(const std::optional<std::string> map_path,
-                           HouseSceneReducer &reducer, std::shared_ptr<Screen> screen,
-                           int tile_map_sprite_size) {
-    if (map_path.has_value()) {
-        return std::make_shared<Map>(reducer, map_path.value(), screen,
-                                     tile_map_sprite_size);
-    } else {
-        return std::make_shared<Map>(reducer, screen, tile_map_sprite_size, sf::IntRect(0,0,20,20));
-    }
-}
-
 std::shared_ptr<ControllerScheme> HouseSceneFactory::InitControllerScheme() {
     if (sf::Joystick::isConnected(0)) {
         return std::make_shared<GamepadControllerScheme>();
@@ -128,72 +104,61 @@ std::shared_ptr<ControllerScheme> HouseSceneFactory::InitControllerScheme() {
     }
 }
 
-std::vector<std::shared_ptr<TimedController>>
-HouseSceneFactory::InitControllers(std::shared_ptr<AssetWatcher> asset_watcher,
-                                   AnimationMap animations,
-                                   std::shared_ptr<Screen> screen, std::shared_ptr<Map> map,
-                                   ViewLayerMap view_layer_map) {
+std::vector<std::shared_ptr<TimedController>> HouseSceneFactory::InitControllers(
+    std::shared_ptr<AssetWatcher> asset_watcher,
+    AnimationMap animations,
+    std::shared_ptr<ViewLayer> tile_pallette_view_layer,
+    std::shared_ptr<ViewLayer> house_map_view_layer
+) {
     auto controller_list = std::vector<std::shared_ptr<TimedController>>();
     auto controller_scheme = InitControllerScheme();
 
     controller_list.push_back(std::make_shared<TimedController>(
         std::make_unique<EditorController>(
             asset_watcher->GetSpriteSheet("entity_map")->GetSpriteSize(),
-            view_layer_map["tile_palette"]->GetRenderTexture(),
-            view_layer_map["house_map"]->GetRenderTexture(), *map, screen,
-            *view_layer_map["house_map"], *view_layer_map["tile_palette"])));
+            tile_pallette_view_layer->GetRenderTexture(),
+            house_map_view_layer->GetRenderTexture(), 
+            *house_map_view_layer, *tile_pallette_view_layer)));
 
     controller_list.push_back(std::make_shared<TimedController>(
-       std::make_unique<ToolbarController>(screen)));
+       std::make_unique<ToolbarController>()));
 
     controller_list.push_back(std::make_shared<TimedController>(
-        std::make_unique<PlayerController>(animations, controller_scheme, map,
-                                           *view_layer_map["house_map"])));
+        std::make_unique<PlayerController>(animations, controller_scheme, 
+                                           *house_map_view_layer)));
 
+
+    controller_list.push_back(std::make_unique<TimedController>(
+                std::make_unique<AIController>())
+            );
     return controller_list;
 }
 
 std::shared_ptr<AssetWatcher>
-HouseSceneFactory::InitAssetWatcher(int scale, int tile_map_sprite_size,
-                                    std::shared_ptr<Screen> screen) {
-    auto asset_watcher = std::make_shared<AssetWatcher>(scale);
+HouseSceneFactory::InitAssetWatcher() {
+    auto asset_watcher = std::make_shared<AssetWatcher>(Screen::GetScale());
 
     asset_watcher->RegisterSpriteSheet(
         "tile_map",
-        std::make_shared<SpriteSheet>("./assets/house.png",
-                                      tile_map_sprite_size, 20, 20, screen));
+        std::make_shared<SpriteSheet>("./assets/house.png", Map::GetSpriteSize(), 20, 20)
+    );
 
     asset_watcher->RegisterSpriteSheet(
-        "entity_map", std::make_shared<SpriteSheet>(16, screen));
+        "entity_map", std::make_shared<SpriteSheet>(16));
 
     asset_watcher->RegisterSpriteSheet(
         "player_sprite_sheet",
-        std::make_shared<SpriteSheet>("./assets/NightThief.png", 320, 1, 1,
-                                      screen));
+        std::make_shared<SpriteSheet>("./assets/NightThief.png", 320, 1, 1));
 
     asset_watcher->RegisterSpriteSheet(
-        "toolbar_sprite_sheet", std::make_shared<SpriteSheet>(8, screen));
+        "toolbar_sprite_sheet", std::make_shared<SpriteSheet>(8));
 
     return asset_watcher;
 }
 
-std::shared_ptr<Screen> HouseSceneFactory::InitScreen(int window_width, int window_height,
-                                     int tile_map_sprite_size) {
-    int scale = 4;
-    int toolbar_icon_size = 15;
-    int toolbar_icon_padding = 10;
-    int tile_palette_offset = 20;
-    int toolbar_offset = 60;
-
-
-    return std::make_shared<Screen>(sf::IntRect(0, 0, window_width, window_height), scale,
-                  toolbar_icon_padding, toolbar_icon_size,
-                  tile_palette_offset, toolbar_offset, tile_map_sprite_size);
-}
-
 std::shared_ptr<std::unordered_map<EntityState, Animation>>
 HouseSceneFactory::InitAnimations(
-    std::shared_ptr<AssetWatcher> asset_watcher, std::shared_ptr<Screen> screen) {
+    std::shared_ptr<AssetWatcher> asset_watcher) {
     std::shared_ptr<std::unordered_map<EntityState, Animation>>
         player_animations =
             std::make_shared<std::unordered_map<EntityState, Animation>>();
@@ -206,7 +171,7 @@ HouseSceneFactory::InitAnimations(
     player_animations->insert(
         {EntityState::Idle,
          Animation(asset_watcher->GetSpriteSheet("player_sprite_sheet"),
-                   idle_frames, 32, 32, 8, screen)});
+                   idle_frames, 32, 32, 8)});
 
     std::vector<AnimationFrame> throw_frames;
     for (auto col = 0; col < 10; col++) {
@@ -216,7 +181,7 @@ HouseSceneFactory::InitAnimations(
     player_animations->insert(
         {EntityState::Throwing,
          Animation(asset_watcher->GetSpriteSheet("player_sprite_sheet"),
-                   throw_frames, 32, 32, 8, screen)});
+                   throw_frames, 32, 32, 8)});
 
     std::vector<AnimationFrame> walk_frames;
     for (auto col = 0; col < 10; col++) {
@@ -226,7 +191,7 @@ HouseSceneFactory::InitAnimations(
     player_animations->insert(
         {EntityState::Walking,
          Animation(asset_watcher->GetSpriteSheet("player_sprite_sheet"),
-                   walk_frames, 32, 32, 8, screen)});
+                   walk_frames, 32, 32, 8)});
 
     std::vector<AnimationFrame> attack_frames;
     for (auto col = 0; col < 10; col++) {
@@ -236,7 +201,7 @@ HouseSceneFactory::InitAnimations(
     player_animations->insert(
         {EntityState::Attacking,
          Animation(asset_watcher->GetSpriteSheet("player_sprite_sheet"),
-                   attack_frames, 32, 32, 8, screen)});
+                   attack_frames, 32, 32, 8)});
 
     std::vector<AnimationFrame> die_frames;
     for (auto col = 0; col < 10; col++) {
@@ -246,60 +211,71 @@ HouseSceneFactory::InitAnimations(
     player_animations->insert(
         {EntityState::Dying,
          Animation(asset_watcher->GetSpriteSheet("player_sprite_sheet"),
-                   die_frames, 32, 32, 8, screen)});
+                   die_frames, 32, 32, 8)});
 
     return player_animations;
 }
 
-ViewLayerMap HouseSceneFactory::InitViewLayers(
-    std::shared_ptr<AssetWatcher> asset_watcher, std::shared_ptr<Screen> screen,
-    AnimationMap player_animations, sf::IntRect map_bounds, Map& map) {
-
-    auto view_layer_map = ViewLayerMap();
-
-    auto house_map_texture_size = screen->GetWindowSize();
+std::shared_ptr<ViewLayer> HouseSceneFactory::InitHouseMapViewLayer(
+    std::shared_ptr<AssetWatcher> asset_watcher,
+    AnimationMap player_animations,
+    sf::IntRect map_bounds
+) {
     sf::View house_map_view = sf::View(sf::FloatRect(
-        0, 0, screen->GetWindowSize().width, screen->GetWindowSize().height));
-    view_layer_map["house_map"] = std::make_shared<ViewLayer>(house_map_texture_size, house_map_view);
+        0, 0, Screen::GetWindowSize().width, Screen::GetWindowSize().height));
 
-    view_layer_map["house_map"]->AddView(std::make_unique<SelectedTileView>(
+    auto house_map_view_layer = std::make_shared<ViewLayer>(Screen::GetWindowSize(), house_map_view);
+
+    house_map_view_layer->AddView(std::make_unique<SelectedTileView>(
         asset_watcher->GetSpriteSheet("tile_map")));
 
-    view_layer_map["house_map"]->AddView(std::make_unique<TileBackgroundView>(
+    house_map_view_layer->AddView(std::make_unique<TileBackgroundView>(
         asset_watcher->GetSpriteSheet("tile_map")));
 
-    view_layer_map["house_map"]->AddView(std::make_unique<GridView>(
-        asset_watcher->GetSpriteSheet("tile_map")->GetSpriteSize(), map));
-
-    view_layer_map["house_map"]->AddView(std::make_unique<EntityView>(
-        asset_watcher->GetSpriteSheet("entity_map"), player_animations));
-
-    view_layer_map["house_map"]->AddView(std::make_unique<BoxSelectionView>());
-    view_layer_map["house_map"]->AddView(
-        std::make_unique<CreatedRoomSelectionView>());
-
-    view_layer_map["house_map"]->AddView(std::make_unique<GridSelectionView>(
+    house_map_view_layer->AddView(std::make_unique<GridView>(
         asset_watcher->GetSpriteSheet("tile_map")->GetSpriteSize()));
 
-    view_layer_map["house_map"]->AddView(std::make_unique<ShadowView>(
+    house_map_view_layer->AddView(std::make_unique<EntityView>(
+        asset_watcher->GetSpriteSheet("entity_map"), player_animations));
+
+    house_map_view_layer->AddView(std::make_unique<BoxSelectionView>());
+    house_map_view_layer->AddView(
+        std::make_unique<CreatedRoomSelectionView>());
+
+    house_map_view_layer->AddView(std::make_unique<GridSelectionView>(
+        asset_watcher->GetSpriteSheet("tile_map")->GetSpriteSize()));
+
+    house_map_view_layer->AddView(std::make_unique<ShadowView>(
         sf::IntRect(0, 0,
                     asset_watcher->GetSpriteSheet("tile_map")->GetSpriteSize() *
                         map_bounds.width,
                     asset_watcher->GetSpriteSheet("tile_map")->GetSpriteSize() *
                         map_bounds.height)));
 
-    auto tile_palette_texture_size = screen->GetTilePaletteArea();
-    sf::View tile_palette_view = sf::View(sf::FloatRect(
-        0, 0, screen->GetTilePaletteArea().width, screen->GetWindowSize().height));
-    view_layer_map["tile_palette"] = std::make_shared<ViewLayer>(tile_palette_texture_size, tile_palette_view);
-    view_layer_map["tile_palette"]->AddView(std::make_unique<TilePaletteView>(
-        screen->GetWindowSize().height, screen->GetTilePaletteArea().width, screen));
-
-    auto toolbar_texture_size = screen->GetToolbarArea();
-    sf::View toolbar_view = sf::View(sf::FloatRect(0, 0, screen->GetWindowSize().width, screen->GetToolbarOffset()));
-    view_layer_map["toolbar"] = std::make_shared<ViewLayer>(toolbar_texture_size, toolbar_view);
-    view_layer_map["toolbar"]->AddView(std::make_unique<ToolbarToolsView>(
-        asset_watcher->GetSpriteSheet("toolbar_sprite_sheet"), screen));
-
-    return view_layer_map;
+    return house_map_view_layer;
 }
+
+std::shared_ptr<ViewLayer> HouseSceneFactory::InitTilePaletteViewLayer() {
+    
+    auto tile_palette_texture_size = Screen::GetTilePaletteArea();
+    sf::View tile_palette_view = sf::View(sf::FloatRect(
+        0, 0, Screen::GetTilePaletteArea().width, Screen::GetWindowSize().height));
+    auto tile_pallette_view_layer = std::make_shared<ViewLayer>(tile_palette_texture_size, tile_palette_view);
+    tile_pallette_view_layer->AddView(std::make_unique<TilePaletteView>(
+        Screen::GetWindowSize().height, Screen::GetTilePaletteArea().width));
+
+    return tile_pallette_view_layer;
+}
+
+std::shared_ptr<ViewLayer> HouseSceneFactory::InitToolbarViewLayer(
+    std::shared_ptr<AssetWatcher> asset_watcher
+) {
+    //auto toolbar_texture_size = Sceen::GetToolbarArea();
+    sf::View toolbar_view = sf::View(sf::FloatRect(0, 0, Screen::GetWindowSize().width, Screen::GetToolbarOffset()));
+    auto toolbar_view_layer = std::make_shared<ViewLayer>(Screen::GetToolbarArea(), toolbar_view);
+    toolbar_view_layer->AddView(std::make_unique<ToolbarToolsView>(
+        asset_watcher->GetSpriteSheet("toolbar_sprite_sheet")));
+
+    return toolbar_view_layer;
+}
+

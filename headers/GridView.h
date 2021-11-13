@@ -6,10 +6,8 @@
 
 class GridView : public View<HouseSceneState> {
     int size;
-    Map &map;
-
   public:
-    GridView(int, Map&);
+    GridView(int);
     void Draw(sf::RenderTarget &, const HouseSceneState &) const;
     void Update();
 };

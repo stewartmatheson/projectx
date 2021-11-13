@@ -1,8 +1,5 @@
 #include "ToolbarController.h"
 
-ToolbarController::ToolbarController(std::shared_ptr<Screen> screen)
-    : screen(screen){};
-
 void ToolbarController::Update(HouseSceneReducer &, sf::Time) {}
 
 void ToolbarController::HandleInput(const EventWithMouse &event_with_mouse,

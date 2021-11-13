@@ -1,6 +1,6 @@
 #include "TilePaletteView.h"
 
-TilePaletteView::TilePaletteView(int width, int height, std::shared_ptr<Screen> screen) : screen(screen) {
+TilePaletteView::TilePaletteView(int width, int height) {
     tile_palette_render_texture.create(width, height);
 }
 
@@ -10,7 +10,7 @@ void TilePaletteView::Draw(sf::RenderTarget &target,
         return;
     }
 
-    auto bg = screen->GetTilePaletteArea();
+    auto bg = Screen::GetTilePaletteArea();
     sf::RectangleShape tile_palette_background;
     tile_palette_background.setFillColor(sf::Color(60, 60, 60, 255));
     tile_palette_background.setPosition(sf::Vector2f(bg.left, bg.top));

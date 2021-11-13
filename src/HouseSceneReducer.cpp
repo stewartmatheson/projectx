@@ -4,18 +4,18 @@
 const HouseSceneState &HouseSceneReducer::GetState() { return state; }
 
 void HouseSceneReducer::AddTileLayer(TileLayer tile_layer) {
-    state.tile_layers.push_back(tile_layer);
+    state.map.tile_layers.push_back(tile_layer);
 }
 
 void HouseSceneReducer::AddTile(int x, int y) {
     auto tile = MapTile{x, y, state.editor_state.selected_tile_rotation,
                         state.editor_state.selected_tile_index};
 
-    if (state.tile_layers.size() == 0) {
-        state.tile_layers.push_back(TileLayer{0, std::vector<MapTile>()});
+    if (state.map.tile_layers.size() == 0) {
+        state.map.tile_layers.push_back(TileLayer{0, std::vector<MapTile>()});
     }
 
-    state.tile_layers[0].tiles.push_back(tile);
+    state.map.tile_layers[0].tiles.push_back(tile);
 }
 
 void HouseSceneReducer::AddEntity(int x, int y) {
@@ -68,14 +68,6 @@ void HouseSceneReducer::AddTilePaletteTile(TilePaletteTile tile_to_add,
     tile_to_add.icon.setPosition(offset, y);
     state.editor_state.tile_palette_tiles.push_back(tile_to_add);
 }
-
-/*
-
-void HouseSceneReducer::SetTilePaletteBounds(int x, int y, int total_height) {
-    state.editor_state.tile_palette_bounds = sf::IntRect(0, 0, x, y);
-    state.editor_state.tile_palette_background_total_height = total_height;
-}
-*/
 
 void HouseSceneReducer::InitSelectionRectangle(int sprite_size) {
     state.editor_state.tile_palette_selection_rectangle.setSize(
@@ -190,9 +182,34 @@ void HouseSceneReducer::SetPlayerDirection(sf::Vector2f new_direction) {
 }
 
 void HouseSceneReducer::AddRoom(sf::IntRect new_room) {
-    state.rooms.push_back(new_room);
+    state.map.rooms.push_back(new_room);
 }
 
 void HouseSceneReducer::ClearEditorSelection() {
     state.editor_state.map_selection = sf::IntRect();
+}
+
+void HouseSceneReducer::InitEntityAIState(Entity& entity) {
+    entity.ai.state = AIState::Patrolling;
+}
+
+
+void HouseSceneReducer::Attack(Entity& attacker, Entity& attackee) {
+    attacker.ai.state = AIState::Attacking;
+
+    // TODO 
+    attacker.ai.target = std::weak_ptr<Entity>(std::make_shared<Entity>(attackee));
+}
+
+void HouseSceneReducer::SetMapBounds(sf::IntRect bounds) {
+    state.map.bounds = bounds;
+}
+
+void HouseSceneReducer::MoveEntity(Entity& entity, sf::Vector2f transform) {
+    entity.transform = transform;
+}
+
+void HouseSceneReducer::UpdateMap(MapState map) {
+    // Update main struct
+    // Copy entities from map to main
 }

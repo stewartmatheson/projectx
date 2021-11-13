@@ -1,10 +1,9 @@
+#include "ScreenValues.h"
 #include "HouseSceneFactory.h"
 #include <SFML/Graphics.hpp>
 #include <optional>
 
 int main(int argc, char **argv) {
-    int window_width = 1920;
-    int window_height = 1080;
     sf::RenderWindow window(sf::VideoMode(window_width, window_height),
                             "SFML works!");
     window.setFramerateLimit(60);

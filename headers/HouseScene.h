@@ -10,8 +10,6 @@
 #include "AssetWatcher.h"
 #include "Controller.h"
 
-typedef std::map<std::string, std::shared_ptr<ViewLayer>> ViewLayerMap;
-
 typedef std::shared_ptr<std::unordered_map<EntityState, Animation>>
     AnimationMap;
 
@@ -25,11 +23,11 @@ struct TimedController {
 class HouseScene {
     std::shared_ptr<AssetWatcher> asset_watcher;
     std::vector<std::shared_ptr<TimedController>> timed_controllers;
-    ViewLayerMap view_layers;
+    std::list<std::shared_ptr<ViewLayer>> view_layers;
     AnimationMap animations;
     std::shared_ptr<HouseSceneReducer> reducer;
   public:
-    HouseScene(std::shared_ptr<AssetWatcher>, std::vector<std::shared_ptr<TimedController>>, ViewLayerMap,
+    HouseScene(std::shared_ptr<AssetWatcher>, std::vector<std::shared_ptr<TimedController>>, std::list<std::shared_ptr<ViewLayer>>,
                AnimationMap, std::shared_ptr<HouseSceneReducer>);
     void HandleInput(const EventWithMouse &);
     void Update();

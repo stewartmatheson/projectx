@@ -1,9 +1,8 @@
 #include "ToolbarToolsView.h"
 #include <SFML/Graphics.hpp>
 
-ToolbarToolsView::ToolbarToolsView(std::shared_ptr<SpriteSheet> tool_map,
-                                   std::shared_ptr<Screen> screen)
-    : tool_map(tool_map), screen(screen) {}
+ToolbarToolsView::ToolbarToolsView(std::shared_ptr<SpriteSheet> tool_map)
+    : tool_map(tool_map) {}
 
 void ToolbarToolsView::Draw(sf::RenderTarget &render_target,
                             const HouseSceneState &state) const {
@@ -11,11 +10,11 @@ void ToolbarToolsView::Draw(sf::RenderTarget &render_target,
         return;
     }
 
-    auto toolbar_icon_padding = screen->GetToolbarIconPadding();
+    auto toolbar_icon_padding = Screen::GetToolbarIconPadding();
     sf::RectangleShape background;
     background.setPosition(0, 0);
     background.setSize(sf::Vector2f(
-        screen->GetWindowSize().width, (toolbar_icon_padding * 2) +
+        Screen::GetWindowSize().width, (toolbar_icon_padding * 2) +
                                 tool_map->GetSpriteSize()));
     background.setFillColor(sf::Color(60, 60, 60, 255));
     render_target.draw(background);

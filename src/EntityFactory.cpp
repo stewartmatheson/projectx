@@ -16,5 +16,18 @@ Entity EntityFactory::Player(sf::Vector2f position) {
                   sf::Vector2f(0, 0),
                   EntityState::Idle,
                   0,
-                  {player_hitbox}};
+                  {player_hitbox}, 0};
+}
+
+Entity EntityFactory::Ghost(sf::Vector2f position) {
+    auto ghost_hitbox = sf::FloatRect(0, 0, 50, 120);
+    return Entity{EntityType::PlayerEntity,
+                  500.f,
+                  30.f,
+                  position,
+                  sf::Vector2f(0, 0),
+                  sf::Vector2f(0, 0),
+                  EntityState::Idle,
+                  0,
+                  {ghost_hitbox}, 0};
 }

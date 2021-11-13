@@ -4,8 +4,8 @@
 PlayerController::PlayerController(
     std::shared_ptr<std::unordered_map<EntityState, Animation>> animations,
     std::shared_ptr<ControllerScheme> controller_scheme,
-    std::shared_ptr<Map> map, ViewLayer &house_view)
-    : animations(animations), controller_scheme(controller_scheme), map(map),
+    ViewLayer &house_view)
+    : animations(animations), controller_scheme(controller_scheme),
       house_view(house_view) {}
 
 void PlayerController::HandleInput(const EventWithMouse &event_with_mouse,
@@ -26,6 +26,8 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
     if (found_player == entities.end()) {
         return;
     }
+    std::cout << found_player->transform.x << " " << found_player->transform.y
+              << std::endl;
 
     auto acceleration = sf::Vector2f(0, 0);
     auto const force =
@@ -42,39 +44,27 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
     new_velocity += new_damping;
     reducer.SetEntityVelocity(new_velocity);
 
-    auto rooms = reducer.GetState().rooms;
-
-    // TODO : Remove Magic number
-    // auto sprite_size = reducer.GetState().scale * 16;
+    auto rooms = reducer.GetState().map.rooms;
 
     auto room_the_player_is_in = std::find_if(
         rooms.begin(), rooms.end(), [this, found_player](const auto &room) {
-            return map->RoomGridToWorld(room).contains(found_player->transform);
-
-            /*
+           auto sprite_size = Screen::GetScale() * Map::GetSpriteSize();
             return sf::FloatRect(
-                room.left * sprite_size,
-                room.top * sprite_size,
-                room.width * sprite_size,
-                room.height * sprite_size
+                room.left * sprite_size, room.top * sprite_size,
+                room.width * sprite_size, room.height * sprite_size
             ).contains(found_player->transform);
-            */
         });
 
     if (room_the_player_is_in == rooms.end() ||
         found_player->hitboxes.size() < 1) {
         reducer.SetEntityTransform(found_player->transform + new_velocity);
     } else {
-        /*
-
-        auto scaled_room =
-            sf::IntRect(room_the_player_is_in->left * sprite_size,
-                          room_the_player_is_in->top * sprite_size,
-                          room_the_player_is_in->width * sprite_size,
-                          room_the_player_is_in->height * sprite_size);
-        */
-
-        auto scaled_room = map->RoomGridToWorld(*room_the_player_is_in);
+		auto sprite_size = Screen::GetScale() * Map::GetSpriteSize();
+		auto scaled_room = sf::FloatRect(
+            room_the_player_is_in->left * sprite_size, 
+            room_the_player_is_in->top * sprite_size,
+			room_the_player_is_in->width * sprite_size, 
+            room_the_player_is_in->height * sprite_size);
 
         reducer.SetEntityTransform(ClampToRoom(
             found_player->hitboxes[0], // TODO : Not sure what to do when we
@@ -93,30 +83,9 @@ void PlayerController::Update(HouseSceneReducer &reducer, sf::Time delta_time) {
     if (!reducer.GetState().editor_state.editor_enabled) {
         house_view.SetViewCenter(found_player->transform);
     }
-
-    /*
-
-    // Not sure if this should go in the reducer but we can put it here for now
-    auto input_mag =
-        std::sqrt(std::pow(current_input.direction.x, 2) +
-    std::pow(current_input.direction.y, 2)); auto norm_vector =
-        sf::Vector2f(std::round(current_input.direction.x / input_mag),
-    std::round(current_input.direction.y / input_mag));
-
-    if (!std::isnan(norm_vector.x) || !std::isnan(norm_vector.y)) {
-        reducer.SetPlayerDirection(norm_vector);
-    }
-
-    */
-
     reducer.SetPlayerDirection(current_input.direction);
     HandleActions(reducer);
 
-    /*
-    TODO : This most likely won't work as different entities will move the
-    animations around before they are drawn. We need to also figure out where
-    this should end up living but TBH it feels like it should be in the view
-    */
     auto state = reducer.GetState();
     auto current_animation = animations->find(found_player->state);
     current_animation->second.sprite.setPosition(found_player->transform);

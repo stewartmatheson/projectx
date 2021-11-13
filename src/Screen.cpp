@@ -1,37 +1,33 @@
 #include "Screen.h"
+#include "Map.h"
+#include "ScreenValues.h"
 
-Screen::Screen(sf::IntRect window_size, int scale, int toolbar_icon_padding,
-               int toolbar_icon_size, int tile_palette_offset,
-               int toolbar_offset, const int tile_map_sprite_size)
-    : window_size(window_size), scale(scale),
-      toolbar_icon_padding(toolbar_icon_padding),
-      toolbar_icon_size(toolbar_icon_size),
-      tile_palette_offset(tile_palette_offset),
-      tile_map_sprite_size(tile_map_sprite_size),
-      toolbar_offset(toolbar_offset) {}
-
-const sf::IntRect Screen::GetButtonArea() const {
+const sf::IntRect Screen::GetButtonArea() {
     return sf::IntRect(GetTilePaletteArea().width + toolbar_icon_padding,
                        toolbar_icon_padding, toolbar_icon_size * scale,
                        toolbar_icon_size * scale);
 }
 
-const sf::IntRect Screen::GetWindowSize() const { return window_size; }
+const sf::IntRect Screen::GetWindowSize() { 
+    return sf::IntRect(0, 0, window_width, window_height); 
+}
 
-const sf::IntRect Screen::GetTilePaletteArea() const {
+const sf::IntRect Screen::GetTilePaletteArea() {
+    auto window_size = GetWindowSize();
     return sf::IntRect(0, 0,
-                       tile_palette_offset * 2 + (tile_map_sprite_size * scale),
+                       tile_palette_offset * 2 + (Map::GetSpriteSize() * scale),
                        window_size.height);
 }
 
-const sf::IntRect Screen::GetToolbarArea() const {
-    return sf::IntRect(tile_palette_offset * 2 + (tile_map_sprite_size * scale),
+const sf::IntRect Screen::GetToolbarArea() {
+    auto window_size = GetWindowSize();
+    return sf::IntRect(tile_palette_offset * 2 + (Map::GetSpriteSize() * scale),
                        0, window_size.width, 60);
 }
 
-int Screen::GetToolbarOffset() const { return toolbar_offset; }
-int Screen::GetTilePaletteOffset() const { return tile_palette_offset; }
+int Screen::GetToolbarOffset() { return toolbar_offset; }
+int Screen::GetTilePaletteOffset() { return tile_palette_offset; }
 
-int Screen::GetScale() const { return scale; }
+int Screen::GetScale() { return scale; }
 
-int Screen::GetToolbarIconPadding() const { return toolbar_icon_padding; }
+int Screen::GetToolbarIconPadding() { return toolbar_icon_padding; }

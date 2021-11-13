@@ -47,7 +47,10 @@ add_executable(ProjectX
   headers/KeyboardControllerScheme.h
   headers/GamepadControllerScheme.h
   headers/Screen.h
+  headers/ScreenValues.h
   headers/HouseSceneFactory.h
+  headers/AIController.h
+  headers/Physics.h
   src/Animation.cpp
   src/HouseScene.cpp
   src/Map.cpp
@@ -74,6 +77,8 @@ add_executable(ProjectX
   src/GamepadControllerScheme.cpp
   src/Screen.cpp
   src/HouseSceneFactory.cpp
+  src/AIController.cpp
+  src/Physics.cpp
 )
 
 if(WIN32)

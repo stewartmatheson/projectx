@@ -3,9 +3,9 @@
 // For now we will assume that this is a constructor for a sprite sheet from a
 // texture file
 SpriteSheet::SpriteSheet(std::string texture_path, int frame_tile_size,
-                         int cols, int rows, std::shared_ptr<Screen> screen)
+                         int cols, int rows)
     : texture_path(texture_path), sprites(), frame_tile_size(frame_tile_size),
-      texture(), screen(screen) {
+      texture() {
 
     LoadFromFile();
     for (auto y = 0; y < cols; y++) {
@@ -16,8 +16,8 @@ SpriteSheet::SpriteSheet(std::string texture_path, int frame_tile_size,
 };
 
 // For now we will assume that this is a entity sprite sheet drawn with code
-SpriteSheet::SpriteSheet(int frame_tile_size, std::shared_ptr<Screen> screen)
-    : sprites(), frame_tile_size(frame_tile_size), texture(), screen(screen) {
+SpriteSheet::SpriteSheet(int frame_tile_size)
+    : sprites(), frame_tile_size(frame_tile_size), texture() {
     // TODO : This will never allow us to create more than two sprites
     icon_sprite_render_texture.create(frame_tile_size * 2, frame_tile_size);
 };
@@ -33,7 +33,7 @@ void SpriteSheet::CreateIconSprite(sf::Color color, int render_offset) {
     auto sprite = sf::Sprite(icon_sprite_render_texture.getTexture(),
                              sf::IntRect(frame_tile_size * render_offset, 0,
                                          frame_tile_size, frame_tile_size));
-    sprite.setScale(screen->GetScale(), screen->GetScale());
+    sprite.setScale(Screen::GetScale(), Screen::GetScale());
     sprites.push_back(sprite);
 }
 
@@ -42,12 +42,12 @@ sf::Sprite SpriteSheet::CreateTileSprite(int tile_map_x, int tile_map_y) {
                                            frame_tile_size * tile_map_y,
                                            frame_tile_size, frame_tile_size));
 
-    sprite.setScale(screen->GetScale(), screen->GetScale());
+    sprite.setScale(Screen::GetScale(), Screen::GetScale());
     return sprite;
 }
 
 int SpriteSheet::GetSpriteSize() const {
-    return screen->GetScale() * frame_tile_size;
+    return Screen::GetScale() * frame_tile_size;
 }
 
 // const int SpriteSheet::GetScale() const { return scale; }

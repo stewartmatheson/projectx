@@ -15,14 +15,12 @@ class PlayerController : public Controller<HouseSceneReducer> {
     sf::Vector2f ClampToRoom(sf::FloatRect, sf::FloatRect, sf::Vector2f, sf::Vector2f);
     std::shared_ptr<ControllerScheme> controller_scheme;
     void HandleActions(HouseSceneReducer &);
-    std::shared_ptr<Map> map;
     ViewLayer& house_view;
 
   public:
     PlayerController(
         std::shared_ptr<std::unordered_map<EntityState, Animation>>, 
         std::shared_ptr<ControllerScheme>,
-        std::shared_ptr<Map> map,
         ViewLayer&
     );
     void Update(HouseSceneReducer &, sf::Time);

@@ -4,12 +4,12 @@
 
 EditorController::EditorController(
     int tile_map_sprite_size, sf::RenderTexture &tile_palette_render_texture,
-    sf::RenderTexture &house_render_texture, Map &map,
-    std::shared_ptr<Screen> screen, ViewLayer &house_view_layer,
+    sf::RenderTexture &house_render_texture,
+    ViewLayer &house_view_layer,
     ViewLayer &tile_palette_view)
     : tile_map_sprite_size(tile_map_sprite_size),
       tile_palette_render_texture(tile_palette_render_texture),
-      house_render_texture(house_render_texture), map(map), screen(screen),
+      house_render_texture(house_render_texture),
       house_view_layer(house_view_layer), tile_palette_view(tile_palette_view) {
 }
 
@@ -101,9 +101,10 @@ void EditorController::HandleInput(const EventWithMouse &event_with_mouse,
                 sf::Vector2i(event_with_mouse.event.mouseButton.x,
                              event_with_mouse.event.mouseButton.y));
 
+        auto bounds = reducer.GetState().map.bounds;
         sf::IntRect pixel_bounds(0, 0,
-                                 map.GetBounds().width * tile_map_sprite_size,
-                                 map.GetBounds().height * tile_map_sprite_size);
+                                 bounds.width * tile_map_sprite_size,
+                                 bounds.height * tile_map_sprite_size);
 
         if (pixel_bounds.contains(event_target_coords.x,
                                   event_target_coords.y) &&
@@ -130,7 +131,7 @@ void EditorController::HandleInput(const EventWithMouse &event_with_mouse,
 
     if (event_with_mouse.event.type == sf::Event::KeyReleased &&
         event_with_mouse.event.key.code == sf::Keyboard::W) {
-        map.WriteToFile("./assets/maps/room.bin");
+        Map::WriteToFile("./assets/maps/room.bin", reducer.GetState().map);
     }
 
     if (event_with_mouse.event.type == sf::Event::KeyReleased &&
@@ -156,7 +157,6 @@ void EditorController::HandleInput(const EventWithMouse &event_with_mouse,
         auto mouse_delta =
             event_with_mouse.window_mouse_position - last_mouse_position;
         house_view_layer.MoveView(mouse_delta.x * -1, mouse_delta.y * -1);
-        // reducer.MoveHouseView(mouse_delta.x * -1, mouse_delta.y * -1);
     }
 
     last_mouse_position = event_with_mouse.window_mouse_position;
@@ -165,10 +165,6 @@ void EditorController::HandleInput(const EventWithMouse &event_with_mouse,
         house_view_layer.MoveView(event_with_mouse.event.size.width,
                                   event_with_mouse.event.size.height);
 
-        /*
-        reducer.MoveHouseView(event_with_mouse.event.size.width,
-                              event_with_mouse.event.size.height);
-        */
         house_render_texture.create(event_with_mouse.event.size.width,
                                     event_with_mouse.event.size.height);
     }
@@ -194,3 +190,4 @@ void EditorController::HandleInputBoxSelection(
         reducer.MouseReleased(window_target_coords, tile_map_sprite_size);
     }
 }
+

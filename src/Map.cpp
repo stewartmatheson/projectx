@@ -4,14 +4,11 @@
 #include "Map.h"
 #include "EntityFactory.h"
 
-Map::Map(HouseSceneReducer &reducer, std::shared_ptr<Screen> screen, int map_tile_pixel_count,
-         sf::IntRect map_bounds)
-    : reducer(reducer), screen(screen),
-      map_tile_pixel_count(map_tile_pixel_count), map_bounds(map_bounds) {}
+MapState Map::New() { return MapState(); }
 
-Map::Map(HouseSceneReducer &reducer, std::string file_name, std::shared_ptr<Screen> screen, int map_tile_pixel_count)
-    : reducer(reducer), screen(screen), map_tile_pixel_count(map_tile_pixel_count) {
+MapState Map::ReadFromFile(std::string file_name) {
     std::ifstream rf(file_name, std::ios::in | std::ios::binary);
+    MapState map = MapState();
 
     if (!rf) {
         std::cout << "Can't read file!" << std::endl;
@@ -24,8 +21,7 @@ Map::Map(HouseSceneReducer &reducer, std::string file_name, std::shared_ptr<Scre
     rf.read(reinterpret_cast<char *>(&bounds.top), sizeof(bounds.top));
     rf.read(reinterpret_cast<char *>(&bounds.width), sizeof(bounds.width));
     rf.read(reinterpret_cast<char *>(&bounds.height), sizeof(bounds.height));
-
-    map_bounds = bounds;
+    
 
     int layer_count;
     rf.read(reinterpret_cast<char *>(&layer_count), sizeof(layer_count));
@@ -51,8 +47,8 @@ Map::Map(HouseSceneReducer &reducer, std::string file_name, std::shared_ptr<Scre
 
             tiles.push_back(tile);
         }
-
-        reducer.AddTileLayer(TileLayer{i, tiles});
+        
+        map.tile_layers.push_back(TileLayer{i, tiles});
     }
 
     int entity_count;
@@ -69,9 +65,9 @@ Map::Map(HouseSceneReducer &reducer, std::string file_name, std::shared_ptr<Scre
         rf.read(reinterpret_cast<char *>(&y), sizeof(y));
 
         if (type == EntityType::PlayerEntity) {
-            reducer.AddEntity(EntityFactory::Player(sf::Vector2f(x, y)));
+            map.entities.push_back(EntityFactory::Player(sf::Vector2f(x, y)));
         } else {
-            reducer.AddEntity(Entity{type, 0, 0, sf::Vector2f(x, y)});
+            map.entities.push_back(Entity{type, 0, 0, sf::Vector2f(x, y)});
         }
     }
 
@@ -91,11 +87,13 @@ Map::Map(HouseSceneReducer &reducer, std::string file_name, std::shared_ptr<Scre
         int width;
         rf.read(reinterpret_cast<char *>(&width), sizeof(width));
 
-        reducer.AddRoom(sf::IntRect(left, top, width, height));
+        map.rooms.push_back(sf::IntRect(left, top, width, height));
     }
+
+    return map;
 }
 
-void Map::WriteToFile(std::string file_name) const {
+void Map::WriteToFile(std::string file_name, MapState state) {
     std::ofstream wf(file_name, std::ios::out | std::ios::binary);
 
     if (!wf) {
@@ -104,6 +102,8 @@ void Map::WriteToFile(std::string file_name) const {
     }
 
 
+    auto map_bounds = state.bounds;
+
     wf.write(reinterpret_cast<const char *>(&map_bounds.left), sizeof(map_bounds.left));
     wf.write(reinterpret_cast<const char *>(&map_bounds.top), sizeof(map_bounds.top));
     wf.write(reinterpret_cast<const char *>(&map_bounds.width),
@@ -111,12 +111,11 @@ void Map::WriteToFile(std::string file_name) const {
     wf.write(reinterpret_cast<const char *>(&map_bounds.height),
              sizeof(map_bounds.height));
 
-    auto tile_layers = reducer.GetState().tile_layers;
 
-    int size = tile_layers.size();
+    int size = state.tile_layers.size();
     wf.write(reinterpret_cast<const char *>(&size), sizeof(size));
 
-    for (const auto &tile_layer : tile_layers) {
+    for (const auto &tile_layer : state.tile_layers) {
         int room_tile_count = tile_layer.tiles.size();
         wf.write(reinterpret_cast<const char *>(&room_tile_count),
                  sizeof(room_tile_count));
@@ -134,16 +133,12 @@ void Map::WriteToFile(std::string file_name) const {
         }
     }
 
-    auto entities = reducer.GetState().entities;
-
+    auto entities = state.entities;
     int entity_size = entities.size();
     wf.write(reinterpret_cast<const char *>(&entity_size), sizeof(entity_size));
 
     std::for_each(entities.begin(), entities.end(), [&wf](Entity entity) {
         EntityType type = entity.type;
-        // typedef std::underlying_type<EntityType>::type utype;
-        // int i = static_cast<utype>(type);
-
         wf.write(reinterpret_cast<const char *>(&type), sizeof(type));
 
         int x = entity.transform.x;
@@ -153,10 +148,10 @@ void Map::WriteToFile(std::string file_name) const {
         wf.write(reinterpret_cast<const char *>(&y), sizeof(y));
     });
 
-    auto rooms = reducer.GetState().rooms;
+    auto rooms = state.rooms;
     int room_size = rooms.size();
     wf.write(reinterpret_cast<const char *>(&room_size), sizeof(room_size));
-    for (auto room : reducer.GetState().rooms) {
+    for (auto room : state.rooms) {
         wf.write(reinterpret_cast<const char *>(&room.left), sizeof(room.left));
         wf.write(reinterpret_cast<const char *>(&room.top), sizeof(room.top));
         wf.write(reinterpret_cast<const char *>(&room.height), sizeof(room.height));
@@ -164,10 +159,5 @@ void Map::WriteToFile(std::string file_name) const {
     }
 }
 
-const sf::FloatRect Map::RoomGridToWorld(sf::IntRect room) const {
-    auto sprite_size = screen->GetScale() * map_tile_pixel_count;
-    return sf::FloatRect(room.left * sprite_size, room.top * sprite_size,
-                         room.width * sprite_size, room.height * sprite_size);
-}
 
-const sf::IntRect Map::GetBounds() const { return map_bounds; } 
+int Map::GetSpriteSize() { return 16; }

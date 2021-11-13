@@ -5,7 +5,6 @@
 
 class HouseSceneReducer {
     HouseSceneState state;
-
   public:
     const HouseSceneState &GetState();
     void ToggleEditorEnabled();
@@ -31,4 +30,9 @@ class HouseSceneReducer {
     void SetPlayerDirection(sf::Vector2f);
     void AddRoom(sf::IntRect);
     void ClearEditorSelection();
+    void InitEntityAIState(Entity&);
+    void Attack(Entity&, Entity&);
+    void SetMapBounds(sf::IntRect);
+    void MoveEntity(Entity&, sf::Vector2f);
+    void UpdateMap(MapState map);
 };

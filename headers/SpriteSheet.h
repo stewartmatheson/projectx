@@ -12,11 +12,10 @@ class SpriteSheet {
     sf::Texture texture;
     sf::RenderTexture icon_sprite_render_texture;
     void LoadFromFile();
-    std::shared_ptr<Screen> screen;
 
   public:
-    SpriteSheet(std::string, int, int, int, std::shared_ptr<Screen>);
-    SpriteSheet(int, std::shared_ptr<Screen>);
+    SpriteSheet(std::string, int, int, int);
+    SpriteSheet(int);
 
     // TODO : Not sure if this should be here. We might need another time of
     // sprite sheet to handle this.

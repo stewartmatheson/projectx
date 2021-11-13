@@ -6,7 +6,7 @@ TileBackgroundView::TileBackgroundView(std::shared_ptr<SpriteSheet> tile_map)
 void TileBackgroundView::Draw(sf::RenderTarget &render_target,
                               const HouseSceneState &state) const {
     // TODO  : Fix this raw loop
-    for (const auto &tile_layer : state.tile_layers) {
+    for (const auto &tile_layer : state.map.tile_layers) {
         for (const auto &tile : tile_layer.tiles) {
             sf::Sprite sprite_to_draw(
                 tile_map->GetSprites()[tile.tile_map_index]);

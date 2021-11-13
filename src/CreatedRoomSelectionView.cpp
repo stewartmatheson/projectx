@@ -9,7 +9,7 @@ void CreatedRoomSelectionView::Draw(sf::RenderTarget &render_target,
     // TODO : We should read this from the spirte sheet directly and not hard
     // code it
     auto sprite_size = 16 * 4;
-    for (auto &room : state.rooms) {
+    for (auto &room : state.map.rooms) {
         sf::RectangleShape rect;
         rect.setFillColor(sf::Color(0, 0, 0, 0));
         rect.setOutlineColor(sf::Color::Yellow);
